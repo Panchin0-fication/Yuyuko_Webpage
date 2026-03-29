@@ -1,0 +1,28 @@
+.blockContainer {
+  padding: 20px;
+  background-color: white;
+  border-radius: 15px;
+  border: 2px solid black;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  font-size: 18px;
+}
+.errorBlock {
+  background-color: rgb(207, 46, 46);
+  border: ridge 5px rgb(215, 67, 67);
+  color: white;
+}
+.errorBlock img {
+  filter: invert(98%) sepia(0%) saturate(6%) hue-rotate(165deg) brightness(103%)
+    contrast(102%);
+}
+.successBlock {
+  background-color: rgb(42, 219, 139);
+  border: ridge 4px rgb(50, 155, 85);
+  color: white;
+}
+.successBlock img {
+  filter: invert(98%) sepia(0%) saturate(6%) hue-rotate(165deg) brightness(103%)
+    contrast(102%);
+}

@@ -1,0 +1,31 @@
+.messageHeader {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  font-size: 19px;
+  font-weight: 500;
+}
+.iconRed {
+  filter: invert(18%) sepia(62%) saturate(4733%) hue-rotate(351deg)
+    brightness(99%) contrast(79%);
+}
+.iconGreen {
+  filter: invert(20%) sepia(98%) saturate(4218%) hue-rotate(103deg)
+    brightness(99%) contrast(101%);
+}
+.errorText {
+  color: #db3030;
+}
+.successText {
+  color: #008000;
+}
+.downBar {
+  margin-top: 5px;
+}
+.space {
+  margin-top: 10px;
+}
+.loginMessage {
+  margin-top: 10px;
+  min-width: 150px;
+}

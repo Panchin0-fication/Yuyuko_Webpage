@@ -1,0 +1,53 @@
+.validation {
+  display: grid;
+  place-items: center;
+}
+.verificationCodeHeader {
+  font-size: 25px;
+  font-weight: 500;
+  width: max-content;
+  margin-top: 12px;
+}
+.validateButton {
+  background-color: rgb(66, 66, 66);
+  color: white;
+  padding: 5px;
+  border-radius: 10px;
+  max-width: max-content;
+  transition: background-color 0.3s;
+  cursor: pointer;
+  font-size: 15px;
+}
+.validateButton:hover {
+  background-color: #c92c7a;
+}
+.validationFields input {
+  width: 400px;
+  border-radius: 3px;
+  border: #000000 2px solid;
+  outline: none;
+}
+.validationFields input:focus {
+  border: #c92c7a 2px solid;
+}
+.validationFields {
+  margin-top: 7px;
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  width: max-content;
+}
+.validateButton {
+  background-color: rgb(66, 66, 66);
+  color: white;
+  padding: 5px;
+  border-radius: 10px;
+  max-width: max-content;
+  transition: background-color 0.3s;
+  cursor: pointer;
+  font-size: 15px;
+}
+.loadingImg {
+  height: 120px;
+  width: 140px;
+}

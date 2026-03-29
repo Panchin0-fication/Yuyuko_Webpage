@@ -1,0 +1,55 @@
+.yuyuInfo {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  justify-items: center;
+  margin: 15px 0px;
+}
+
+.imageInfo {
+  background: url(/public/staticImgs/generalUse/yuyuko-saigyouji-cute.gif)
+    center center/cover;
+  width: 200px;
+  height: 500px;
+  border-radius: 12px;
+}
+
+.imageInfo:hover {
+  background: url(/public/staticImgs/generalUse/yuyuko-yuyuko-touhou.gif) center
+    center/cover;
+}
+
+.bodyText {
+  background: url(/public/staticImgs/generalUse/__saigyouji_yuyuko_touhou_drawn_by_cake_mogo__sample-b690994a170df7ebb68a55b8ab2b23a6.jpg)
+    center center/cover;
+  height: 500px;
+  width: 600px;
+  padding: 20px 35px;
+  display: flex;
+  flex-direction: column;
+
+  text-align: justify;
+  align-items: center;
+  color: white;
+
+  font-family: "Yanone Kaffeesatz";
+  font-style: normal;
+  font-weight: 200 700;
+  font-display: swap;
+
+  border-radius: 12px;
+}
+
+.bodyText p {
+  padding-top: 20px;
+  padding-left: 5px;
+  padding-right: 5px;
+  font-size: 21px;
+  font-weight: 450;
+  text-shadow: -0.5px -0.5px 0 #000, 0.5px -0.5px 0 #000, -0.5px 0.5px 0 #000,
+    0.5px 0.5px 0 #000;
+}
+.bodyText h2 {
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
+    1px 1px 0 #000;
+  font-size: 40px;
+}

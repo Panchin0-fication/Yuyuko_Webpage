@@ -1,0 +1,36 @@
+.arrow {
+  position: fixed;
+  transform: translateY(-16vh);
+  margin-left: 95vw;
+  width: 40px;
+  height: 50px;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+}
+.pageContents {
+  width: 95%;
+  margin: auto;
+}
+.sectionOne {
+  display: grid;
+  grid-template-columns: 1fr 5fr;
+  gap: 40px;
+}
+.sprites {
+  margin-top: 20px;
+  margin-left: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.sprites img {
+  align-self: flex-start;
+}
+.imgBig {
+  width: 90vw;
+  height: auto;
+}

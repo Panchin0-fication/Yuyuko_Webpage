@@ -1,0 +1,48 @@
+.imagesPages {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 50px;
+  justify-content: center;
+  padding-top: 15px;
+  padding-bottom: 50px;
+  width: 95%;
+  margin: auto;
+}
+.navCentered {
+  width: 95%;
+  margin: auto;
+}
+.pageOption {
+  justify-self: center;
+  border: none;
+  background-color: #00000000;
+}
+.pageOption img {
+  height: 500px;
+  width: 320px;
+}
+.pageOption:hover::after {
+  content: "";
+  position: absolute;
+  width: 320px;
+  height: 530px;
+  background-color: #030000;
+  opacity: 30%;
+  display: block;
+  align-self: center;
+  transform: translateY(-528.067px);
+  cursor: pointer;
+}
+.textOver {
+  position: absolute;
+  transform: translateY(-419px);
+  font-size: 20px;
+  padding: 12px;
+  color: white;
+  width: 320px;
+  z-index: 1;
+  cursor: pointer;
+}
+.bottomText {
+  font-size: 23px;
+}

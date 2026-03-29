@@ -1,0 +1,21 @@
+.fieldInput {
+  border-radius: 10px;
+  font-size: 16px;
+  transition: border 0.2s;
+  margin-bottom: 10px;
+}
+.fieldInput:focus {
+  outline: none;
+  border: #c92c7a 2px solid;
+}
+
+.label {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+.nameWarning {
+  color: #db3030;
+}

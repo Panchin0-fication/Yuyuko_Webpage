@@ -1,0 +1,23 @@
+.image {
+  font-family: "IBM Plex Sans JP", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  margin-top: 20px;
+  align-self: center;
+  border: 7px double #db85b0;
+  background: #fff;
+  height: auto;
+  font-size: 12px;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.image img {
+  padding-bottom: 7px;
+  margin: auto;
+}
+.image p {
+  padding-left: 5px;
+  padding-right: 5px;
+}

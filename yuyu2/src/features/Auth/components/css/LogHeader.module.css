@@ -1,0 +1,12 @@
+.loginHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.loginHeader img {
+  margin-left: auto;
+}
+.image {
+  height: 45px;
+  width: 45px;
+}

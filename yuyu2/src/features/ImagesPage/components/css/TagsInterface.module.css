@@ -1,0 +1,129 @@
+.tagInterface {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239f9aa6' fill-opacity='0.55' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
+  border: black 3px solid;
+  /*padding: 20px;*/
+  border-radius: 5px;
+  height: 350px;
+}
+.focusAdded {
+  grid-template-columns: 90% 5% 5%;
+}
+.focusSearch {
+  grid-template-columns: 5% 90% 5%;
+}
+.focuNewTag {
+  grid-template-columns: 5% 5% 90%;
+}
+.interfaceSection {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  overflow: hidden;
+}
+.actualTags {
+  border-right: black 3px solid;
+}
+.searchTags {
+  border-right: black 3px solid;
+  width: 100%;
+}
+.tagsContainer {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0px 15px;
+  overflow: scroll;
+}
+.pages {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  place-items: center;
+}
+
+.label {
+  color: white;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  width: max-content;
+  gap: 5px;
+}
+.clickableLabel {
+  cursor: pointer;
+}
+.general {
+  background-color: rgb(48, 80, 145);
+}
+.character {
+  background-color: #c72d2d;
+}
+.artist {
+  background-color: #b144ca;
+}
+.buttons {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  display: flex;
+  gap: 25px;
+  align-items: center;
+}
+.buttons button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 10px;
+  padding: 6px;
+  color: white;
+  font-size: 16px;
+}
+.inactiveButton {
+  cursor: no-drop;
+  opacity: 70%;
+}
+.buttons button img {
+  filter: invert(91%) sepia(0%) saturate(7464%) hue-rotate(96deg)
+    brightness(112%) contrast(108%);
+}
+.arrowActive {
+  filter: invert(42%) sepia(66%) saturate(1584%) hue-rotate(206deg)
+    brightness(99%) contrast(95%);
+  cursor: pointer;
+}
+
+.input {
+  display: flex;
+  margin: auto;
+  border: 3px solid black;
+  font-size: 22px;
+  padding: 5px;
+}
+.input:focus {
+  outline: none;
+}
+.buttonNewTag {
+  background-color: black;
+  color: white;
+  padding: 12px;
+  border-radius: 15px;
+  width: max-content;
+  font-size: 18px;
+}
+.buttonNewTag:hover {
+  background-color: rgb(62, 62, 62);
+}
+.sectionNewTag {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+.emptyTags {
+  filter: opacity(70%);
+  font-size: 24px;
+}

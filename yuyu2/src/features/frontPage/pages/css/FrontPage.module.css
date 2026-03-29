@@ -1,0 +1,12 @@
+.headerMain {
+  background: url(/public/staticImgs/generalUse/Captura\ de\ pantalla\ 2025-06-26\ 174539.png)
+    center center/cover;
+  text-align: center;
+  color: #ff476c;
+  text-shadow: 1px 1px 0 #b81466, 2px 2px 0 #b81466, 3px 3px 0 #b81466,
+    4px 4px 0 #b81466;
+  font-size: 70px;
+  padding-top: 10px;
+  margin: auto;
+  height: 175px;
+}

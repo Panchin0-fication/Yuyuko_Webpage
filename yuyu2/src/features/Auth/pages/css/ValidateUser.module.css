@@ -1,0 +1,64 @@
+.generalInfo {
+  font-size: 19px;
+}
+.info {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-top: 10px;
+}
+.options {
+  color: #4a4af0;
+  margin-top: 15px;
+}
+.iconOption {
+  filter: invert(27%) sepia(60%) saturate(6767%) hue-rotate(239deg)
+    brightness(98%) contrast(92%);
+}
+.iconInverted {
+  transform: rotateX(180deg);
+}
+.option header {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  cursor: pointer;
+}
+.loadingImg {
+  height: 120px;
+  width: 140px;
+}
+.buttonInExtra {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px;
+  background-color: #4a4af0;
+  color: #ffffff;
+  border-radius: 10px;
+  transition: background-color 0.2s;
+  font-size: 16px;
+  width: max-content;
+  margin-top: 5px;
+}
+.buttonInExtra img {
+  filter: invert(98%) sepia(2%) saturate(0%) hue-rotate(238deg) brightness(104%)
+    contrast(103%);
+}
+
+.buttonInExtra:hover {
+  background-color: #3535ca;
+}
+
+.extra {
+  padding: 10px;
+  padding-bottom: 5px;
+  display: grid;
+  place-items: center;
+  width: 250px;
+  border: 2px #3535ca solid;
+  border-radius: 7px;
+}
+.extra input {
+  width: 200px;
+}

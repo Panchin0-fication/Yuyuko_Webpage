@@ -1,0 +1,46 @@
+.elements {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 350px;
+  margin: auto;
+  transform: translateY(10vh);
+}
+.createButtonInactive {
+  background-color: rgb(66, 66, 66);
+  color: white;
+  padding: 7px;
+  border-radius: 10px;
+  max-width: max-content;
+  margin: auto;
+  transition: background-color 0.3s;
+  cursor: none;
+  margin-top: 10px;
+  font-size: 18px;
+}
+.createButton {
+  background-color: black;
+  color: white;
+  padding: 7px;
+  border-radius: 10px;
+  max-width: max-content;
+  margin: auto;
+  transition: background-color 0.3s;
+  margin-top: 10px;
+  font-size: 18px;
+}
+.createButton:hover {
+  background-color: #c92c7a;
+}
+.buttonAndLoad {
+  display: flex;
+  gap: 10px;
+}
+.mailIcon {
+  height: 50px;
+  width: auto;
+}
+.loadingImage {
+  height: 120px;
+  width: 140px;
+}

@@ -1,0 +1,28 @@
+.optionNav {
+  border-radius: 0px;
+  background-color: #980e53;
+
+  font-family: "Yanone Kaffeesatz";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+
+  margin-top: 10px;
+  font-size: 20px;
+
+  border-left: 4px solid #f35fa9;
+  border-top: 4px solid #f35fa9;
+  border-bottom: 4px solid #f35fa9;
+  border-right: none;
+  align-self: center;
+  padding: 1px 10px;
+}
+.optionNavLast {
+  border-right: 4px solid #f35fa9;
+}
+.optionNav:hover {
+  background-color: #b43072;
+}
+.optionText {
+  color: rgb(255, 255, 255);
+}

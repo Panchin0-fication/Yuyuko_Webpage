@@ -1,0 +1,15 @@
+.element {
+  min-height: 100vh;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 10px;
+  border: 2px #f1f1f1 solid;
+  width: max-content;
+  padding: 20px;
+  margin: auto;
+  width: 350px;
+}

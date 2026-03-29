@@ -1,0 +1,30 @@
+import { useState } from "react";
+import styles from "./css/ImageSpoiler.module.css";
+
+export default function ImageSpoiler({ src, endings, ending, setEndings }) {
+  function handleClick() {
+    const newEndings = endings.map((end) => {
+      if (end.id === ending.id) {
+        return { ...end, hidden: false };
+      } else {
+        return end;
+      }
+    });
+    setEndings(newEndings);
+  }
+
+  return (
+    <div className={styles.ending}>
+      <img
+        src={src}
+        className={`${ending.hidden ? styles.spoiler : ""} ${styles.imageEnding}`}
+      ></img>
+      <button
+        className={!ending.hidden ? styles.hide : ""}
+        onClick={() => handleClick()}
+      >
+        <p className={styles.spoilerTag}>Spoiler</p>
+      </button>
+    </div>
+  );
+}

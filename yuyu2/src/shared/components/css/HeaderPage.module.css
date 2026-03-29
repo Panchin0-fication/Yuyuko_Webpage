@@ -1,0 +1,36 @@
+.fercho {
+  background: url(/public/icons/house-solid-full.svg);
+}
+.headerPages {
+  display: flex;
+  gap: 50px;
+  align-items: center;
+  margin-left: 30px;
+  padding-top: 10px;
+}
+.iconHouse {
+  border: none;
+  background-color: #0000;
+  margin-right: auto;
+}
+.icon {
+  filter: invert(27%) sepia(66%) saturate(2043%) hue-rotate(303deg)
+    brightness(89%) contrast(96%);
+  height: 60px;
+  margin-right: 30px;
+  margin-left: 30px;
+}
+.title {
+  color: #c92c7a;
+  font-size: 60px;
+}
+.headerImage {
+  height: 90px;
+  width: auto;
+}
+.borderBottom {
+  height: 4px;
+  width: 100%;
+  background-color: #c92c7a;
+  margin-top: 8px;
+}

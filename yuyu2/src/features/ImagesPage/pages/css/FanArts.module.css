@@ -1,0 +1,116 @@
+.container {
+  width: 95%;
+  margin: auto;
+}
+.content {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: 20% 80%;
+  gap: 30px;
+}
+.loadingGif {
+  display: flex;
+  justify-content: center;
+}
+.serach {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+.tags {
+  width: max-content;
+  font-size: 17px;
+}
+.tags:hover {
+  filter: brightness(40%);
+}
+.tagsList {
+  background-color: rgba(255, 255, 255, 0.815);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: max-content;
+  padding: 10px 15px;
+}
+.fanArts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-items: center;
+}
+.tagsList h3 {
+  padding-left: 7px;
+}
+.tagsList button {
+  padding-left: 12px;
+}
+.generalTags {
+  color: rgb(48, 80, 145);
+}
+.caractersTags {
+  color: #c72d2d;
+}
+.artistsTags {
+  color: #b144ca;
+}
+.link {
+  color: rgb(240, 208, 70);
+  text-wrap: wrap;
+
+  white-space: normal; /* Cambia de nowrap a normal */
+  overflow-wrap: break-word;
+  max-width: 100%;
+}
+.fanArts {
+  display: grid;
+  grid-column: 1fr 1fr;
+  gap: 30px;
+}
+
+.arrow {
+  height: 40px;
+  width: 55px;
+}
+
+.pages {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+  margin-top: 45px;
+  padding-bottom: 20px;
+  margin-left: 50vw;
+}
+
+h3 {
+  font-size: 26px;
+}
+
+.pageNumber {
+  font-size: 23px;
+}
+
+.arrowActive {
+  filter: invert(42%) sepia(66%) saturate(1584%) hue-rotate(206deg)
+    brightness(99%) contrast(95%);
+}
+
+.showOriginal {
+  background-color: rgba(253, 113, 197, 0.859);
+  padding: 10px 15px;
+  width: 40vw;
+  border-radius: 15px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.showOriginal p {
+  font-size: 19px;
+}
+
+.showOriginal p:hover {
+  font-size: 19px;
+  color: rgb(62, 62, 255);
+}
+input {
+  padding: 4px;
+}

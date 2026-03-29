@@ -1,0 +1,43 @@
+.titleSprites {
+  display: flex;
+  font-size: 20px;
+  align-items: center;
+  gap: 30px;
+  margin-top: 15px;
+}
+.titleSprites img {
+  width: 50px;
+  height: 50px;
+}
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+img {
+  transition: transform 0.3s;
+}
+.inverted {
+  transform: rotate(180deg);
+}
+.infoSprites {
+  display: grid;
+  grid-template-columns: 3% 97%;
+  align-items: center;
+  gap: 10px;
+  transition: opacity 0.3s ease-out;
+}
+.hidden {
+  opacity: 0%;
+}
+.infoSprites p {
+  font-family: "Yanone Kaffeesatz";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  font-size: 18px;
+}
+.infoSprites img {
+  filter: invert(15%) sepia(39%) saturate(5677%) hue-rotate(313deg)
+    brightness(93%) contrast(104%);
+}

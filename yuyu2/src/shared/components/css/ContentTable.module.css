@@ -1,0 +1,27 @@
+.tableContent {
+  background-color: white;
+  border: 4px ridge #f35fa9;
+  border-radius: 8px;
+  padding: 10px;
+}
+.tableContent a {
+  font-family: "IBM Plex Sans JP";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  font-size: 15px;
+  padding-bottom: 6px;
+}
+.tableContent h3 {
+  font-family: "IBM Plex Sans JP";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  font-size: 25px;
+}
+.subContent {
+  margin-left: 30px;
+}
+li {
+  text-decoration: none;
+}

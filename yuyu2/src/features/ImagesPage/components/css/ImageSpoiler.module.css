@@ -1,0 +1,30 @@
+.spoiler {
+  filter: brightness(0%);
+}
+.imageEnding {
+  width: 640px;
+  height: 470px;
+}
+button {
+  font-family: inherit;
+}
+.hide {
+  opacity: 0%;
+  cursor: none;
+}
+.spoilerTag {
+  background-color: rgb(125, 125, 125);
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  height: max-content;
+  width: max-content;
+  font-size: 23px;
+  margin: auto;
+  transform: translateY(-256px);
+}
+.ending {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

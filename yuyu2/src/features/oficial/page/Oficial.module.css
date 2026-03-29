@@ -1,0 +1,73 @@
+.container {
+  display: flex;
+  flex-direction: column;
+}
+.subContent {
+  margin-left: 15px;
+}
+.content {
+  width: 95%;
+  margin: auto;
+}
+/*Styles for specific images*/
+.saigyouAyakashi {
+  height: 200px;
+  width: 170px;
+}
+.touhou8 {
+  height: 240px;
+  width: auto;
+}
+.youmu {
+  height: 250px;
+  width: auto;
+}
+.yukari {
+  height: 250px;
+  width: auto;
+}
+.garticOne {
+  width: 275px;
+  height: auto;
+}
+.garticTwo {
+  width: 275px;
+  height: auto;
+}
+.yuyukoth08 {
+  height: 250px;
+  width: 200px;
+}
+.yuyukoYoumu {
+  height: 250px;
+  width: 200px;
+}
+/*Styles for sections of the page*/
+.sectionOne {
+  display: grid;
+  grid-template-columns: 1fr 4fr auto;
+  gap: 40px;
+  align-items: center;
+}
+.sectionTwo {
+  display: grid;
+  grid-template-columns: auto 3fr;
+  gap: 47px;
+}
+.sectionThree {
+  display: grid;
+  grid-template-columns: 6fr 1fr;
+  gap: 40px;
+}
+.sectionFour {
+  display: grid;
+  grid-template-columns: 1fr 1fr 8fr;
+  gap: 40px;
+}
+
+.sectionFiveImages {
+  display: grid;
+  grid-auto-columns: max-content;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 40px;
+}
