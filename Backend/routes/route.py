@@ -10,7 +10,16 @@ from pydantic import EmailStr
 from passlib.context import CryptContext
 from fastapi import Depends, UploadFile, File, BackgroundTasks, Query
 from config.cloudinary import(cloudinary)
+from config.i18n import(settings_internalization) 
+import os, json
 #import bcrypt
+
+translations = {}
+
+for lang in settings_internalization.supported_locales:
+    path = os.path.join("locales", lang, "messages.json")
+    with open(path, encoding="utf-8") as f:
+        translations[lang] = json.load(f)
 
 router = APIRouter()
 
@@ -30,7 +39,7 @@ async def get_users():
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 @router.post("/user")
-async def post_user(userName:str,email:str,password:str, background_tasks: BackgroundTasks):
+async def post_user(userName:str,email:str,password:str, background_tasks: BackgroundTasks, lang:str):
 
     try:
         user = collection_users.find_one({"userName":userName})
@@ -41,8 +50,10 @@ async def post_user(userName:str,email:str,password:str, background_tasks: Backg
         if user:
             return {"code":"EMAIL_ALREADY_REGISTERED","success":False}
             
+        settings_internalization
+
         verification_code = generate_verification_token()
-        background_tasks.add_task(send_email, email, verification_code, message="Este es tu codigo para verificar tu cuenta", subject="Verifica tu correo")
+        background_tasks.add_task(send_email, email, verification_code, message=translations.get(lang, translations[settings_internalization.default_locale])["body_one"], subject=translations.get(lang, translations[settings_internalization.default_locale])["subject_one"])
         
         passw = password
         hased = pwd_context.hash(passw)
@@ -68,7 +79,7 @@ async def post_user(userName:str,email:str,password:str, background_tasks: Backg
     
 
 @router.get("/user/resendCode")
-def resend_code(background_tasks: BackgroundTasks, user = Depends(get_current_user)):
+def resend_code(background_tasks: BackgroundTasks, lang:str, user = Depends(get_current_user)):
     if user["type"] == "Success":
         try:
             token = generate_verification_token()
@@ -80,7 +91,7 @@ def resend_code(background_tasks: BackgroundTasks, user = Depends(get_current_us
                 }
             )
 
-            background_tasks.add_task(send_email, user["data"]["email"], token, message="Este es tu nuevo codigo para verificar tu cuenta", subject="Verifica tu correo")
+            background_tasks.add_task(send_email, user["data"]["email"], token, message=translations.get(lang, translations[settings_internalization.default_locale])["body_two"], subject=translations.get(lang, translations[settings_internalization.default_locale])["subject_one"])
 
             return {"code":"VERIFICATION_CODE_SENT","success":True}
             #return {"message":"Se ha enviado un nuevo codigo de verificación a su correo","type":"Success"}
@@ -93,7 +104,7 @@ def resend_code(background_tasks: BackgroundTasks, user = Depends(get_current_us
         return {"code":"UNEXPECTED_ERROR","success":False}
 
 @router.get("/user/changeEmail/{email}")
-def change_email(background_tasks: BackgroundTasks, email:EmailStr, user = Depends(get_current_user)):
+def change_email(background_tasks: BackgroundTasks, email:EmailStr, lang:str, user = Depends(get_current_user)):
     try:
         token = generate_verification_token()
 
@@ -106,7 +117,7 @@ def change_email(background_tasks: BackgroundTasks, email:EmailStr, user = Depen
 
         newMail = collection_users.find_one({"email":email})
         newMail = newMail["email"]
-        background_tasks.add_task(send_email, newMail, token, message="Este es tu codigo para verificar tu cuenta", subject="Verifica tu correo")
+        background_tasks.add_task(send_email, newMail, token, message=translations.get(lang, translations[settings_internalization.default_locale])["body_one"], subject=translations.get(lang, translations[settings_internalization.default_locale])["subject_one"])
 
         return {"code":"EMAIL_CHANGED","success":True}
         #return {"message":"Se a actualizado el correo del usuario y se ha enviado un codigo de verificación","type":"Success"}
@@ -133,11 +144,12 @@ async def is_name_registerd(name:str,email:str):
     #return {"message":"No hay usuario con esos datos","type":"Success","Context":None}
     
 @router.get("/user/reset_password/begin")
-async def reset_password_begin(email:str,background_tasks: BackgroundTasks):
+async def reset_password_begin(email:str, lang:str, background_tasks: BackgroundTasks):
     user = collection_users.find_one({"email":email})
 
     if not user:
-        return {"message": "No se encontró cuenta con ese correo","type":"Error"}
+        return {"code":"NOT_FOUND_USER","success":False}
+        #return {"message": "No se encontró cuenta con ese correo","type":"Error"}
     
     token = generate_verification_token()
     collection_users.update_one(
@@ -146,8 +158,9 @@ async def reset_password_begin(email:str,background_tasks: BackgroundTasks):
             "$set":{"reset_password_token":token}
         }
     )
+    translations.get(lang, translations[settings_internalization.default_locale])["body_one"]
 
-    background_tasks.add_task(send_email, user["email"], token, message="Este es tu codigo para poder cambiar tu contraseña", subject="Cambiar contraseña")
+    background_tasks.add_task(send_email, user["email"], token, message=translations.get(lang, translations[settings_internalization.default_locale])["body_reset_password"], subject=translations.get(lang, translations[settings_internalization.default_locale])["subject_reset_password"])
     return {"code":"PASSWORD_RESET_CODE_SENT","success":True}
     #return {"message": "Se ha enviado un codigo para resetear la contraseña a esa direccion email","type":"Success"}
 
