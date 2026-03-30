@@ -1,0 +1,19 @@
+{
+  "footer_header": "Title example",
+  "footer_body": "This is a non-profit project. Contact for clarifications <mail>gdelgado1@ucol.mx</mail>. GitHub user <github>Panchin0</github>",
+  "yuyu_info_header": "Ghost princess from the netherworld",
+  "yuyu_info_paragraph1": "Yuyuko Saigyouji is a character from the Touhou Project 'shoot-'em-up' video game series; she first appears in 'Touhou 7 Perfect Cherry Blossom' as the game's final boss, and has since appeared in other official games or mangas as a secondary character.",
+  "yuyu_info_paragraph2": "She is the ghost princess of the netherworld, granting her the power to manipulate death. She has a carefree and good-humored personality, feigning clumsiness and absentmindedness, but has repeatedly demonstrated that she is far more intelligent than she lets on. She is usually accompanied by Youmu Konpaku, who acts as her gardener and bodyguard.",
+  "nav_oficial": "Official info",
+  "nav_fanon": "Fanon info",
+  "nav_images": "Images",
+  "nav_merch": "Merch",
+  "nav_highlight": "Highlight",
+  "page_info": "Welcome! This is a fan website dedicated to Yuyuko Saigyouji. Throughout the site, you'll find information and images related to the character. This project was created to learn how frontend and backend technologies work. It started with simple HTML, JavaScript, and CSS files, but is now more comprehensive, primarily using React and FastAPI.",
+  "section_information_header": "Information",
+  "section_information_text": "The 'Official Info' and 'Fan Info' sections contain information about Yuyuko from official sources and fan-created details/characteristics, respectively. Learn about Saigyouji Yuyuko, her relationships with other Touhou characters, her official appearances, and various fan-made Interprtations.",
+  "section_images_header": "Images",
+  "section_images_text": "In the images section you can see: Official game sprites, official manga panels, and fan art featuring Yuyuko. \nOfficial Touhou game sprites. \nOfficial manga panels featuring Yuyuko, with an integrated reader for better viewing. \nView saved fan art; search by tags and link to the original source.",
+  "section_extra_header": "Extra",
+  "section_extra_text": "In the extras section, you'll find merchandise and featured items. \nIn the merchandise section, you'll find products like Yuyuko figures and plushies; This section provides information about these items and links to potential retailers. \nThe highlight section showcases interesting things that weren't included in other parts of the site."
+}

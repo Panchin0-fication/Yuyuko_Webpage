@@ -14,7 +14,6 @@ export default function FrontPage() {
         <InfoWebpage />
       </div>
       <Footer />
-      <BlockMessage type="error" message="QUE ONDA" />
     </div>
   );
 }

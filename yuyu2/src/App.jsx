@@ -13,6 +13,7 @@ import {
   Login,
   ChangePassword,
 } from "@features";
+import "./i18n";
 import "./App.css";
 function App() {
   return (

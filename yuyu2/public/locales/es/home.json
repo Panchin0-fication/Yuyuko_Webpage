@@ -1,0 +1,19 @@
+{
+  "footer_header": "Información adicional",
+  "footer_body": "Esta es un proyecto sin fines de lucro. Contacto para aclaraciones <mail>gdelgado1@ucol.mx</mail>. Usuario GitHub <github>Panchin0</github>",
+  "yuyu_info_header": "Princesa fantasmal del inframundo",
+  "yuyu_info_paragraph1": "Yuyuko Saigyouji es un personaje de la serie de videojuegos 'shoot-'em-up' de Touhou Project; ella aparece por primera vez en 'Touhou 7 Perfect Cherry Blossom' como jefe final del juego, despues a aparecido en otros juegos o mangas oficales como personaje secundario.",
+  "yuyu_info_paragraph2": "Ella es la prinsasa fantasmal del inframundo por lo que tiene poderes para manipular la muerte; es de personalidad despreocupada y de buenhumor, finje ser torpe y despistada pero a demostrado varias veces que es mucho más inteligente de lo que quiere aparentar. Normalmete esta acompañada de Youmu Konpaku la cual es su jardinera y guardaespaldas.",
+  "nav_oficial": "Info oficial",
+  "nav_fanon": "Info fanon",
+  "nav_images": "Imagenes",
+  "nav_merch": "Mercancía",
+  "nav_highlight": "Destacado",
+  "section_information_header": "Información",
+  "page_info": "Bienvenido, esta es una pagina web fan dedicada a Yuyuko Saigyouji; En distintas partes de la pagina podrás ver información o imagenes relacionadas al personaje. Este es un proyecto realizado para aprender como funcionan las tecnologias frontend y backend, el proyecto empezó como simples archivos html, js y css pero ahora es más completo y utiliza principalmente React y FastAPI",
+  "section_information_text": "En las secciones 'Info oficial' e 'info fanon' se encuentra información sobre Yuyuko de material oficial y datos/caracteristicas credas por los fan respectivamente. Conoce cómo es Saigyouji Yuyuko, las relaciones con demás personajes de Touhou, sus apariciones oficiales así como tambien distintas caracterizaciones en trabajos realizados por fans.",
+  "section_images_header": "Imagenes",
+  "section_images_text": "En el apartado de images podras ver: Sprites de juegos oficiales, paneles de manga oficiales y fanArt en los que esté Yuyuko. \nSprites de los juegos oficiales de touhou. \nPaneles de mangas oficiales en los que aparezca Yuyuko, integrado un lectores para mejor visualización. \nVer FanArts guardados; busqueda por tags y direccionamiento a la fuente original.",
+  "section_extra_header": "Extra",
+  "section_extra_text": "En los extras podras encontrar mercancia y destacados. \nEn mercancia podras encontrar productos como figuras o peluches de Yuyuko, esta sección proporciona información al respecto y redirección a posibles links de venta. \nEn los destacados van cosas curiosas a mostrar pero que no se agruparon en las demas partes de la pagina"
+}

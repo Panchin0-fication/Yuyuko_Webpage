@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import styles from "./css/Nav.module.css";
 export default function Nav() {
+  const { t } = useTranslation("home");
   return (
     <>
       <nav className={styles.navMain}>
@@ -15,7 +17,7 @@ export default function Nav() {
             to={"/oficial"}
             style={{ color: "white", textDecoration: "none" }}
           >
-            <p className={styles.textOption}>Info oficial</p>
+            <p className={styles.textOption}>{t("nav_oficial")}</p>
           </Link>
         </button>
         <button className={styles.navOption}>
@@ -23,7 +25,7 @@ export default function Nav() {
             to={"/fanon"}
             style={{ color: "white", textDecoration: "none" }}
           >
-            <p className={styles.textOption}>Info fanon</p>
+            <p className={styles.textOption}>{t("nav_fanon")}</p>
           </Link>
         </button>
         <button className={styles.navOption}>
@@ -31,7 +33,7 @@ export default function Nav() {
             to={"/images"}
             style={{ color: "white", textDecoration: "none" }}
           >
-            <p className={styles.textOption}>Imagenes</p>
+            <p className={styles.textOption}>{t("nav_images")}</p>
           </Link>
         </button>
         <button className={styles.navOption}>
@@ -39,7 +41,7 @@ export default function Nav() {
             to={"/merch"}
             style={{ color: "white", textDecoration: "none" }}
           >
-            <p className={styles.textOption}>Mercancía</p>
+            <p className={styles.textOption}>{t("nav_merch")}</p>
           </Link>
         </button>
         <button className={styles.navOption}>
@@ -47,7 +49,7 @@ export default function Nav() {
             to={"/featured"}
             style={{ color: "white", textDecoration: "none" }}
           >
-            <p className={styles.textOption}>Destacado</p>
+            <p className={styles.textOption}>{t("nav_highlight")}</p>
           </Link>
         </button>
       </nav>
