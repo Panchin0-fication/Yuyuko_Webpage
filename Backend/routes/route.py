@@ -33,17 +33,16 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 async def post_user(userName:str,email:str,password:str, background_tasks: BackgroundTasks):
 
     try:
-        existingName = list_serial_user(collection_users.find({"userName":userName}))
-        if len(existingName) >= 1:
-            return HTTPException(status_code=422, detail=str("Name alredy registered"))
-        if email != "":
-            existingEmail = list_serial_user(collection_users.find({"email":email}))
-            if len(existingEmail) >= 1:
-                return {"message":"Email ya registrado","type":"Error"}
+        user = collection_users.find_one({"userName":userName})
+        if user:
+            return {"code":"NAME_ALREADY_REGISTERED","success":False}
+       
+        user = collection_users.find_one({"email":email})
+        if user:
+            return {"code":"EMAIL_ALREADY_REGISTERED","success":False}
             
-            token = generate_verification_token()
-            #background_tasks.add_task(write_notification, email, message="some notification")
-            background_tasks.add_task(send_email, email, token, message="Este es tu codigo para verificar tu cuenta", subject="Verifica tu correo")
+        verification_code = generate_verification_token()
+        background_tasks.add_task(send_email, email, verification_code, message="Este es tu codigo para verificar tu cuenta", subject="Verifica tu correo")
         
         passw = password
         hased = pwd_context.hash(passw)
@@ -53,20 +52,19 @@ async def post_user(userName:str,email:str,password:str, background_tasks: Backg
             "userName":userName,
             "password":password,
             "role":"User",
-            "email":None if email == "" else email,
-            "verified":True if email == "" else False,
-            "verification_token":None if email == "" else token
+            "email":email,
+            "verified":False,
+            "verification_token":verification_code
         }
         
         collection_users.insert_one(item)
         
-        userInDatabase = collection_users.find({"userName":userName})
-        token = create_token({"id":userInDatabase["id"],"email":userInDatabase["email"],"userName":userInDatabase["userName"],"verified":userInDatabase["verified"]})
-
-        return {"message": "Usuario creado. Verifica tu correo.","type":"Success","data":token}
+        userInDatabase = collection_users.find_one({"userName":userName})
+        verification_code = create_token({"id":str(userInDatabase["_id"]),"email":userInDatabase["email"],"userName":userInDatabase["userName"],"verified":userInDatabase["verified"]})
+        return {"code":"USER_CREATED","success":True,"token":verification_code}
     
-    except Exception as e:
-        return {"message":"Error inesperado","type":"Error"}
+    except Exception:
+        return {"code":"UNEXPECTED_ERROR","success":False}
     
 
 @router.get("/user/resendCode")
@@ -84,13 +82,15 @@ def resend_code(background_tasks: BackgroundTasks, user = Depends(get_current_us
 
             background_tasks.add_task(send_email, user["data"]["email"], token, message="Este es tu nuevo codigo para verificar tu cuenta", subject="Verifica tu correo")
 
-            return {"message":"Se ha enviado un nuevo codigo de verificación a su correo","type":"Success"}
+            return {"code":"VERIFICATION_CODE_SENT","success":True}
+            #return {"message":"Se ha enviado un nuevo codigo de verificación a su correo","type":"Success"}
         except Exception:
-            return {"message":f"No se encontró el correo {user["data"]["email"]}. Prueba a cambiar la dirección de correo","type":"Error"}
+            return {"code":"EMAIL_NOT_FOUND","success":False}
+            #return {"message":f"No se encontró el correo {user["data"]["email"]}. Prueba a cambiar la dirección de correo","type":"Error"}
         
     else:
         #Unexpected error
-        return user
+        return {"code":"UNEXPECTED_ERROR","success":False}
 
 @router.get("/user/changeEmail/{email}")
 def change_email(background_tasks: BackgroundTasks, email:EmailStr, user = Depends(get_current_user)):
@@ -104,28 +104,33 @@ def change_email(background_tasks: BackgroundTasks, email:EmailStr, user = Depen
             }
         )
 
-        newMail = list_serial_user(collection_users.find({"email":email}))
-        newMail = newMail[0]["email"]
+        newMail = collection_users.find_one({"email":email})
+        newMail = newMail["email"]
         background_tasks.add_task(send_email, newMail, token, message="Este es tu codigo para verificar tu cuenta", subject="Verifica tu correo")
 
-        return {"message":"Se a actualizado el correo del usuario y se ha enviado un codigo de verificación","type":"Success"}
+        return {"code":"EMAIL_CHANGED","success":True}
+        #return {"message":"Se a actualizado el correo del usuario y se ha enviado un codigo de verificación","type":"Success"}
     
     except user["type"] != "Success":
-        return {"message":"Token no valido","type":"Error"}
+        return {"code":"INVALID_TOKEN","success":False}
+        #return {"message":"Token no valido","type":"Error"}
  
     except Exception:
-        return {"message":"Error inesperado","type":"Error"}
+        return {"code":"UNEXPECTED_ERROR","success":False}
     
 @router.get("/isDataRegistered")
 async def is_name_registerd(name:str,email:str):
     user = collection_users.find_one({"email":email})
     if user:
-        return {"message":"No te puedes registrar con ese correo","type":"Error","Context":"email"}
+        return {"code":"EMAIL_ALREADY_REGISTERED","success":False}
+        #return {"message":"No te puedes registrar con ese correo","type":"Error","Context":"email"}
     user = collection_users.find_one({"userName":name})
     if user:
-        return {"message":"Nombre de usuario ya registrado","type":"Error","Context":"userName"}
+        return {"code":"USERNAME_ALREADY_REGISTERED","success":False}
+        #return {"message":"Nombre de usuario ya registrado","type":"Error","Context":"userName"}
     
-    return {"message":"No hay usuario con esos datos","type":"Success","Context":None}
+    return {"code":"DATA_UNREGISTERED","success":True}
+    #return {"message":"No hay usuario con esos datos","type":"Success","Context":None}
     
 @router.get("/user/reset_password/begin")
 async def reset_password_begin(email:str,background_tasks: BackgroundTasks):
@@ -143,7 +148,8 @@ async def reset_password_begin(email:str,background_tasks: BackgroundTasks):
     )
 
     background_tasks.add_task(send_email, user["email"], token, message="Este es tu codigo para poder cambiar tu contraseña", subject="Cambiar contraseña")
-    return {"message": "Se ha enviado un codigo para resetear la contraseña a esa direccion email","type":"Success"}
+    return {"code":"PASSWORD_RESET_CODE_SENT","success":True}
+    #return {"message": "Se ha enviado un codigo para resetear la contraseña a esa direccion email","type":"Success"}
 
 
 @router.get("/user/reset_password/change")
@@ -162,7 +168,8 @@ async def validate_reset_password(token:str, password:str):
         }
     )
 
-    return {"message": f"La contraseña del usuario {user["userName"]} ha cambiado","type":"Success"}
+    return {"code":"PASSWORD_CHANGED","success":True}
+    #return {"message": f"La contraseña del usuario {user["userName"]} ha cambiado","type":"Success"}
 
 
 @router.get("/user/verify-email")
@@ -171,7 +178,8 @@ def verify_email(token: str):
     user = collection_users.find_one({"verification_token": token})
 
     if not user:
-        return {"message": "Token inválido","type":"Error"}
+        return {"code":"INVALID_VERIFICATION_TOKEN","success":False}
+        #return {"message": "Token inválido","type":"Error"}
 
     collection_users.update_one(
         {"_id": user["_id"]},
@@ -181,23 +189,24 @@ def verify_email(token: str):
         }
     )
 
-    return {"message": "Correo verificado correctamente","type":"Success"}
+    return {"code":"EMAIL_VERIFIED","success":True}
+    #return {"message": "Correo verificado correctamente","type":"Success"}
 
 @router.post("/user/login")
 async def login(userName:str, password:str):
-    foundUser = list_serial_user(collection_users.find({"userName":userName}))
+    foundUser = collection_users.find_one({"userName":userName})
     if not foundUser:
-        return {"message": "Nombre de usuario no encontrado","type":"Error"}
-    
-    foundUser = foundUser[0]
+        return {"code":"USERNAME_NOT_FOUND","success":False}
+        #return {"message": "Nombre de usuario no encontrado","type":"Error"}
 
     foundPassword = pwd_context.verify(password, foundUser["password"])
     if not foundPassword:
-        return {"message": "Contraseña incorrecta","type":"Error"}
+        return {"code":"INCORRECT_PASSWORD","success":False}
+        #return {"message": "Contraseña incorrecta","type":"Error"}
 
-    #{"id":fak[0]["id"],"email":fak[0]["email"],"userName":fak[0]["userName"]}
     token = create_token({"userName":foundUser["userName"],"id":foundUser["id"],"email":foundUser["email"],"verified":foundUser["verified"]})
-    return {"access_token": token, "type":"Success", "isVerified":foundUser["verified"]}
+    return {"code":"LOGIN_SUCCESSFUL","success":True,"token":token}
+    #return {"access_token": token, "type":"Success", "isVerified":foundUser["verified"]}
 
 #Get user data from the token
 @router.get("/profile")
@@ -214,6 +223,7 @@ async def post_new_tags(tags: List[Tags]):
     tagNames = []
     for tag in items:
         tagNames.append(tag["name"])
+
     repited = list_serial(collection_name.find({"name":{"$in":tagNames}}))
     repited_without_id = []
     for singular_repited in repited:
@@ -224,29 +234,22 @@ async def post_new_tags(tags: List[Tags]):
         print("repetido",repitedTag)
         print("Tags",items)
         items.remove(repitedTag)
-    #newTags = [t for t in items if ]
-    #return items
+
     try:
         collection_name.insert_many(items)
-        return tags
+        return {"code":"TAGS_ADDED","success":True}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return {"code":"UNEXPECTED_ERROR","success":False}
     
 @router.post("/upload-image")
 async def upload_image(file: UploadFile = File(...)):
     try:
         result = cloudinary.uploader.upload(file.file)
 
-        return {
-            "type": "Success",
-            "url": result["secure_url"]
-        }
+        return {"code":"IMAGE_UPLOAD_SUCCESSFUL","success":True, "url":result["secure_url"]}
 
-    except Exception as e:
-        return {
-            "type": "Error",
-            "message": str(e)
-        }
+    except Exception:
+        return {"code":"UNEXPECTED_ERROR","success":False}
 
 @router.post("/newFanArt")
 async def post_new_fanArt(fanArt: FanArts):
@@ -254,9 +257,9 @@ async def post_new_fanArt(fanArt: FanArts):
     try:
         newFanArt = collection_fanArts.insert_one(item)
         createdFanArt = list_serial_fanArts(collection_fanArts.find({"_id":newFanArt.inserted_id}))
-        return createdFanArt
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return {"code":"CREATED_FANART","success":True}
+    except Exception:
+        return {"code":"UNEXPECTED_ERROR","success":False}
     
 
 @router.get("/fanArt")

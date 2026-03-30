@@ -29,7 +29,6 @@ def generate_verification_token():
     return secrets.token_urlsafe(6)
 
 def send_email(to,token, message, subject):
-    print("Prueba",message,token)
     msg = EmailMessage()
     msg["Subject"] = subject
     msg["From"] = EMAIL
