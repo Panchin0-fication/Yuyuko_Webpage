@@ -1,10 +1,12 @@
 import { useState, useEffect, type ReactNode } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { LogInput, LogHeader, LogContainer } from "@features";
-import { SmallMessage, Message, ValidateSession, BlockMessage } from "@shared";
+import { SmallMessage, Message, ValidateSession, BlockMessage, type withToken } from "@shared";
 import styles from "./css/Login&Create.module.css";
 
 export default function Login() {
+  const {t} = useTranslation("auth");
   const [inputs, setInputs] = useState({ name: "", password: "" });
   const [loading, setLoading] = useState<boolean>(false);
   const [smallMessage, setSmallMessage] = useState<null | ReactNode>(null);
@@ -17,7 +19,7 @@ export default function Login() {
         setBlockMessage(
           <BlockMessage
             type="success"
-            message={`Ya tienes sesión iniciada con ${res?.data?.userName}`}
+            message={t("block_message_login")}
           />,
         );
       }
@@ -26,37 +28,39 @@ export default function Login() {
   }, []);
   async function handleClick(): Promise<void> {
     if (inputs.name === "" || inputs.password === "") {
-      setSmallMessage(<SmallMessage type="error" message="Ingresa datos" />);
+      setSmallMessage(<SmallMessage type="error" message={t("small_message_insufficient_data_login")} />);
     }
     setLoading(true);
+
+    const formData = new FormData();
+    formData.append("userName",inputs.name);
+    formData.append("password",inputs.password);
     const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/user/login?userName=${inputs.name}&password=${inputs.password}`,
+      `${import.meta.env.VITE_API_URL}/user/login`,
       {
-        method: "Post",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        method: "POST",
+        body:formData,
       },
     );
-    const res = await response.json();
+    const res =( await response.json()) as withToken;
     setLoading(false);
-    console.log("La respuesta", res);
-    if (res.type === "Success") {
+    console.log("RES",res)
+    if (res.code === "LOGIN_SUCCESSFUL" || res.code === "LOGIN_SUCCESSFUL_UNVERIFIED") {
       setSmallMessage(
-        <SmallMessage type="success" message="Has iniciado sesión" />,
+        <SmallMessage type="success" message={t("message_body_login")} />,
       );
       setMessage(
         <Message
-          header="Login exitoso"
-          text={!blockMessage ? "Has inicido sesión" : "Has cambiado de sesión"}
+          header={t("message_header_success")}
+          text={!blockMessage ? t("message_body_login") : t("message_body_changed_login")}
           type="success"
           setMessage={setMessage}
-          toRedirect={res.isVerified ? "/" : "/auth/validate"}
+          toRedirect={res.code === "LOGIN_SUCCESSFUL" ? "/" : "/auth/validate"}
         />,
       );
-      localStorage.setItem("token", res.access_token);
+      localStorage.setItem("token", String(res.token));
     } else {
-      setSmallMessage(<SmallMessage type="error" message={res.message} />);
+      setSmallMessage(<SmallMessage type="error" message={t(res.code)} />);
     }
   }
   return (
@@ -64,9 +68,9 @@ export default function Login() {
       <div className={styles.elements}>
         {blockMessage}
         <LogContainer>
-          <LogHeader title="Iniciar sesión" />
+          <LogHeader title={t("page_header_login")} />
           <LogInput
-            label="Nombre de usuario"
+            label={t("input_username_login")}
             setInputs={setInputs}
             inputValue={inputs.name}
             inputs={inputs}
@@ -75,7 +79,7 @@ export default function Login() {
             type="text"
           />
           <LogInput
-            label="Contraseña"
+            label={t("input_password_login")}
             setInputs={setInputs}
             inputValue={inputs.password}
             inputs={inputs}
@@ -84,7 +88,7 @@ export default function Login() {
             type="password"
           />
           <Link to={"/auth/changePassword"}>
-            <p>¿Olvidaste tu contraseña?</p>
+            <p>{t("forgot_password")}</p>
           </Link>
           <button
             className={
@@ -96,7 +100,7 @@ export default function Login() {
               }
             }}
           >
-            Ingresar
+            {t("log_in_button_login")}
           </button>
           {smallMessage}
         </LogContainer>
