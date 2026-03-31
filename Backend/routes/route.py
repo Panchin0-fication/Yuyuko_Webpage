@@ -6,7 +6,6 @@ from schema.schemas import (list_serial , list_serial_fanArts,list_serial_user,i
 from functions.functions import (create_token,generate_verification_token,send_email,get_current_user)
 from bson import ObjectId
 from typing import List
-from pydantic import EmailStr
 from passlib.context import CryptContext
 from fastapi import Depends, UploadFile, File, BackgroundTasks, Query, Form
 from config.cloudinary import(cloudinary)
@@ -40,7 +39,7 @@ async def get_users():
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 @router.post("/user")
-async def post_user(userName:str,email:str,password:str, background_tasks: BackgroundTasks, lang:str):
+async def post_user(userName:Annotated[str, Form()],email:Annotated[str, Form()],password:Annotated[str, Form()], lang:Annotated[str, Form()], background_tasks: BackgroundTasks):
 
     try:
         user = collection_users.find_one({"userName":userName})
@@ -104,8 +103,8 @@ def resend_code(background_tasks: BackgroundTasks, lang:str, user = Depends(get_
         #Unexpected error
         return {"code":"UNEXPECTED_ERROR","success":False}
 
-@router.get("/user/changeEmail/{email}")
-def change_email(background_tasks: BackgroundTasks, email:EmailStr, lang:str, user = Depends(get_current_user)):
+@router.get("/user/changeEmail")
+def change_email(background_tasks: BackgroundTasks, email:Annotated[str, Form()], lang:Annotated[str, Form()], user = Depends(get_current_user)):
     try:
         token = generate_verification_token()
 
@@ -131,7 +130,7 @@ def change_email(background_tasks: BackgroundTasks, email:EmailStr, lang:str, us
         return {"code":"UNEXPECTED_ERROR","success":False}
     
 @router.get("/isDataRegistered")
-async def is_name_registerd(name:str,email:str):
+async def is_name_registerd(name:Annotated[str, Form()],email:Annotated[str, Form()]):
     user = collection_users.find_one({"email":email})
     if user:
         return {"code":"EMAIL_ALREADY_REGISTERED","success":False}
@@ -145,7 +144,7 @@ async def is_name_registerd(name:str,email:str):
     #return {"message":"No hay usuario con esos datos","type":"Success","Context":None}
     
 @router.get("/user/reset_password/begin")
-async def reset_password_begin(email:str, lang:str, background_tasks: BackgroundTasks):
+async def reset_password_begin(email:Annotated[str, Form()], lang:Annotated[str, Form()], background_tasks: BackgroundTasks):
     user = collection_users.find_one({"email":email})
 
     if not user:
@@ -167,10 +166,10 @@ async def reset_password_begin(email:str, lang:str, background_tasks: Background
 
 
 @router.get("/user/reset_password/change")
-async def validate_reset_password(token:str, password:str):
+async def validate_reset_password(token:Annotated[str, Form()], password:Annotated[str, Form()]):
     user = collection_users.find_one({"reset_password_token":token})
     if not user:
-        return {"message": "Codigo invalido","type":"Error"}
+        return {"code":"INVALID_TOKEN","success":False}
     
     hasedPassword = pwd_context.hash(password)
     
@@ -187,7 +186,7 @@ async def validate_reset_password(token:str, password:str):
 
 
 @router.get("/user/verify-email")
-def verify_email(token: str):
+def verify_email(token: Annotated[str, Form()]):
 
     user = collection_users.find_one({"verification_token": token})
 
@@ -211,19 +210,16 @@ async def login(userName:Annotated[str, Form()], password:Annotated[str, Form()]
     foundUser = collection_users.find_one({"userName":userName})
     if not foundUser:
         return {"code":"USERNAME_NOT_FOUND","success":False,"token":None}
-        #return {"message": "Nombre de usuario no encontrado","type":"Error"}
 
     foundPassword = pwd_context.verify(password, foundUser["password"])
     if not foundPassword:
         return {"code":"INCORRECT_PASSWORD","success":False,"token":None}
-        #return {"message": "Contraseña incorrecta","type":"Error"}
 
     token = create_token({"userName":foundUser["userName"],"id":str(foundUser["_id"]),"email":foundUser["email"],"verified":foundUser["verified"]})
     if foundUser["verified"]:
         return {"code":"LOGIN_SUCCESSFUL","success":True,"token":token}
     else:
         return {"code":"LOGIN_SUCCESSFUL_UNVERIFIED","success":True,"token":token}
-    #return {"access_token": token, "type":"Success", "isVerified":foundUser["verified"]}
 
 #Get user data from the token
 @router.get("/profile")
