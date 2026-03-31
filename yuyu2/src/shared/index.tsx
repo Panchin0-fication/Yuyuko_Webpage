@@ -9,3 +9,6 @@ export { default as BlockMessage } from "./components/BlockMessage.js";
 export { default as SmallMessage } from "./components/SmallMessage.js";
 
 export { ValidateSession } from "./customHooks/validateSesion.js";
+
+export type {response} from "./types/responses.js"
+export type {withToken} from "./types/responses.js"
