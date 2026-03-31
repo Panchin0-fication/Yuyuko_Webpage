@@ -8,10 +8,11 @@ from bson import ObjectId
 from typing import List
 from pydantic import EmailStr
 from passlib.context import CryptContext
-from fastapi import Depends, UploadFile, File, BackgroundTasks, Query
+from fastapi import Depends, UploadFile, File, BackgroundTasks, Query, Form
 from config.cloudinary import(cloudinary)
 from config.i18n import(settings_internalization) 
 import os, json
+from typing import Annotated
 #import bcrypt
 
 translations = {}
@@ -44,11 +45,11 @@ async def post_user(userName:str,email:str,password:str, background_tasks: Backg
     try:
         user = collection_users.find_one({"userName":userName})
         if user:
-            return {"code":"NAME_ALREADY_REGISTERED","success":False}
+            return {"code":"NAME_ALREADY_REGISTERED","success":False,"token":None}
        
         user = collection_users.find_one({"email":email})
         if user:
-            return {"code":"EMAIL_ALREADY_REGISTERED","success":False}
+            return {"code":"EMAIL_ALREADY_REGISTERED","success":False,"token":None}
             
         settings_internalization
 
@@ -75,7 +76,7 @@ async def post_user(userName:str,email:str,password:str, background_tasks: Backg
         return {"code":"USER_CREATED","success":True,"token":verification_code}
     
     except Exception:
-        return {"code":"UNEXPECTED_ERROR","success":False}
+        return {"code":"UNEXPECTED_ERROR","success":False,"token":None}
     
 
 @router.get("/user/resendCode")
@@ -206,19 +207,22 @@ def verify_email(token: str):
     #return {"message": "Correo verificado correctamente","type":"Success"}
 
 @router.post("/user/login")
-async def login(userName:str, password:str):
+async def login(userName:Annotated[str, Form()], password:Annotated[str, Form()]):
     foundUser = collection_users.find_one({"userName":userName})
     if not foundUser:
-        return {"code":"USERNAME_NOT_FOUND","success":False}
+        return {"code":"USERNAME_NOT_FOUND","success":False,"token":None}
         #return {"message": "Nombre de usuario no encontrado","type":"Error"}
 
     foundPassword = pwd_context.verify(password, foundUser["password"])
     if not foundPassword:
-        return {"code":"INCORRECT_PASSWORD","success":False}
+        return {"code":"INCORRECT_PASSWORD","success":False,"token":None}
         #return {"message": "Contraseña incorrecta","type":"Error"}
 
-    token = create_token({"userName":foundUser["userName"],"id":foundUser["id"],"email":foundUser["email"],"verified":foundUser["verified"]})
-    return {"code":"LOGIN_SUCCESSFUL","success":True,"token":token}
+    token = create_token({"userName":foundUser["userName"],"id":str(foundUser["_id"]),"email":foundUser["email"],"verified":foundUser["verified"]})
+    if foundUser["verified"]:
+        return {"code":"LOGIN_SUCCESSFUL","success":True,"token":token}
+    else:
+        return {"code":"LOGIN_SUCCESSFUL_UNVERIFIED","success":True,"token":token}
     #return {"access_token": token, "type":"Success", "isVerified":foundUser["verified"]}
 
 #Get user data from the token
