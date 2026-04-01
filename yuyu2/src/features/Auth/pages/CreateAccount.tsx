@@ -1,12 +1,12 @@
 import {
   useState,
-  type ChangeEvent,
   useEffect,
   useRef,
   type ReactNode,
 } from "react";
+import { useTranslation } from "react-i18next";
 import { LogInput, LogHeader, LogContainer } from "@features";
-import { SmallMessage, Message } from "@shared";
+import { SmallMessage, Message, type response, type withToken } from "@shared";
 import styles from "./css/Login&Create.module.css";
 export default function CreateAccount() {
   interface fileds {
@@ -15,9 +15,8 @@ export default function CreateAccount() {
     password: string;
     confirmPass?: string;
   }
-
+  const {t, i18n} = useTranslation("auth");
   const [loading, setLoading] = useState<boolean>(false);
-  const [creationLoading, setCreationLoading] = useState<boolean>(false);
   const [smallMessage, setSmallMessage] = useState<null | ReactNode>();
   const [popupMessage, setPopupMessage] = useState<null | ReactNode>();
   const [emailMessage, setEmailMessage] = useState<string | null>(null);
@@ -40,26 +39,29 @@ export default function CreateAccount() {
 
   const isDataRegistered = async (): Promise<void> => {
     if (inputFields.name !== "") {
+      const formData = new FormData();
+      formData.append("email",inputFields.email !== "" ? String(inputFields.email) : "_")
+      formData.append("name",inputFields.name !== "" ? String(inputFields.name) : "_")
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/isDataRegistered?name=${inputFields.name}&email=${inputFields.email}`,
+        `${import.meta.env.VITE_API_URL}/isDataRegistered`,{
+          method: "POST",
+          body:formData,
+        },
       );
-      const res = await response.json();
-      console.log("resultado", res);
+      const res = (await response.json()) as response;
 
-      switch (res.Context) {
-        case "email":
-          setEmailMessage(res.message);
+      switch (res.code) {
+        case "EMAIL_ALREADY_REGISTERED":
+          setEmailMessage(t(res.code));
           break;
-
-        case "userName":
-          setNameMessage(res.message);
+        case "USERNAME_ALREADY_REGISTERED":
+          setNameMessage(t(res.code));
           break;
         default:
           setNameMessage(null);
           setEmailMessage(null);
           break;
       }
-      setLoading(false);
     }
   };
 
@@ -72,75 +74,68 @@ export default function CreateAccount() {
       if (timerRef.current !== null) {
         window.clearTimeout(timerRef.current);
       }
-      setLoading(true);
 
       timerRef.current = window.setTimeout(isDataRegistered, 3000);
     }
   }, [inputFields.name, inputFields.email]);
 
-  function handleClick(): void {
+  function createAccount(): void {
     if (
       inputFields.name === "" ||
       inputFields.email === "" ||
       inputFields.password === "" ||
       inputFields.confirmPass === ""
     ) {
-      createMessage("error", "Ingresa todos los campos");
-      return;
-    }
-    //UserName verification
-    if (nameMessage) {
-      createMessage("error", nameMessage);
-      return;
-    }
-    if (emailMessage) {
-      createMessage("error", emailMessage);
+      createMessage("error", t("insufficient_input_data"));
       return;
     }
     if (inputFields.password !== inputFields.confirmPass) {
-      createMessage("error", "La conseña no coinside");
+      createMessage("error", t("unmaching_passwords"));
       return;
     }
     setSmallMessage(null);
     const createUser = async (): Promise<void> => {
-      setCreationLoading(true);
+      setLoading(true);
+      const formData = new FormData();
+      formData.append("userName", inputFields.name)
+      formData.append("email", String(inputFields.email))
+      formData.append("password",inputFields.password)
+      formData.append("lang",i18n.language)
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/user?userName=${inputFields.name}&email=${inputFields.email}&role=User&password=${inputFields.password}`,
+        `${import.meta.env.VITE_API_URL}/user`,
         {
-          method: "Post",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          method: "POST",
+          body:formData
         },
       );
-      const res = await response.json();
-      console.log("La respuesta", res);
-      if (res.type === "Error") {
-        createMessage("error", "Ingresa una direacción de correo");
+      if(!response.ok){
+        createMessage("error", t("invalid_email_string_error"));
         return;
       }
-      localStorage.setItem("token", res.extra);
-      createMessage("success", "Cuenta creada, ingresa sesión para validar");
+      const res = (await response.json()) as withToken;
+
+      if(res.token) localStorage.setItem("token", String(res.token))
+
       setPopupMessage(
         <Message
-          header="Usuario creado"
-          text="Cuenta ha sido creada con exito"
+          header={res.success ? t("account_creation_success") : t("account_creation_error")}
+          text={t(res.code)}
           setMessage={setPopupMessage}
-          type="success"
-          toRedirect="/auth/validate"
+          type={res.success ? "success" : "error"}
+          toRedirect={res.success ? "/auth/validate" : ""} 
         />,
       );
-      setCreationLoading(false);
+      setLoading(false);
     };
     createUser();
   }
   return (
     <>
-      <LogContainer>
-        <LogHeader title="Crear cuenta" />
-
+    <br /><br />
+      <LogContainer>   
+        <LogHeader title={t("page_header_create_account")} />
         <LogInput
-          label="Nombre de usuario"
+          label={t("input_username_label")}
           setInputs={setInputFields}
           inputValue={inputFields.name}
           inputs={inputFields}
@@ -149,9 +144,8 @@ export default function CreateAccount() {
           alert={nameMessage}
           type="text"
         />
-
         <LogInput
-          label="Correo"
+          label={t("input_email_label")}
           setInputs={setInputFields}
           inputValue={inputFields.email}
           inputs={inputFields}
@@ -161,7 +155,7 @@ export default function CreateAccount() {
           type="text"
         />
         <LogInput
-          label="Contraseña"
+          label={t("input_password_label")}
           setInputs={setInputFields}
           inputValue={inputFields.password}
           inputs={inputFields}
@@ -170,7 +164,7 @@ export default function CreateAccount() {
           type="password"
         />
         <LogInput
-          label="Confirmar contraseña"
+          label={t("input_confirm_password_label")}
           setInputs={setInputFields}
           inputValue={inputFields.confirmPass}
           inputs={inputFields}
@@ -181,18 +175,15 @@ export default function CreateAccount() {
         {smallMessage}
         <div className={styles.buttonAndLoad}>
           <button
-            className={
-              loading ? styles.createButtonInactive : styles.createButton
-            }
             onClick={() => {
               if (!loading) {
-                handleClick();
+                createAccount();
               }
             }}
           >
-            Crear usuario
+            {t("button_create_account")}
           </button>
-          {creationLoading && (
+          {loading && (
             <img
               className={styles.loadingImage}
               src="/staticImgs/generalUse/kfc-kfcyuyuko.gif"

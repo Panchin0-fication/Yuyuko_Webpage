@@ -70,7 +70,7 @@ export default function Login() {
         <LogContainer>
           <LogHeader title={t("page_header_login")} />
           <LogInput
-            label={t("input_username_login")}
+            label={t("input_username_label")}
             setInputs={setInputs}
             inputValue={inputs.name}
             inputs={inputs}
@@ -79,7 +79,7 @@ export default function Login() {
             type="text"
           />
           <LogInput
-            label={t("input_password_login")}
+            label={t("input_password_label")}
             setInputs={setInputs}
             inputValue={inputs.password}
             inputs={inputs}

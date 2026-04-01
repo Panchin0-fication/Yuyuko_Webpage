@@ -40,12 +40,12 @@ async def get_users():
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 @router.post("/user")
-async def post_user(userName:Annotated[str, Form()],email:Annotated[str, Form()],password:Annotated[str, Form()], lang:Annotated[str, Form()], background_tasks: BackgroundTasks):
+async def post_user(userName:Annotated[str, Form()],email:Annotated[EmailStr, Form()],password:Annotated[str, Form()], lang:Annotated[str, Form()], background_tasks: BackgroundTasks):
 
     try:
         user = collection_users.find_one({"userName":userName})
         if user:
-            return {"code":"NAME_ALREADY_REGISTERED","success":False,"token":None}
+            return {"code":"USERNAME_ALREADY_REGISTERED","success":False,"token":None}
        
         user = collection_users.find_one({"email":email})
         if user:
@@ -130,14 +130,12 @@ async def is_name_registerd(name:Annotated[str, Form()],email:Annotated[str, For
     user = collection_users.find_one({"email":email})
     if user:
         return {"code":"EMAIL_ALREADY_REGISTERED","success":False}
-        #return {"message":"No te puedes registrar con ese correo","type":"Error","Context":"email"}
+        
     user = collection_users.find_one({"userName":name})
     if user:
         return {"code":"USERNAME_ALREADY_REGISTERED","success":False}
-        #return {"message":"Nombre de usuario ya registrado","type":"Error","Context":"userName"}
     
     return {"code":"DATA_UNREGISTERED","success":True}
-    #return {"message":"No hay usuario con esos datos","type":"Success","Context":None}
     
 @router.post("/user/reset_password/begin")
 async def reset_password_begin(email:Annotated[str, Form()], lang:Annotated[str, Form()], background_tasks: BackgroundTasks):

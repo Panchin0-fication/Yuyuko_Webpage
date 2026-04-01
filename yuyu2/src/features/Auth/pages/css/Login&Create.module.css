@@ -6,18 +6,6 @@
   margin: auto;
   transform: translateY(10vh);
 }
-.createButtonInactive {
-  background-color: rgb(66, 66, 66);
-  color: white;
-  padding: 7px;
-  border-radius: 10px;
-  max-width: max-content;
-  margin: auto;
-  transition: background-color 0.3s;
-  cursor: none;
-  margin-top: 10px;
-  font-size: 18px;
-}
 .createButton {
   background-color: black;
   color: white;
