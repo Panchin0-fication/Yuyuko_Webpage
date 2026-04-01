@@ -12,3 +12,4 @@ export { ValidateSession } from "./customHooks/validateSesion.js";
 
 export type {response} from "./types/responses.js"
 export type {withToken} from "./types/responses.js"
+export type {withUserData} from "./types/responses.js"
