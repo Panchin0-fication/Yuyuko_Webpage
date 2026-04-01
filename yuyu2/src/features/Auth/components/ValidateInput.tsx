@@ -1,4 +1,5 @@
 import { type ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import styles from "./css/ValidateInput.module.css";
 type props = {
   verificationCode: string;
@@ -10,6 +11,7 @@ type props = {
   header?: string;
   buttonLabel?: string;
 };
+const {t} = useTranslation("auth");
 export default function ValidateInput({
   verificationCode,
   setVerificationCode,
@@ -17,9 +19,10 @@ export default function ValidateInput({
   handleVerify,
   position = "validateCode",
   smallMessage,
-  header = "Codigo de verificación",
-  buttonLabel = "Validar",
+  header = t("input_label_verification_code"),
+  buttonLabel = t("button_validate_account"),
 }: props) {
+  
   return (
     <section className={styles.validation}>
       <p className={styles.verificationCodeHeader}>{header}</p>
