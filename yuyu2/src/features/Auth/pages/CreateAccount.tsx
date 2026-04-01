@@ -90,7 +90,7 @@ export default function CreateAccount() {
       return;
     }
     if (inputFields.password !== inputFields.confirmPass) {
-      createMessage("error", t("unmaching_passwords"));
+      createMessage("error", t("unmatching_passwords"));
       return;
     }
     setSmallMessage(null);

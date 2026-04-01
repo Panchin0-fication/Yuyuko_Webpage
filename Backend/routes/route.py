@@ -143,7 +143,6 @@ async def reset_password_begin(email:Annotated[str, Form()], lang:Annotated[str,
 
     if not user:
         return {"code":"NOT_FOUND_USER","success":False}
-        #return {"message": "No se encontró cuenta con ese correo","type":"Error"}
     
     token = generate_verification_token()
     collection_users.update_one(
@@ -152,18 +151,15 @@ async def reset_password_begin(email:Annotated[str, Form()], lang:Annotated[str,
             "$set":{"reset_password_token":token}
         }
     )
-    translations.get(lang, translations[settings_internalization.default_locale])["body_one"]
 
     background_tasks.add_task(send_email, user["email"], token, message=translations.get(lang, translations[settings_internalization.default_locale])["body_reset_password"], subject=translations.get(lang, translations[settings_internalization.default_locale])["subject_reset_password"])
     return {"code":"PASSWORD_RESET_CODE_SENT","success":True}
-    #return {"message": "Se ha enviado un codigo para resetear la contraseña a esa direccion email","type":"Success"}
-
 
 @router.post("/user/reset_password/change")
 async def validate_reset_password(token:Annotated[str, Form()], password:Annotated[str, Form()]):
     user = collection_users.find_one({"reset_password_token":token})
     if not user:
-        return {"code":"INVALID_TOKEN","success":False}
+        return {"code":"INVALID_RESET_PASSWORD_TOKEN","success":False}
     
     hasedPassword = pwd_context.hash(password)
     

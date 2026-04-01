@@ -5,7 +5,7 @@ type props = {
   setVerificationCode: React.Dispatch<React.SetStateAction<string>>;
   loading: boolean;
   handleVerify: (value: string) => void;
-  position: "validateCode" | "resend" | "chaneEmail" | null;
+  position?: "validateCode" | "resend" | "chaneEmail" | null;
   smallMessage: null | ReactNode;
   header?: string;
   buttonLabel?: string;
@@ -15,7 +15,7 @@ export default function ValidateInput({
   setVerificationCode,
   loading,
   handleVerify,
-  position,
+  position = "validateCode",
   smallMessage,
   header = "Codigo de verificación",
   buttonLabel = "Validar",
