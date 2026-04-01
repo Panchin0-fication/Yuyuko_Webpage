@@ -42,21 +42,17 @@ def send_email(to,token, message, subject):
 
 def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
-        print (f"Depuracion",token)
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         
-        user_id = payload.get("userName")
+        username = payload.get("userName")
     
-        user = list_serial_user(collection_users.find({"userName": user_id}))
+        user = list_serial_user(collection_users.find({"userName": username}))
   
         data = {"userName":user[0]["userName"], "email":user[0]["email"], "id":user[0]["id"], "verified":user[0]["verified"]}
-        return {"data":data,"type":"Success"}
+        return {"code":"TOKEN_VERIFICATION_SUCCESFUL","success":True,"user_data":data}
     
     except ExpiredSignatureError:
-        return {"message": "Su inicio de sesión ha caducado, vuelva a ingresar","type":"Expired"}
+        return {"code":"TOKEN_EXPIRED","success":False,"user_data":None}
     
-    except JWTError as e:
-        return {"message": f"Error inesperado {e}","type":"Error"}
-    
-    except Exception as e:
-        return {"message":f"Error por algo, token: {token}"}
+    except Exception:
+        return {"code":"UNEXPECTED_ERROR","success":False,"user_data":None}

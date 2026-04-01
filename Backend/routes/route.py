@@ -5,6 +5,7 @@ from config.database import (collection_name, collection_fanArts,collection_user
 from schema.schemas import (list_serial , list_serial_fanArts,list_serial_user,individual_serial_user,list_serial_userVer)
 from functions.functions import (create_token,generate_verification_token,send_email,get_current_user)
 from bson import ObjectId
+from pydantic import EmailStr
 from typing import List
 from passlib.context import CryptContext
 from fastapi import Depends, UploadFile, File, BackgroundTasks, Query, Form
@@ -71,8 +72,8 @@ async def post_user(userName:Annotated[str, Form()],email:Annotated[str, Form()]
         collection_users.insert_one(item)
         
         userInDatabase = collection_users.find_one({"userName":userName})
-        verification_code = create_token({"id":str(userInDatabase["_id"]),"email":userInDatabase["email"],"userName":userInDatabase["userName"],"verified":userInDatabase["verified"]})
-        return {"code":"USER_CREATED","success":True,"token":verification_code}
+        token = create_token({"id":str(userInDatabase["_id"]),"email":userInDatabase["email"],"userName":userInDatabase["userName"],"verified":userInDatabase["verified"]})
+        return {"code":"USER_CREATED","success":True,"token":token}
     
     except Exception:
         return {"code":"UNEXPECTED_ERROR","success":False,"token":None}
@@ -94,17 +95,14 @@ def resend_code(background_tasks: BackgroundTasks, lang:str, user = Depends(get_
             background_tasks.add_task(send_email, user["data"]["email"], token, message=translations.get(lang, translations[settings_internalization.default_locale])["body_two"], subject=translations.get(lang, translations[settings_internalization.default_locale])["subject_one"])
 
             return {"code":"VERIFICATION_CODE_SENT","success":True}
-            #return {"message":"Se ha enviado un nuevo codigo de verificación a su correo","type":"Success"}
         except Exception:
             return {"code":"EMAIL_NOT_FOUND","success":False}
-            #return {"message":f"No se encontró el correo {user["data"]["email"]}. Prueba a cambiar la dirección de correo","type":"Error"}
-        
     else:
         #Unexpected error
         return {"code":"UNEXPECTED_ERROR","success":False}
 
-@router.get("/user/changeEmail")
-def change_email(background_tasks: BackgroundTasks, email:Annotated[str, Form()], lang:Annotated[str, Form()], user = Depends(get_current_user)):
+@router.post("/user/changeEmail")
+def change_email(background_tasks: BackgroundTasks, email:Annotated[EmailStr, Form()], lang:Annotated[str, Form()], user = Depends(get_current_user)):
     try:
         token = generate_verification_token()
 
@@ -120,16 +118,14 @@ def change_email(background_tasks: BackgroundTasks, email:Annotated[str, Form()]
         background_tasks.add_task(send_email, newMail, token, message=translations.get(lang, translations[settings_internalization.default_locale])["body_one"], subject=translations.get(lang, translations[settings_internalization.default_locale])["subject_one"])
 
         return {"code":"EMAIL_CHANGED","success":True}
-        #return {"message":"Se a actualizado el correo del usuario y se ha enviado un codigo de verificación","type":"Success"}
     
     except user["type"] != "Success":
         return {"code":"INVALID_TOKEN","success":False}
-        #return {"message":"Token no valido","type":"Error"}
  
     except Exception:
         return {"code":"UNEXPECTED_ERROR","success":False}
     
-@router.get("/isDataRegistered")
+@router.post("/isDataRegistered")
 async def is_name_registerd(name:Annotated[str, Form()],email:Annotated[str, Form()]):
     user = collection_users.find_one({"email":email})
     if user:
@@ -143,7 +139,7 @@ async def is_name_registerd(name:Annotated[str, Form()],email:Annotated[str, For
     return {"code":"DATA_UNREGISTERED","success":True}
     #return {"message":"No hay usuario con esos datos","type":"Success","Context":None}
     
-@router.get("/user/reset_password/begin")
+@router.post("/user/reset_password/begin")
 async def reset_password_begin(email:Annotated[str, Form()], lang:Annotated[str, Form()], background_tasks: BackgroundTasks):
     user = collection_users.find_one({"email":email})
 
@@ -165,7 +161,7 @@ async def reset_password_begin(email:Annotated[str, Form()], lang:Annotated[str,
     #return {"message": "Se ha enviado un codigo para resetear la contraseña a esa direccion email","type":"Success"}
 
 
-@router.get("/user/reset_password/change")
+@router.post("/user/reset_password/change")
 async def validate_reset_password(token:Annotated[str, Form()], password:Annotated[str, Form()]):
     user = collection_users.find_one({"reset_password_token":token})
     if not user:
@@ -185,14 +181,13 @@ async def validate_reset_password(token:Annotated[str, Form()], password:Annotat
     #return {"message": f"La contraseña del usuario {user["userName"]} ha cambiado","type":"Success"}
 
 
-@router.get("/user/verify-email")
+@router.post("/user/verify-email")
 def verify_email(token: Annotated[str, Form()]):
 
     user = collection_users.find_one({"verification_token": token})
 
     if not user:
         return {"code":"INVALID_VERIFICATION_TOKEN","success":False}
-        #return {"message": "Token inválido","type":"Error"}
 
     collection_users.update_one(
         {"_id": user["_id"]},
@@ -201,9 +196,7 @@ def verify_email(token: Annotated[str, Form()]):
             "$unset": {"verification_token": ""}
         }
     )
-
     return {"code":"EMAIL_VERIFIED","success":True}
-    #return {"message": "Correo verificado correctamente","type":"Success"}
 
 @router.post("/user/login")
 async def login(userName:Annotated[str, Form()], password:Annotated[str, Form()]):
