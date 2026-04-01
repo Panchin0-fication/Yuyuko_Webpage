@@ -1,8 +1,10 @@
 import { useState, type ReactNode, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { ValidateInput, ValidateContainerAndHeader } from "@features";
-import { ValidateSession, SmallMessage, Message } from "@shared";
+import { ValidateSession, SmallMessage, Message, type response } from "@shared";
 import styles from "./css/ValidateUser.module.css";
 export default function ValidateUser() {
+  const {t, i18n} = useTranslation("auth");
   const [popupMessage, setPopupMessage] = useState<null | ReactNode>(null);
   const [smallMessage, setSmallMessage] = useState<null | ReactNode>(null);
   const [positon, setPosition] = useState<
@@ -18,11 +20,11 @@ export default function ValidateUser() {
   useEffect(() => {
     const toAsync = async (): Promise<void> => {
       const res = await ValidateSession(localStorage.getItem("token"));
-      if (res?.reason === "Expired") {
+      if (res.code === "TOKEN_EXPIRED") {
         setPopupMessage(
           <Message
-            header={"Sesión expirada"}
-            text={res.message}
+            header={t("message_header_expired")}
+            text={t(res.code)}
             type="error"
             setMessage={setPopupMessage}
             toRedirect={"/user/login"}
@@ -30,11 +32,11 @@ export default function ValidateUser() {
         );
         return;
       }
-      if (res?.data?.verified === true) {
+      if (res.data.verified === true) {
         setPopupMessage(
           <Message
-            header={"Cuenta ya validada"}
-            text={"Tu cuenta ya ha sido validada"}
+            header={t("message_header_already_validated")}
+            text={t("message_body_already_validated")}
             type="error"
             setMessage={setPopupMessage}
             toRedirect={"/auth/login"}
@@ -51,7 +53,7 @@ export default function ValidateUser() {
     setPosition("resend");
     setLoading(true);
     const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/user/resendCode`,
+      `${import.meta.env.VITE_API_URL}/user/resendCode?lang=${i18n.language}`,
       {
         method: "GET",
         headers: {
@@ -60,17 +62,10 @@ export default function ValidateUser() {
         },
       },
     );
-    const res = await response.json();
-    if (res.type === "Success") {
-      setSmallMessage(
-        <SmallMessage type={"success"} message={res.message}></SmallMessage>,
+    const res = (await response.json()) as response;
+    setSmallMessage(
+        <SmallMessage type={res.success ? "success" : "error"} message={t(res.code)}></SmallMessage>,
       );
-    } else {
-      setSmallMessage(
-        <SmallMessage type={"error"} message={res.message}></SmallMessage>,
-      );
-    }
-
     setLoading(false);
   };
 
@@ -78,13 +73,16 @@ export default function ValidateUser() {
     setSmallMessage(null);
     setPosition("chaneEmail");
     setLoading(true);
+    const formData = new FormData();
+    formData.append("email",newEmail);
+    formData.append("lang",String(i18n.language))
     const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/user/changeEmail/${newEmail}`,
+      `${import.meta.env.VITE_API_URL}/user/changeEmail`,
       {
-        method: "GET",
+        method: "POST",
+        body:formData,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
         },
       },
     );
@@ -92,16 +90,14 @@ export default function ValidateUser() {
       setSmallMessage(
         <SmallMessage
           type={"error"}
-          message={"Debes ingresar una dirrecion de correo"}
+          message={t("small_message_not_email_format")}
         ></SmallMessage>,
       );
     } else {
-      const res = await response.json();
-      if (res.type === "Success") {
-        setSmallMessage(
-          <SmallMessage type={"success"} message={res.message}></SmallMessage>,
-        );
-      }
+      const res = (await response.json()) as response;
+      setSmallMessage(
+        <SmallMessage type={res.success ? "success" : "error"} message={t(res.code)}></SmallMessage>,
+      );
     }
     setLoading(false);
   }
@@ -110,37 +106,33 @@ export default function ValidateUser() {
     setSmallMessage(null);
     setPosition("validateCode");
     setLoading(true);
+    
+    const formData = new FormData();
+    formData.append("token",code)
     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/user/verify-email?token=${code}`,
       {
-        method: "GET",
+        method: "POST",
+        body:formData,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
         },
       },
     );
-    const res = await response.json();
-    if (res.type === "Success") {
-      setSmallMessage(
-        <SmallMessage type={"success"} message={res.message}></SmallMessage>,
-      );
-    } else {
-      setSmallMessage(
-        <SmallMessage type={"error"} message={res.message}></SmallMessage>,
-      );
-    }
-
+    const res = (await response.json()) as response;
+    setSmallMessage(
+      <SmallMessage type={res.success ? "success" : "error"} message={t(res.code)}></SmallMessage>,
+    );
     setLoading(false);
   }
 
   return (
     <>
-      <ValidateContainerAndHeader title="Validación de usuario">
+      <ValidateContainerAndHeader title={t("page_header_validate")}>
         <div className={styles.info}>
           <img src="/icons/info_circle.svg" alt="" />
           <p className={styles.generalInfo}>
-            Se a enviado un codigo de verificación a tu correo
+            {t("page_paragraph_one_validate")}
           </p>
         </div>
 
@@ -161,7 +153,7 @@ export default function ValidateUser() {
                   : setDisplayOption("resend");
               }}
             >
-              <p className={styles.generalInfo}>Reenviar codigo</p>
+              <p className={styles.generalInfo}>{t("page_subtitle_resend_code")}</p>
               <img
                 className={`${styles.iconOption} ${displayOption === "resend" && styles.iconInverted}`}
                 src="/icons/arrow_down.svg"
@@ -172,8 +164,7 @@ export default function ValidateUser() {
             {displayOption === "resend" && (
               <div className={styles.extra}>
                 <p>
-                  Si hay un correo con la dirreccion registrada se eviará un
-                  nuevo codigo de verificación
+                  {t("page_paragraph_resend_code_info")}
                 </p>
                 <button
                   className={styles.buttonInExtra}
@@ -183,7 +174,7 @@ export default function ValidateUser() {
                     }
                   }}
                 >
-                  Enviar
+                  {t("page_button_resend_code")}
                   <img src="/icons/mail.svg" alt="" />
                 </button>
                 {loading && positon === "resend" && (
@@ -204,7 +195,7 @@ export default function ValidateUser() {
                   : setDisplayOption("changeEmail");
               }}
             >
-              <p className={styles.generalInfo}>Cambiar correo de la cuenta</p>
+              <p className={styles.generalInfo}>{t("page_subtitle_change_email")}</p>
               <img
                 className={`${styles.iconOption} ${displayOption === "changeEmail" && styles.iconInverted}`}
                 src="/icons/arrow_down.svg"
@@ -213,7 +204,7 @@ export default function ValidateUser() {
 
             {displayOption === "changeEmail" && (
               <div className={styles.extra}>
-                <p>Email nuevo</p>
+                <p>{t("page_input_label_change_email")}</p>
                 <input
                   value={newEmail}
                   onChange={(e) => setNewEmail(e.target.value)}
@@ -227,7 +218,7 @@ export default function ValidateUser() {
                     }
                   }}
                 >
-                  Cambiar correo
+                  {t("page_button_change_email")}
                   <img src="/icons/mail.svg" alt="" />
                 </button>
                 {loading && positon === "chaneEmail" && (

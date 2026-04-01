@@ -15,7 +15,7 @@ export default function Login() {
   useEffect(() => {
     const callBackend = async (): Promise<void> => {
       const res = await ValidateSession(localStorage.getItem("token"));
-      if (res?.type === "Success") {
+      if (res?.success) {
         setBlockMessage(
           <BlockMessage
             type="success"
