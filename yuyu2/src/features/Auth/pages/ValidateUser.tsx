@@ -27,7 +27,7 @@ export default function ValidateUser() {
             text={t(res.code)}
             type="error"
             setMessage={setPopupMessage}
-            toRedirect={"/user/login"}
+            toRedirect={"/auth/login"}
           ></Message>,
         );
         return;
