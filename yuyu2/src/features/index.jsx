@@ -12,14 +12,14 @@ export { default as Footer } from "./frontPage/components/Footer.jsx";
 
 export { default as Sprites } from "./ImagesPage/pages/Sprites.jsx";
 export { default as Mangas } from "./ImagesPage/pages/Mangas.jsx";
-export { default as FanArts } from "./ImagesPage/pages/FanArts.jsx";
+export { default as FanArts } from "./ImagesPage/pages/FanArts.js";
 export { default as PostFanArt } from "./ImagesPage/pages/PostFanArt.jsx";
 
 export { default as TitleSprites } from "./ImagesPage/components/TitleSprites.jsx";
 export { default as ImageSpoiler } from "./ImagesPage/components/ImageSpoiler.jsx";
 export { default as TagsInterface } from "./ImagesPage/components/TagsInterface.jsx";
 
-export { default as ReduceQuality } from "./ImagesPage/components/ReduceQuality.jsx";
+export { ReduceQuality } from "./ImagesPage/components/ReduceQuality.js";
 
 //Auth pages
 export { default as CreateAccount } from "./Auth/pages/CreateAccount.js";

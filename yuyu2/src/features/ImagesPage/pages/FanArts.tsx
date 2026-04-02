@@ -1,29 +1,31 @@
 import { useEffect, useState } from "react";
-import { ReduceQuality } from "@features";
-import { HeaderPages } from "@shared";
+import { ReduceQuality }  from "@features";
+import { HeaderPages, type fanArt, type fanArtReducedQuality, type returnedReducedQuality } from "@shared";
 import styles from "./css/FanArts.module.css";
 export default function FanArts() {
   //Used in all the page
-  const [loading, setLoading] = useState(false);
-  const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
-  const [tags, setTags] = useState(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [search, setSearch] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
+  const [tags, setTags] = useState<null | {general:string[], artist:string[], caracters:string[]}>(null);
   //Used in general fan art display
-  const [data, setData] = useState(null);
-  const [reducedData, setReducedData] = useState(null);
-  const [leftArrow, setLeftArrow] = useState(false);
-  const [rightArrow, setRightArrow] = useState(false);
+  const [data, setData] = useState<fanArt[] | null>(null);
+  const [reducedData, setReducedData] = useState<fanArtReducedQuality[] | null>(null);
+  const [leftArrow, setLeftArrow] = useState<boolean>(false);
+  const [rightArrow, setRightArrow] = useState<boolean>(false);
   //Used when displaying just one fan art
-  const [unique, setUnique] = useState(null);
-  const [showOriginal, setShowOriginal] = useState(false);
+  const [unique, setUnique] = useState<null | fanArtReducedQuality>(null);
+  const [showOriginal, setShowOriginal] = useState<boolean>(false);
 
-  function renderUnique(fanArt) {
+  function renderUnique(fanArt:fanArtReducedQuality):void {
+    if(!data)return
     setLoading(true);
     setUnique(fanArt);
 
-    let general = [];
-    let artist = [];
-    let caracters = [];
+    let general:string[] = [];
+    let artist:string[]  = [];
+    let caracters:string[]  = [];
+    
     for (const tag of data[fanArt.index].tags) {
       general.push(tag);
     }
@@ -39,72 +41,72 @@ export default function FanArts() {
     setLoading(false);
   }
 
-  async function render() {
+  async function render():Promise<void> {
     setLoading(true);
     setUnique(null);
     setShowOriginal(false);
-    const fetchFanArts = async (page) => {
-      const tags = search.split(" ");
-      const queryString = tags
-        .map((tag) => `tags=${encodeURIComponent(tag)}`)
-        .join("&");
+   
+    const tags:string[] = search.split(" ");
+    const queryString:String = tags
+      .map((tag) => `tags=${encodeURIComponent(tag)}`)
+      .join("&");
 
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/fanArts/tags/${page}?${queryString}`,
-      );
-      let data = await response.json();
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/fanArts/tags/${page}?${queryString}`,
+    );
+    let data = (await response.json()) as fanArt[];
 
-      page <= 1 ? setLeftArrow(false) : setLeftArrow(true);
-      data.length === 9 ? setRightArrow(true) : setRightArrow(false);
+    page <= 1 ? setLeftArrow(false) : setLeftArrow(true);
+    data.length === 9 ? setRightArrow(true) : setRightArrow(false);
 
-      //SSAFSUEFNOGUN
-      data.splice(8);
+    //SSAFSUEFNOGUN
+    data.splice(8);
 
-      setData(data);
-      console.log(data);
+    setData(data);
+    console.log(data);
 
-      let reduced = [];
+    let reduced:fanArtReducedQuality[] = [];
 
-      let general = [];
-      let artist = [];
-      let caracters = [];
+    let general:string[]  = [];
+    let artist:string[]  = [];
+    let caracters:string[]  = [];
 
-      for (const fanArt of data) {
-        let rer = await ReduceQuality(fanArt.src, 800, 800);
-        reduced.push({
-          src: rer.reduced,
-          height: rer.height,
-          width: rer.width,
-          index: reduced.length,
-          wasReduced: rer.changed,
-        });
+    for (const fanArt of data) {
+      let rer = (await ReduceQuality(fanArt.src, 800, 800)) as returnedReducedQuality;
+      reduced.push({
+        src: rer.reduced,
+        height: rer.height,
+        width: rer.width,
+        index: reduced.length,
+        wasReduced: rer.changed,
+      });
 
-        for (const tag of fanArt.tags) {
-          if (!general.includes(tag)) {
-            general.push(tag);
-          }
-        }
-
-        for (const tag of fanArt.artists) {
-          if (!artist.includes(tag)) {
-            artist.push(tag);
-          }
-        }
-
-        for (const tag of fanArt.caracters) {
-          if (!caracters.includes(tag)) {
-            caracters.push(tag);
-          }
+      for (const tag of fanArt.tags) {
+        if (!general.includes(tag)) {
+          general.push(tag);
         }
       }
-      setTags({ general: general, artist: artist, caracters: caracters });
-      setReducedData(reduced);
-    };
-    await fetchFanArts(page);
+
+      for (const tag of fanArt.artists) {
+        if (!artist.includes(tag)) {
+          artist.push(tag);
+        }
+      }
+
+      for (const tag of fanArt.caracters) {
+        if (!caracters.includes(tag)) {
+          caracters.push(tag);
+        }
+      }
+    }
+    setTags({ general: general, artist: artist, caracters: caracters });
+    setReducedData(reduced);
+
+    //await fetchFanArts(page);
     setLoading(false);
   }
 
-  function addTag(tag) {
+  function addTag(tag:string) {
     if (search === "") {
       setSearch(`${tag}`);
     } else {
@@ -148,7 +150,7 @@ export default function FanArts() {
               </div>
               <div className={styles.tagsList}>
                 <h3>Generales</h3>
-                {tags.general.map((tag) => (
+                {tags && tags.general.map((tag) => (
                   <button
                     key={tag}
                     className={`${styles.generalTags} ${styles.tags}`}
@@ -160,7 +162,7 @@ export default function FanArts() {
                   </button>
                 ))}
                 <h3>Personajes</h3>
-                {tags.caracters.map((tag) => (
+                {tags && tags.caracters.map((tag) => (
                   <button
                     key={tag}
                     className={`${styles.caractersTags} ${styles.tags}`}
@@ -172,7 +174,7 @@ export default function FanArts() {
                   </button>
                 ))}
                 <h3>Artistas</h3>
-                {tags.artist.map((tag) => (
+                {tags && tags.artist.map((tag) => (
                   <button
                     key={tag}
                     className={`${styles.artistsTags} ${styles.tags}`}
@@ -183,16 +185,16 @@ export default function FanArts() {
                     {tag}
                   </button>
                 ))}
-                {unique && (
+                {tags && unique && (
                   <>
                     <h3>Link</h3>
                     <button
                       onClick={() => {
-                        window.open(data[unique.index].originalLink);
+                        if(data) window.open(data[unique.index].originalLink);
                       }}
                       className={`${styles.tags} ${styles.link}`}
                     >
-                      {data[unique.index].originalLink}
+                      {data && data[unique.index].originalLink}
                     </button>
                   </>
                 )}
@@ -225,7 +227,7 @@ export default function FanArts() {
                 ))}
               </div>
             )}
-            {unique && (
+            {data && unique && (
               <div className={styles.uniqueFanArt}>
                 {unique.wasReduced && !showOriginal && (
                   <div className={styles.showOriginal}>

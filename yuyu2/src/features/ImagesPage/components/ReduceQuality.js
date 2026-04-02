@@ -1,4 +1,4 @@
-export default async function reduceQuality(
+export async function ReduceQuality(
   imageSrc,
   maxHeight,
   maxWidth,
@@ -32,7 +32,7 @@ export default async function reduceQuality(
           resolve({
             reduced: imageSrc,
             width: widthOriginal,
-            heigth: heightOriginal,
+            height: heightOriginal,
             changed: false,
           });
           return;
@@ -84,7 +84,7 @@ export default async function reduceQuality(
             resolve({
               reduced: blobUrl,
               width: newWidth,
-              heigth: newHeigth,
+              height: newHeigth,
               changed: true,
             });
           },

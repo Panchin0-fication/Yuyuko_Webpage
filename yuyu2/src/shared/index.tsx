@@ -13,3 +13,7 @@ export { ValidateSession } from "./customHooks/validateSesion.js";
 export type {response} from "./types/responses.js"
 export type {withToken} from "./types/responses.js"
 export type {withUserData} from "./types/responses.js"
+
+export type {fanArt} from "./types/fanArts.js"
+export type {fanArtReducedQuality} from "./types/fanArts.js"
+export type {returnedReducedQuality} from "./types/fanArts.js"
