@@ -1,7 +1,7 @@
 import { useTranslation, Trans } from "react-i18next";
 import styles from "./css/Footer.module.css";
 export default function Footer() {
-  const { t, i18n } = useTranslation("home");
+  const { t } = useTranslation("home");
   return (
     <>
       <div className={styles.footer}>

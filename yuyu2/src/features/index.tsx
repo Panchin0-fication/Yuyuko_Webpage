@@ -1,20 +1,22 @@
 //Main Pages
-export { default as FrontPage } from "./frontPage/pages/FrontPage.jsx";
+export { default as FrontPage } from "./frontPage/pages/FrontPage.js";
 export { default as Oficial } from "./oficial/page/Oficial.jsx";
-export { default as Fanon } from "./fanon/page/Fanon.jsx";
+export { default as Fanon } from "./fanon/page/Fanon.js";
 export { default as FrontImages } from "./ImagesPage/pages/FrontImages.js";
 
 //FrontPage
-export { default as Nav } from "./frontPage/components/Nav.jsx";
-export { default as YuyuInfo } from "./frontPage/components/YuyuInfo.jsx";
-export { default as InfoWebpage } from "./frontPage/components/InfoWebpage.jsx";
-export { default as Footer } from "./frontPage/components/Footer.jsx";
+export { default as Nav } from "./frontPage/components/Nav.js";
+export { default as YuyuInfo } from "./frontPage/components/YuyuInfo.js";
+export { default as InfoWebpage } from "./frontPage/components/InfoWebpage.js";
+export { default as Footer } from "./frontPage/components/Footer.js";
 
+//Images pages
 export { default as Sprites } from "./ImagesPage/pages/Sprites.js";
 export { default as Mangas } from "./ImagesPage/pages/Mangas.js";
 export { default as FanArts } from "./ImagesPage/pages/FanArts.js";
 export { default as PostFanArt } from "./ImagesPage/pages/PostFanArt.js";
 
+//Images components
 export { default as TitleSprites } from "./ImagesPage/components/TitleSprites.js";
 export { default as ImageSpoiler } from "./ImagesPage/components/ImageSpoiler.js";
 export { default as TagsInterface } from "./ImagesPage/components/TagsInterface.js";

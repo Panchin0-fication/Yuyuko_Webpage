@@ -132,8 +132,6 @@ export default function ChangePassword() {
                 }
               />
             </div>
-           
-            
             <button className={styles.changePasswordButton} onClick={changePassword}>Cambiar contraseña</button>
           </div>
         )}

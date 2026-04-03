@@ -174,7 +174,7 @@ export default function CreateAccount() {
         />
         {smallMessage}
         <div className={styles.buttonAndLoad}>
-          <button
+          <button className={styles.createButton}
             onClick={() => {
               if (!loading) {
                 createAccount();

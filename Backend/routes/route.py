@@ -98,7 +98,6 @@ def resend_code(background_tasks: BackgroundTasks, lang:str, user = Depends(get_
         except Exception:
             return {"code":"EMAIL_NOT_FOUND","success":False}
     else:
-        #Unexpected error
         return {"code":"UNEXPECTED_ERROR","success":False}
 
 @router.post("/user/changeEmail")
