@@ -4,10 +4,10 @@ export interface fanArt{
     tags:string[];
     artists:string[];
     caracters:string[];
-    clasification: "general" | "sensitive | explicit | questionable";
+    clasification: "general" | "sensitive" | "explicit" | "questionable";
     show:boolean;
     originalLink:string;
-    status: "accepted" | "pending | takenDown | rejected"
+    status: "accepted" | "pending" | "takenDown" | "rejected"
 }
 export interface fanArtReducedQuality{
     src:string;

@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
 import styles from "./css/HeaderPage.module.css";
-export default function HeaderPage({ image, isInPage }) {
+type props = {
+  image: string
+  isInPage?: boolean
+}
+export default function HeaderPage({ image, isInPage = false }:props) {
   return (
     <>
       <div className={styles.headerPages}>

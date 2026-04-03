@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
 import styles from "./css/NavSecondary.module.css";
-export default function NavSecondary({ actualPage, classNameExtra }) {
+type props = {
+  actualPage:string;
+  classNameExtra?:string
+}
+export default function NavSecondary({ actualPage, classNameExtra }:props) {
   return (
     <div className={classNameExtra}>
       {actualPage !== "oficial" && (
