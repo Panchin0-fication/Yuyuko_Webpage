@@ -1,9 +1,11 @@
 import { useEffect, useState, useRef, type ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import Draggable from "react-draggable";
 import styles from "./css/PostFanArt.module.css";
 import { TagsInterface } from "@features";
 import { HeaderPages, Message, type tag, type tagWithId, type response, type fanArt, type withUrl } from "@shared";
 export default function PostFanArt() {
+  const {t} = useTranslation("images");
   const fileRef = useRef<any>([]);
   const nodeRef = useRef(null);
   //All tags fetched
@@ -51,11 +53,11 @@ export default function PostFanArt() {
     let fanArtObject = {} as fanArt;
     //Errors
     if (!file) {
-      handleMessage("Error al publicar", "Debes de subir un archivo", "error");
+      handleMessage(t("message_header_error_posting"), t("message_body_error_posting_no_file"), "error");
       return;
     }
     if (inputs.originalLink === "") {
-      handleMessage("Error al publicar", "Ingresa link de la imagen", "error");
+      handleMessage(t("message_header_error_posting"), t("message_body_error_posting_no_link"), "error");
       return;
     }
     //Checks if the link works
@@ -63,8 +65,8 @@ export default function PostFanArt() {
       new URL(inputs.originalLink);
     } catch {
       handleMessage(
-        "Error al publicar",
-        "El link de la imagen no es valido",
+        t("message_header_error_posting"),
+        t("message_body_error_posting_invalid_link"),
         "error",
       );
       return;
@@ -74,7 +76,7 @@ export default function PostFanArt() {
     //Upload new tags to the database
     const newTags = fanArtTags.filter((tag) => tag.status === "pending");
 
-    const uploadTags = async () => {
+    const uploadTags = async ():Promise<void> => {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/newTags`, {
         method: "Post",
         headers: {
@@ -83,7 +85,9 @@ export default function PostFanArt() {
         body: JSON.stringify(newTags),
       });
       const res = (await response.json()) as response;
-      console.log("Lo enviado al backend:", res);
+      if(!res.success){
+        handleMessage(t("message_header_error_posting"),t("message_body_unexpected_error_new_tags"),"error");
+      }
     };
     if (newTags.length >= 1) {
       await uploadTags();
@@ -142,8 +146,8 @@ export default function PostFanArt() {
       const res = (await response.json()) as response;
       if(res.success){
         handleMessage(
-          "Fan art publicado",
-          "Fan art publicado exitosamente",
+          t("message_header_success_posting"),
+          t("message_body_success"),
           "success",
         );
       }
@@ -160,8 +164,8 @@ export default function PostFanArt() {
         <div className={styles.content}>
           <div className={styles.inputsGrid}>
             <div className={styles.field}>
-              <h3>Selecciona fanArt a subir</h3>
-              <p>Intenta conseguir la imagen en mayor calidad posible</p>
+              <h3>{t("header_select_file")}</h3>
+              <p>{t("body_select_file")}</p>
               <input
                 onChange={() => {
                   if(!fileRef.current)return
@@ -184,7 +188,7 @@ export default function PostFanArt() {
                     await fileRef.current.click();
                   }}
                 >
-                  <p>Subir</p>
+                  <p>{t("button_select_file")}</p>
                 </button>
                 {file && (
                   <button onClick={() => setShow(!show)}>
@@ -205,8 +209,8 @@ export default function PostFanArt() {
               </div>
             </div>
             <div className={styles.field}>
-              <h3>Clasificasión</h3>
-              <p>Dependiendo de la nudes</p>
+              <h3>{t("header_select_clasification")}</h3>
+              <p>{t("body_select_clasification")}</p>
               <select
                 value={inputs.clasification}
                 onChange={(e) =>{
@@ -221,8 +225,8 @@ export default function PostFanArt() {
               </select>
             </div>
             <div className={styles.field}>
-              <h3>Ingresa link original</h3>
-              <p>El link de donde sale el fan art</p>
+              <h3>{t("header_enter_link")}</h3>
+              <p>{t("body_enter_link")}</p>
               <input
                 className={styles.originalLink}
                 value={inputs.originalLink}
@@ -233,20 +237,18 @@ export default function PostFanArt() {
               />
             </div>
           </div>
-
           <br />
           <TagsInterface
             data={tags}
             fanArtTags={fanArtTags}
             setfanArtTags={setfanArtTags}
           />
-
           <br />
           <div>
             {loading && <img src="staticImgs/generalUse/kfc-kfcyuyuko.gif" />}
           </div>
           <button onClick={uploadFanart} className={styles.buttonUpload}>
-            Postear Fan Art
+            {t("button_upload_fanart")}
           </button>
         </div>
         <Draggable nodeRef={nodeRef}>
@@ -254,7 +256,7 @@ export default function PostFanArt() {
             {file && show && (
               <>
                 <header className={styles.dragHeader}>
-                  <p>Vista del fan art</p>
+                  <p>{t("fanart_preview_text")}</p>
                   <label onClick={() => setShow(false)}>X</label>
                 </header>
                 <div className={styles.containerImg}>

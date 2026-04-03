@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { HeaderPages, ContentTable, TextContainer, type endingSprite } from "@shared";
 import { TitleSprites, ImageSpoiler } from "@features";
 import styles from "./css/Sprites.module.css";
 export default function Sprites() {
+  const {t} = useTranslation("images");
   const [endings, setEndings] = useState<endingSprite[]>([
     { hidden: true, id: "ending1" },
     { hidden: true, id: "ending2" },
@@ -33,28 +35,24 @@ export default function Sprites() {
       <div className={styles.pageContents}>
         <div className={styles.sectionOne}>
           <ContentTable className={styles.container}>
-            <h3>Contenido</h3>
-            <a href="#gameplay">1-Gameplay</a>
-            <a href="#seleccion">2-Seleccion de personaje</a>
-            <a href="#dialogos">3-Dialogos</a>
-            <a href="#finales">4-Finales</a>
-            <a href="#fondos">5-Fondos</a>
-            <a href="#otros">6-Otros</a>
+            <h3>{t("header_content_table")}</h3>
+            <a href="#gameplay">{t("option_content_table_gameplay")}</a>
+            <a href="#seleccion">{t("option_content_table_character_selection")}</a>
+            <a href="#dialogos">{t("option_content_table_dialogues")}</a>
+            <a href="#finales">{t("option_content_table_endings")}</a>
+            <a href="#fondos">{t("option_content_table_backgrounds")}</a>
+            <a href="#otros">{t("option_content_table_other")}</a>
           </ContentTable>
           <TextContainer>
-            <h1>Sprites</h1>
+            <h1>{t("header_section_general_informarion")}</h1>
             <p>
-              texto explicando como esta organizados los sprites Lorem ipsum
-              dolor sit, amet consectetur adipisicing elit. Accusantium, beatae
-              voluptates! Sapiente illum nisi unde placeat nemo odio rerum autem
-              amet? Provident ratione aliquam laborum possimus, nihil unde iusto
-              hic.
+              {t("body_section_general_informarion")}
             </p>
           </TextContainer>
         </div>
         <TitleSprites
           id="gameplay"
-          title="Gameplay"
+          title={t("header_gameplay_info")}
           info="Lorem ipsum
               dolor sit, amet consectetur adipisicing elit. Accusantium, beatae
               voluptates! Sapiente illum nisi unde placeat"
@@ -79,7 +77,7 @@ export default function Sprites() {
 
         <TitleSprites
           id="seleccion"
-          title="Selección de personaje"
+          title={t("header_character_selection_info")}
           info="Lorem ipsum
               dolor sit, amet consectetur adipisicing elit. Accusantium, beatae
               voluptates! Sapiente illum nisi unde placeat"
@@ -104,7 +102,7 @@ export default function Sprites() {
 
         <TitleSprites
           id="dialogos"
-          title="Dialogos"
+          title={t("header_dialogues_info")}
           info="Lorem ipsum
               dolor sit, amet consectetur adipisicing elit. Accusantium, beatae
               voluptates! Sapiente illum nisi unde placeat"
@@ -134,7 +132,7 @@ export default function Sprites() {
 
         <TitleSprites
           id="finales"
-          title="Finales"
+          title={t("header_endings_info")}
           info="Lorem ipsum
               dolor sit, amet consectetur adipisicing elit. Accusantium, beatae
               voluptates! Sapiente illum nisi unde placeat"
@@ -222,7 +220,7 @@ export default function Sprites() {
 
         <TitleSprites
           id="fondos"
-          title="Fondos"
+          title={t("header_backgrounds_info")}
           info="Lorem ipsum
               dolor sit, amet consectetur adipisicing elit. Accusantium, beatae
               voluptates! Sapiente illum nisi unde placeat"
@@ -248,7 +246,7 @@ export default function Sprites() {
 
         <TitleSprites
           id="otros"
-          title="Otros"
+          title={t("header_others_info")}
           info="Lorem ipsum
               dolor sit, amet consectetur adipisicing elit. Accusantium, beatae
               voluptates! Sapiente illum nisi unde placeat"

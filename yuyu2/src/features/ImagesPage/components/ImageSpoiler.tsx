@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import {type endingSprite} from "@shared"
 import styles from "./css/ImageSpoiler.module.css";
 
@@ -8,6 +9,7 @@ type props = {
   setEndings: React.Dispatch<React.SetStateAction<endingSprite[]>>
 }
 export default function ImageSpoiler({ src, endings, ending, setEndings }:props) {
+  const {t} = useTranslation("images");
   function handleClick() {
     const newEndings = endings.map((end) => {
       if (end.id === ending.id) {
@@ -29,7 +31,7 @@ export default function ImageSpoiler({ src, endings, ending, setEndings }:props)
         className={!ending.hidden ? styles.hide : ""}
         onClick={() => handleClick()}
       >
-        <p className={styles.spoilerTag}>Spoiler</p>
+        <p className={styles.spoilerTag}>{t("spoiler_label")}</p>
       </button>
     </div>
   );

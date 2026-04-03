@@ -1,9 +1,11 @@
-import { HeaderPages, NavSecondary } from "@shared";
-import styles from "./css/FrontImages.module.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { HeaderPages, NavSecondary } from "@shared";
+import styles from "./css/FrontImages.module.css";
 
 export default function FrontImages() {
+  const {t} = useTranslation("images")
   const [over, setOver] = useState<"sprites" | "mangas" | "fanArts" | "">("");
   const navigate = useNavigate();
   function handleMouseOver(option: "sprites" | "mangas" | "fanArts"):void {
@@ -29,13 +31,10 @@ export default function FrontImages() {
           <img src="/staticImgs/generalUse/Portada1.jpg" alt="" />
           {over === "sprites" && (
             <p className={styles.textOver}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima
-              sequi distinctio voluptate asperiores quos facilis ipsam cum
-              numquam voluptas beatae, fugiat maiores natus quae tempore
-              nostrum, nulla nesciunt illum molestiae?
+              {t("sprites_page_info")}
             </p>
           )}
-          <p className={styles.bottomText}>Sprites</p>
+          <p className={styles.bottomText}>{t("sprites_page_header")}</p>
         </button>
         <button
           className={`${styles.pageOption}`}
@@ -46,13 +45,10 @@ export default function FrontImages() {
           <img src="/staticImgs/generalUse/pmiss_yuyuko.jpg" alt="" />
           {over === "mangas" && (
             <p className={styles.textOver}>
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Error
-              sed corporis iusto ipsa exercitationem impedit veritatis in quis
-              accusamus. Atque tempora iure, vero alias illo provident
-              repudiandae eos nulla placeat.
+              {t("mangas_page_info")}
             </p>
           )}
-          <p className={styles.bottomText}>Mangas</p>
+          <p className={styles.bottomText}>{t("mangas_page_header")}</p>
         </button>
         <button
           className={`${styles.pageOption}`}
@@ -66,13 +62,10 @@ export default function FrontImages() {
           />
           {over === "fanArts" && (
             <p className={styles.textOver}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis
-              optio enim ipsum deleniti nihil quod neque ad sapiente quisquam
-              sit necessitatibus odit, eveniet repellat placeat ullam natus
-              excepturi, exercitationem non!
+              {t("fanarts_page_info")}
             </p>
           )}
-          <p className={styles.bottomText}>Fan Arts</p>
+          <p className={styles.bottomText}>{t("fanarts_page_header")}</p>
         </button>
       </div>
     </div>

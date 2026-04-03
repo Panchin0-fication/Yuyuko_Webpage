@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { SmallMessage, type tag } from "@shared";
 import styles from "./css/TagsInterface.module.css";
 
@@ -8,6 +9,7 @@ type props = {
   setfanArtTags:React.Dispatch<React.SetStateAction<tag[]>>
 }
 export default function TagsInterface({ data, fanArtTags, setfanArtTags }:props) {
+  const {t} = useTranslation("images");
   const [inputs, setInputs] = useState({ search: "", addTag: "" });
   const [addButtonState, setAddButtonState] = useState("general");
   const [page, setPage] = useState<number>(1);
@@ -29,7 +31,7 @@ export default function TagsInterface({ data, fanArtTags, setfanArtTags }:props)
     const added:string = inputs.addTag.trim().replace(" ", "_");
     if (inputs.addTag === "") {
       setSmallMessage(
-        <SmallMessage type="error" message="Ingresa nombre del tag" />,
+        <SmallMessage type="error" message={t("small_message_error_no_tag_name")} />,
       );
       setTimeout(() => {
         setSmallMessage(null);
@@ -37,14 +39,14 @@ export default function TagsInterface({ data, fanArtTags, setfanArtTags }:props)
       return;
     }
     if (data.find((addedTag) => addedTag.name === added)) {
-      setSmallMessage(<SmallMessage type="error" message="Ese tag ya existe" />);
+      setSmallMessage(<SmallMessage type="error" message={t("small_message_error_already_exists")} />);
       setTimeout(() => {
         setSmallMessage(null);
       }, 2000);
       return;
     }
     if (fanArtTags.find((tag) => tag.name === added)) {
-      setSmallMessage(<SmallMessage type="error" message="Ya añadiste ese tag" />);
+      setSmallMessage(<SmallMessage type="error" message={t("small_message_error_already_added")} />);
       setTimeout(() => {
         setSmallMessage(null);
       }, 2000);
@@ -96,7 +98,7 @@ export default function TagsInterface({ data, fanArtTags, setfanArtTags }:props)
         <div className={`${styles.actualTags} ${styles.interfaceSection}`}>
           <header onClick={() => console.log(data)} className={styles.ttt}>
             <br />
-            <h3>Tags Añadidos</h3>
+            <h3>{t("header_interface_tags_added_tags")}</h3>
           </header>
           <section className={styles.tagsContainer}>
             {fanArtTags.map((tag, id) => (
@@ -114,14 +116,14 @@ export default function TagsInterface({ data, fanArtTags, setfanArtTags }:props)
               </div>
             ))}
             {fanArtTags.length === 0 && (
-              <p className={styles.emptyTags}>Añade tags</p>
+              <p className={styles.emptyTags}>{t("text_interface_tags_add_tags")}</p>
             )}
           </section>
         </div>
         <div className={`${styles.searchTags} ${styles.interfaceSection}`}>
           <header>
             <br />
-            <h3>Buscar Tags</h3>
+            <h3>{t("header_interface_tags_search_tags")}</h3>
           </header>
           <section>
             <input
@@ -138,7 +140,7 @@ export default function TagsInterface({ data, fanArtTags, setfanArtTags }:props)
               <section className={styles.tagsContainer}>
                 {tagList.slice((page - 1) * 15, page * 15)}
                 {tagList.length === 0 && (
-                  <p className={styles.emptyTags}>No se encontraron tags...</p>
+                  <p className={styles.emptyTags}>{t("text_interface_tags_no_tags_found")}</p>
                 )}
               </section>
 
@@ -166,7 +168,7 @@ export default function TagsInterface({ data, fanArtTags, setfanArtTags }:props)
         <div className={`${styles.addTags} ${styles.interfaceSection}`}>
           <header>
             <br />
-            <h3>Agregar Tags</h3>
+            <h3>{t("header_interface_tags_add_new_tags")}</h3>
           </header>
           <section>
             <div className={styles.buttons}>
@@ -174,21 +176,21 @@ export default function TagsInterface({ data, fanArtTags, setfanArtTags }:props)
                 className={`${styles.general} ${addButtonState === "general" && styles.inactiveButton}`}
                 onClick={() => setAddButtonState("general")}
               >
-                <p>General</p>
+                <p>{t("header_interface_tags_button_category_general")}</p>
                 <img src="/icons/photo.svg" alt="" />
               </button>
               <button
                 className={`${styles.artist} ${addButtonState === "artist" && styles.inactiveButton}`}
                 onClick={() => setAddButtonState("artist")}
               >
-                <p>Artista</p>
+                <p>{t("header_interface_tags_button_category_artist")}</p>
                 <img src="/icons/brush.svg" alt="" />
               </button>
               <button
                 className={`${styles.character} ${addButtonState === "character" && styles.inactiveButton}`}
                 onClick={() => setAddButtonState("character")}
               >
-                <p>Personaje</p>
+                <p>{t("header_interface_tags_button_category_character")}</p>
                 <img src="/icons/person_book.svg" alt="" />
               </button>
             </div>
@@ -202,7 +204,7 @@ export default function TagsInterface({ data, fanArtTags, setfanArtTags }:props)
                 }
               />
               <button className={styles.buttonNewTag} onClick={addTagFromNew}>
-                Añadir {addButtonState === "general" && "general"}{" "}
+                {t("header_interface_tags_button_add_new_tag")} {addButtonState === "general" && "general"}{" "}
                 {addButtonState === "artist" && "artista"}{" "}
                 {addButtonState === "character" && "personaje"}
               </button>

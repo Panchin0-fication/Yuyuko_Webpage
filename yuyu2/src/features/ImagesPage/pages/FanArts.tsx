@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { HeaderPages, ReduceQuality, type fanArt, type fanArtReducedQuality, type returnedReducedQuality } from "@shared";
 import styles from "./css/FanArts.module.css";
 export default function FanArts() {
   //Used in all the page
+  const {t} = useTranslation("images")
   const [loading, setLoading] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
   const [page, setPage] = useState<number>(1);
@@ -148,7 +150,7 @@ export default function FanArts() {
                 </button>
               </div>
               <div className={styles.tagsList}>
-                <h3>Generales</h3>
+                <h3>{t("tag_header_general")}</h3>
                 {tags && tags.general.map((tag) => (
                   <button
                     key={tag}
@@ -160,7 +162,7 @@ export default function FanArts() {
                     {tag}
                   </button>
                 ))}
-                <h3>Personajes</h3>
+                <h3>{t("tag_header_characters")}</h3>
                 {tags && tags.caracters.map((tag) => (
                   <button
                     key={tag}
@@ -172,7 +174,7 @@ export default function FanArts() {
                     {tag}
                   </button>
                 ))}
-                <h3>Artistas</h3>
+                <h3>{t("tag_header_artist")}</h3>
                 {tags && tags.artist.map((tag) => (
                   <button
                     key={tag}
@@ -186,7 +188,7 @@ export default function FanArts() {
                 ))}
                 {tags && unique && (
                   <>
-                    <h3>Link</h3>
+                    <h3>{t("tag_header_link")}</h3>
                     <button
                       onClick={() => {
                         if(data) window.open(data[unique.index].originalLink);
