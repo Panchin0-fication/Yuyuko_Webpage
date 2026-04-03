@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { HeaderPages, ContentTable, TextContainer } from "@shared";
+import { HeaderPages, ContentTable, TextContainer, type endingSprite } from "@shared";
 import { TitleSprites, ImageSpoiler } from "@features";
 import styles from "./css/Sprites.module.css";
 export default function Sprites() {
-  const [endings, setEndings] = useState([
+  const [endings, setEndings] = useState<endingSprite[]>([
     { hidden: true, id: "ending1" },
     { hidden: true, id: "ending2" },
     { hidden: true, id: "ending3" },
@@ -274,50 +274,3 @@ export default function Sprites() {
     </div>
   );
 }
-/*
-
-        <div class="titulo-sprites" id="fondos">
-            <h1>Fondos</h1>
-            <i class="fa-solid fa-caret-down boton-fondos boton"></i>
-        </div>
-        <div class="Sprite-fondos parte">
-            <div class="info texto fondos-texto show">
-                <div class="parte-info">
-                    <i class="fa-solid fa-circle-info "></i>
-                    <p class="info-jugable">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa nostrum in, dolores deserunt eveniet atque quibusdam molestiae harum vitae alias facilis ab rem, dicta iure quo quasi voluptate! Nisi, harum laboriosam, vero ipsam quis molestiae molestias cupiditate eius ipsa, nam autem totam odio modi reprehenderit ducimus tempora non quae deserunt?</p>
-                </div>
-                <div class="parte-creditos">
-                    <i class="fa-solid fa-child"></i>
-                    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Mollitia aspernatur voluptate atque pariatur voluptas hic natus autem! Iusto optio earum repellendus assumenda eveniet soluta vero, eligendi porro recusandae quam illum?</p>
-                </div>
-            </div>
-            <div class="imagenes">
-                <img class="sprite" src="img/Sprites/Sprites-touhou7-fondos-EDIT.png" alt="">
-                <img class="sprite" src="img/Sprites/Sprites-touhou10.5-fondo.png" alt="">
-                <img class="sprite" src="img/Sprites/Sprites-touhou12.3-fondo.png" alt="">
-            </div>
-        </div>
-
-        <div class="titulo-sprites" id="otros">
-            <h1>Otros</h1>
-            <i class="fa-solid fa-caret-down boton-otros boton"></i>
-        </div>
-        <div class="Sprite-otros parte">
-            <div class="info texto otros-texto show">
-                <div class="parte-info">
-                    <i class="fa-solid fa-circle-info "></i>
-                    <p class="info-jugable">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa nostrum in, dolores deserunt eveniet atque quibusdam molestiae harum vitae alias facilis ab rem, dicta iure quo quasi voluptate! Nisi, harum laboriosam, vero ipsam quis molestiae molestias cupiditate eius ipsa, nam autem totam odio modi reprehenderit ducimus tempora non quae deserunt?</p>
-                </div>
-                <div class="parte-creditos">
-                    <i class="fa-solid fa-child"></i>
-                    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Mollitia aspernatur voluptate atque pariatur voluptas hic natus autem! Iusto optio earum repellendus assumenda eveniet soluta vero, eligendi porro recusandae quam illum?</p>
-                </div>
-            </div>
-            <div class="imagenes">
-                <img class="sprite" src="img/Sprites/Sprites-touhou8-loading-EDIT.png" alt="">
-                <img class="sprite" src="img/Sprites/sprites-touhou13.5-defondo-EDIT.png" alt="">
-                <img class="sprite" src="img/Sprites/Sprites-touhou10.5-efectos.png" alt="">
-            </div>
-        </div>
-
-    </div> */

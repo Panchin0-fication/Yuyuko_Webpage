@@ -1,7 +1,13 @@
-import { useState } from "react";
+import {type endingSprite} from "@shared"
 import styles from "./css/ImageSpoiler.module.css";
 
-export default function ImageSpoiler({ src, endings, ending, setEndings }) {
+type props = {
+  src:string;
+  endings:endingSprite[]
+  ending:endingSprite
+  setEndings: React.Dispatch<React.SetStateAction<endingSprite[]>>
+}
+export default function ImageSpoiler({ src, endings, ending, setEndings }:props) {
   function handleClick() {
     const newEndings = endings.map((end) => {
       if (end.id === ending.id) {

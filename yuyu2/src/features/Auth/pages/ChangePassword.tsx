@@ -96,8 +96,8 @@ export default function ChangePassword() {
           loading={loading}
           handleVerify={handleSendEmail}
           smallMessage={smallMessage}
-          header={t("input_email_send_code")}
-          buttonLabel={t("page_button_resend_code")}
+          header={"input_email_send_code"}
+          buttonLabel={"page_button_resend_code"}
         />
         {showInputs && (
           <div className={styles.resetInputs}>

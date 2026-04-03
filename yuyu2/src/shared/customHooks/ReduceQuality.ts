@@ -1,7 +1,7 @@
 export async function ReduceQuality(
-  imageSrc,
-  maxHeight,
-  maxWidth,
+  imageSrc:string,
+  maxHeight:number,
+  maxWidth:number,
   quality = 1,
 ) {
   return new Promise((resolve, reject) => {
@@ -39,7 +39,7 @@ export async function ReduceQuality(
         }
 
         // Calculate new dimensions
-        let newWidth, newHeigth;
+        let newWidth, newHeigth: number;
 
         const ratioOriginal = widthOriginal / heightOriginal;
         const ratioMax = maxWidth / maxHeight;
@@ -63,7 +63,7 @@ export async function ReduceQuality(
         canvas.height = newHeigth;
 
         const ctx = canvas.getContext("2d");
-
+        if(!ctx)return;
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = "high";
 

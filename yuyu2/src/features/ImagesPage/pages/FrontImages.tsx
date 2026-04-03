@@ -4,15 +4,15 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function FrontImages() {
-  const [over, setOver] = useState("");
+  const [over, setOver] = useState<"sprites" | "mangas" | "fanArts" | "">("");
   const navigate = useNavigate();
-  function handleMouseOver(option) {
+  function handleMouseOver(option: "sprites" | "mangas" | "fanArts"):void {
     setOver(option);
   }
-  function handleMouseOut() {
+  function handleMouseOut():void {
     setOver("");
   }
-  function handleClick(option) {
+  function handleClick(option: "sprites" | "mangas" | "fanArts") {
     navigate(`/${option}`);
   }
   return (
@@ -21,10 +21,10 @@ export default function FrontImages() {
       <NavSecondary actualPage="images" classNameExtra={styles.navCentered} />
       <div className={styles.imagesPages}>
         <button
-          onMouseOverCapture={() => handleMouseOver("sprites")}
+          onMouseOverCapture={():void => handleMouseOver("sprites")}
           onMouseOut={handleMouseOut}
           className={`${styles.pageOption}`}
-          onClick={() => handleClick("sprites")}
+          onClick={():void => handleClick("sprites")}
         >
           <img src="/staticImgs/generalUse/Portada1.jpg" alt="" />
           {over === "sprites" && (
@@ -39,9 +39,9 @@ export default function FrontImages() {
         </button>
         <button
           className={`${styles.pageOption}`}
-          onMouseOverCapture={() => handleMouseOver("mangas")}
+          onMouseOverCapture={():void => handleMouseOver("mangas")}
           onMouseOut={handleMouseOut}
-          onClick={() => handleClick("mangas")}
+          onClick={():void => handleClick("mangas")}
         >
           <img src="/staticImgs/generalUse/pmiss_yuyuko.jpg" alt="" />
           {over === "mangas" && (
@@ -56,9 +56,9 @@ export default function FrontImages() {
         </button>
         <button
           className={`${styles.pageOption}`}
-          onMouseOverCapture={() => handleMouseOver("fanArts")}
+          onMouseOverCapture={():void => handleMouseOver("fanArts")}
           onMouseOut={handleMouseOut}
-          onClick={() => handleClick("fanArts")}
+          onClick={():void => handleClick("fanArts")}
         >
           <img
             src="/staticImgs/generalUse/__saigyouji_yuyuko_touhou_drawn_by_r9nr9__d922a533458f7883c6d88ffd21299284.jpg"

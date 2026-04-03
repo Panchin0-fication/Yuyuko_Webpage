@@ -1,22 +1,22 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, type ReactNode } from "react";
 import Draggable from "react-draggable";
 import styles from "./css/PostFanArt.module.css";
 import { TagsInterface } from "@features";
-import { HeaderPages, Message } from "@shared";
+import { HeaderPages, Message, type tag, type tagWithId, type response, type fanArt, type withUrl } from "@shared";
 export default function PostFanArt() {
-  const fileRef = useRef(null);
+  const fileRef = useRef<any>([]);
   const nodeRef = useRef(null);
   //All tags fetched
-  const [tags, setTags] = useState([]);
+  const [tags, setTags] = useState<tag[]>([]);
   //Tags in the added fan art
-  const [fanArtTags, setfanArtTags] = useState([]);
-  const [file, setFile] = useState(false);
+  const [fanArtTags, setfanArtTags] = useState<tag[]>([]);
+  const [file, setFile] = useState<string | null>(null);
   const [show, setShow] = useState(false);
-  const [message, setMessage] = useState(null);
+  const [message, setMessage] = useState<null | ReactNode>(null);
 
   const [loading, setLoading] = useState(false);
 
-  const [inputs, setInputs] = useState({
+  const [inputs, setInputs] = useState<{clasification:"general" | "sensitive" | "explicit" | "questionable",originalLink:string} >({
     clasification: "general",
     originalLink: "",
   });
@@ -24,31 +24,31 @@ export default function PostFanArt() {
   useEffect(() => {
     const getTags = async () => {
       const dataFetch = await fetch(`${import.meta.env.VITE_API_URL}/`);
-      const data = await dataFetch.json();
-      console.log(data);
+      const data = (await dataFetch.json()) as tagWithId[];
 
-      let tags = [];
+      let tags:tag[] = [];
       for (const tag of data) {
-        tags.push({ name: tag.name, category: tag.category });
+        tags.push({ name: tag.name, category: tag.category, status: tag.status });
       }
       setTags(tags);
     };
     getTags();
   }, []);
 
-  function handleMessage(text, type, header) {
+  function handleMessage(text:string, header:string, type:"error" | "success") {
     setMessage(
       <Message
         header={header}
         text={text}
         type={type}
         setMessage={setMessage}
+        toRedirect=""
       />,
     );
   }
 
   async function uploadFanart() {
-    let fanArtObject = {};
+    let fanArtObject = {} as fanArt;
     //Errors
     if (!file) {
       handleMessage("Error al publicar", "Debes de subir un archivo", "error");
@@ -73,11 +73,6 @@ export default function PostFanArt() {
 
     //Upload new tags to the database
     const newTags = fanArtTags.filter((tag) => tag.status === "pending");
-    console.log("LELO", newTags);
-
-    /*
-    
-    */
 
     const uploadTags = async () => {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/newTags`, {
@@ -87,8 +82,8 @@ export default function PostFanArt() {
         },
         body: JSON.stringify(newTags),
       });
-      const lol = await response.json();
-      console.log("Lo enviado al backend:", lol);
+      const res = (await response.json()) as response;
+      console.log("Lo enviado al backend:", res);
     };
     if (newTags.length >= 1) {
       await uploadTags();
@@ -96,6 +91,7 @@ export default function PostFanArt() {
 
     //Upload image to cloudinary
     const upload = async () => {
+      if(!fileRef.current)return
       const formData = new FormData();
       formData.append("file", fileRef.current.files[0]);
       formData.append("upload_preset", "images");
@@ -108,12 +104,12 @@ export default function PostFanArt() {
         },
       );
 
-      const data = await response.json();
-      fanArtObject["src"] = data.url;
+      const res = (await response.json()) as withUrl;
+      fanArtObject["src"] = res.url;
     };
     await upload();
 
-    var filtered = { general: [], artist: [], character: [] };
+    var filtered:{general: string[], artist: string[], character: string[]} = { general: [], artist: [], character: [] };
 
     for (var tag of fanArtTags) {
       if (tag.category === "general") {
@@ -143,13 +139,15 @@ export default function PostFanArt() {
           body: JSON.stringify(fanArtObject),
         },
       );
-      const result = await response.json();
-      console.log(result);
-      handleMessage(
-        "Fan art publicado",
-        "Fan art publicado exitosamente",
-        "success",
-      );
+      const res = (await response.json()) as response;
+      if(res.success){
+        handleMessage(
+          "Fan art publicado",
+          "Fan art publicado exitosamente",
+          "success",
+        );
+      }
+      
     };
     await uploadFanArt();
     setLoading(false);
@@ -166,6 +164,7 @@ export default function PostFanArt() {
               <p>Intenta conseguir la imagen en mayor calidad posible</p>
               <input
                 onChange={() => {
+                  if(!fileRef.current)return
                   setFile(
                     URL.createObjectURL(
                       fileRef.current.files[fileRef.current.files.length - 1],
@@ -210,8 +209,8 @@ export default function PostFanArt() {
               <p>Dependiendo de la nudes</p>
               <select
                 value={inputs.clasification}
-                onChange={(e) =>
-                  setInputs({ ...inputs, clasification: e.target.value })
+                onChange={(e) =>{
+                  setInputs({ ...inputs, clasification: e.target.value as "general" | "sensitive" | "explicit" | "questionable" })}
                 }
                 className={`${styles.button} ${styles.buttonLoad}`}
               >

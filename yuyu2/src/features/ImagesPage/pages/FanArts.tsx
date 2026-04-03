@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { ReduceQuality }  from "@features";
-import { HeaderPages, type fanArt, type fanArtReducedQuality, type returnedReducedQuality } from "@shared";
+import { HeaderPages, ReduceQuality, type fanArt, type fanArtReducedQuality, type returnedReducedQuality } from "@shared";
 import styles from "./css/FanArts.module.css";
 export default function FanArts() {
   //Used in all the page

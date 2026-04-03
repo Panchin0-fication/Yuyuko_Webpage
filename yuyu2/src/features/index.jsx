@@ -2,7 +2,7 @@
 export { default as FrontPage } from "./frontPage/pages/FrontPage.jsx";
 export { default as Oficial } from "./oficial/page/Oficial.jsx";
 export { default as Fanon } from "./fanon/page/Fanon.jsx";
-export { default as FrontImages } from "./ImagesPage/pages/FrontImages.jsx";
+export { default as FrontImages } from "./ImagesPage/pages/FrontImages.js";
 
 //FrontPage
 export { default as Nav } from "./frontPage/components/Nav.jsx";
@@ -10,16 +10,14 @@ export { default as YuyuInfo } from "./frontPage/components/YuyuInfo.jsx";
 export { default as InfoWebpage } from "./frontPage/components/InfoWebpage.jsx";
 export { default as Footer } from "./frontPage/components/Footer.jsx";
 
-export { default as Sprites } from "./ImagesPage/pages/Sprites.jsx";
-export { default as Mangas } from "./ImagesPage/pages/Mangas.jsx";
+export { default as Sprites } from "./ImagesPage/pages/Sprites.js";
+export { default as Mangas } from "./ImagesPage/pages/Mangas.js";
 export { default as FanArts } from "./ImagesPage/pages/FanArts.js";
-export { default as PostFanArt } from "./ImagesPage/pages/PostFanArt.jsx";
+export { default as PostFanArt } from "./ImagesPage/pages/PostFanArt.js";
 
-export { default as TitleSprites } from "./ImagesPage/components/TitleSprites.jsx";
-export { default as ImageSpoiler } from "./ImagesPage/components/ImageSpoiler.jsx";
-export { default as TagsInterface } from "./ImagesPage/components/TagsInterface.jsx";
-
-export { ReduceQuality } from "./ImagesPage/components/ReduceQuality.js";
+export { default as TitleSprites } from "./ImagesPage/components/TitleSprites.js";
+export { default as ImageSpoiler } from "./ImagesPage/components/ImageSpoiler.js";
+export { default as TagsInterface } from "./ImagesPage/components/TagsInterface.js";
 
 //Auth pages
 export { default as CreateAccount } from "./Auth/pages/CreateAccount.js";

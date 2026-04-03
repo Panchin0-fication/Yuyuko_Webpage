@@ -1,47 +1,52 @@
-import { useState } from "react";
-import { Message, SmallMessage } from "@shared";
+import { useState, type ReactNode } from "react";
+import { SmallMessage, type tag } from "@shared";
 import styles from "./css/TagsInterface.module.css";
 
-export default function TagsInterface({ data, fanArtTags, setfanArtTags }) {
+type props = {
+  data:tag[]
+  fanArtTags:tag[]
+  setfanArtTags:React.Dispatch<React.SetStateAction<tag[]>>
+}
+export default function TagsInterface({ data, fanArtTags, setfanArtTags }:props) {
   const [inputs, setInputs] = useState({ search: "", addTag: "" });
   const [addButtonState, setAddButtonState] = useState("general");
-  const [page, setPage] = useState(1);
-  const [message, setMessage] = useState(null);
+  const [page, setPage] = useState<number>(1);
+  const [smallMessage, setSmallMessage] = useState<ReactNode | null>(null);
 
-  function addTagFromSearch(item) {
+  function addTagFromSearch(item:tag):void {
     if (!fanArtTags.find((tag) => tag.name === item.name)) {
       setfanArtTags(
         fanArtTags.concat({
           name: item.name,
           category: item.category,
-          status: "accepted",
+          status: item.status,
         }),
       );
     }
   }
 
-  function addTagFromNew() {
-    const added = inputs.addTag.trim().replace(" ", "_");
+  function addTagFromNew():void {
+    const added:string = inputs.addTag.trim().replace(" ", "_");
     if (inputs.addTag === "") {
-      setMessage(
-        <SmallMessage isError={true} message="Ingresa nombre del tag" />,
+      setSmallMessage(
+        <SmallMessage type="error" message="Ingresa nombre del tag" />,
       );
       setTimeout(() => {
-        setMessage(null);
+        setSmallMessage(null);
       }, 2000);
       return;
     }
-    if (data.find((ora) => ora.name === added)) {
-      setMessage(<SmallMessage isError={true} message="Ese tag ya existe" />);
+    if (data.find((addedTag) => addedTag.name === added)) {
+      setSmallMessage(<SmallMessage type="error" message="Ese tag ya existe" />);
       setTimeout(() => {
-        setMessage(null);
+        setSmallMessage(null);
       }, 2000);
       return;
     }
     if (fanArtTags.find((tag) => tag.name === added)) {
-      setMessage(<SmallMessage isError={true} message="Ya añadiste ese tag" />);
+      setSmallMessage(<SmallMessage type="error" message="Ya añadiste ese tag" />);
       setTimeout(() => {
-        setMessage(null);
+        setSmallMessage(null);
       }, 2000);
       return;
     }
@@ -50,15 +55,16 @@ export default function TagsInterface({ data, fanArtTags, setfanArtTags }) {
         name: added,
         category: addButtonState,
         status: "pending",
-      }),
+      } as tag),
     );
   }
 
-  function removeTag(tag) {
+  function removeTag(tag:tag) {
     setfanArtTags(fanArtTags.filter((current) => current.name !== tag.name));
   }
 
-  function arrow(direction) {
+  function arrow(direction:"foward" | "backward") {
+    if(!tagList)return;
     if (direction === "foward") {
       if (page * 15 < tagList.length) {
         setPage(page + 1);
@@ -69,8 +75,8 @@ export default function TagsInterface({ data, fanArtTags, setfanArtTags }) {
       }
     }
   }
-
-  const tagList = data.reduce((acumulador, item, index) => {
+  const tagList = data.reduce((acumulador:ReactNode[] = [], item:tag, index:number) => {
+    if(!acumulador)return;
     if (item.name.includes(inputs.search) || inputs.search === "") {
       acumulador.push(
         <p
@@ -128,32 +134,33 @@ export default function TagsInterface({ data, fanArtTags, setfanArtTags }) {
                 setPage(1);
               }}
             />
-            <section className={styles.tagsContainer}>
-              {tagList.slice((page - 1) * 15, page * 15)}
-              {tagList.length === 0 && (
-                <p className={styles.emptyTags}>No se encontraron tags...</p>
-              )}
-            </section>
+            {tagList && <>
+              <section className={styles.tagsContainer}>
+                {tagList.slice((page - 1) * 15, page * 15)}
+                {tagList.length === 0 && (
+                  <p className={styles.emptyTags}>No se encontraron tags...</p>
+                )}
+              </section>
 
-            {tagList.length >= 1 && (
-              <div className={styles.pages}>
-                <img
-                  className={page > 1 ? styles.arrowActive : ""}
-                  onClick={() => arrow("back")}
-                  src="/icons/arrow_back.svg"
-                  alt=""
-                />
-                <h3>{page}</h3>
-                <img
-                  className={
-                    page * 15 < tagList.length ? styles.arrowActive : ""
-                  }
-                  onClick={() => arrow("foward")}
-                  src="/icons/arrow_forward.svg"
-                  alt=""
-                />
-              </div>
-            )}
+              {tagList.length >= 1 && (
+                <div className={styles.pages}>
+                  <img
+                    className={page > 1 ? styles.arrowActive : ""}
+                    onClick={() => arrow("backward")}
+                    src="/icons/arrow_back.svg"
+                    alt=""
+                  />
+                  <h3>{page}</h3>
+                  <img
+                    className={
+                      page * 15 < tagList.length ? styles.arrowActive : ""
+                    }
+                    onClick={() => arrow("foward")}
+                    src="/icons/arrow_forward.svg"
+                    alt=""
+                  />
+                </div>
+            )}</>}
           </section>
         </div>
         <div className={`${styles.addTags} ${styles.interfaceSection}`}>
@@ -199,7 +206,7 @@ export default function TagsInterface({ data, fanArtTags, setfanArtTags }) {
                 {addButtonState === "artist" && "artista"}{" "}
                 {addButtonState === "character" && "personaje"}
               </button>
-              {message}
+              {smallMessage}
             </div>
           </section>
         </div>

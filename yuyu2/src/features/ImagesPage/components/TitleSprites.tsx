@@ -1,19 +1,29 @@
-import { TextContainer } from "@shared";
+import { TextContainer, type endingSprite } from "@shared";
 import styles from "./css/TitleSprites.module.css";
 import { useState } from "react";
+type props = {
+  title:string;
+  info:string;
+  credits:string;
+  id:string;
+  endings?:endingSprite[] | null
+  setEndings?: React.Dispatch<React.SetStateAction<endingSprite[]>> | null
+  
+}
 export default function TitleSprites({
   title,
   info,
   credits,
   id,
-  endings,
-  setEndings,
-}) {
+  endings = null,
+  setEndings = null,
+}:props) {
   const [arrow, setArrow] = useState(false);
 
   //This funtion remove the spoiler from any of the sprites in endings section
   function handleShowAll() {
-    const newEndings = endings.map((end) => {
+    if(!setEndings || !endings)return;
+    const newEndings:endingSprite[] = endings.map((end) => {
       return { ...end, hidden: false };
     });
     setEndings(newEndings);
