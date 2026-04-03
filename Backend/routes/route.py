@@ -172,8 +172,6 @@ async def validate_reset_password(token:Annotated[str, Form()], password:Annotat
     )
 
     return {"code":"PASSWORD_CHANGED","success":True}
-    #return {"message": f"La contraseña del usuario {user["userName"]} ha cambiado","type":"Success"}
-
 
 @router.post("/user/verify-email")
 def verify_email(token: Annotated[str, Form()]):
@@ -215,30 +213,29 @@ def profile(user = Depends(get_current_user)):
 
 @router.post("/newTags")
 async def post_new_tags(tags: List[Tags]):
-    
-    items = []
-    for tag in tags:
-        items.append(tag.model_dump())
-
-    tagNames = []
-    for tag in items:
-        tagNames.append(tag["name"])
-
-    repited = list_serial(collection_name.find({"name":{"$in":tagNames}}))
-    repited_without_id = []
-    for singular_repited in repited:
-        del singular_repited["id"]
-        repited_without_id.append(singular_repited)
-
-    for repitedTag in repited_without_id:
-        print("repetido",repitedTag)
-        print("Tags",items)
-        items.remove(repitedTag)
-
     try:
+        items = []
+        for tag in tags:
+            items.append(tag.model_dump())
+
+        tagNames = []
+        for tag in items:
+            tagNames.append(tag["name"])
+
+        repited = list_serial(collection_name.find({"name":{"$in":tagNames}}))
+        repited_without_id = []
+        for singular_repited in repited:
+            del singular_repited["id"]
+            repited_without_id.append(singular_repited)
+
+        for repitedTag in repited_without_id:
+            print("repetido",repitedTag)
+            print("Tags",items)
+            items.remove(repitedTag)
+    
         collection_name.insert_many(items)
         return {"code":"TAGS_ADDED","success":True}
-    except Exception as e:
+    except Exception:
         return {"code":"UNEXPECTED_ERROR","success":False}
     
 @router.post("/upload-image")
@@ -249,14 +246,13 @@ async def upload_image(file: UploadFile = File(...)):
         return {"code":"IMAGE_UPLOAD_SUCCESSFUL","success":True, "url":result["secure_url"]}
 
     except Exception:
-        return {"code":"UNEXPECTED_ERROR","success":False}
+        return {"code":"UNEXPECTED_ERROR","success":False, "url":None}
 
 @router.post("/newFanArt")
 async def post_new_fanArt(fanArt: FanArts):
     item = fanArt.model_dump()
     try:
         newFanArt = collection_fanArts.insert_one(item)
-        createdFanArt = list_serial_fanArts(collection_fanArts.find({"_id":newFanArt.inserted_id}))
         return {"code":"CREATED_FANART","success":True}
     except Exception:
         return {"code":"UNEXPECTED_ERROR","success":False}
