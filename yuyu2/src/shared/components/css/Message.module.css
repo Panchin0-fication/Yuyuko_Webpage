@@ -1,3 +1,14 @@
+.filterMsg::after {
+  content: "";
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background-color: #030000;
+  opacity: 30%;
+  align-self: center;
+  top: 0;
+  left: 0;
+}
 .headerMsg {
   display: flex;
   justify-content: center;

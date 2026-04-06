@@ -17,7 +17,7 @@ export default function Message({
 }: props) {
   return (
     <>
-      <div className="filterMsg"></div>
+      <div className={styles.filterMsg}></div>
       <div
         className={`${styles.message} ${type === "error" ? styles.error : styles.succes}`}
       >

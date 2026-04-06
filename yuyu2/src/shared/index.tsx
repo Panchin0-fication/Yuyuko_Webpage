@@ -7,6 +7,7 @@ export { default as ImagesWiki } from "./components/ImagesWiki.jsx";
 export { default as Message } from "./components/Message.js";
 export { default as BlockMessage } from "./components/BlockMessage.js";
 export { default as SmallMessage } from "./components/SmallMessage.js";
+export { default as InfoMessage } from "./components/InfoMessage.js";
 
 export { ValidateSession } from "./functions/validateSesion.js";
 export { ReduceQuality } from "./functions/ReduceQuality.js";
