@@ -1,20 +1,28 @@
-import { useState, type ReactNode } from "react";
-import { Link, type To } from "react-router-dom";
+import { type ReactNode } from "react";
+import { Link, type To, useNavigate, useLocation } from "react-router-dom";
 import styles from "./css/Message.module.css";
 type props = {
   header: String;
   text: String;
   type: "error" | "success";
   setMessage: (value: null | ReactNode) => void;
-  toRedirect: To;
+  toRedirect: string;
+  previus?: any;
 };
+
 export default function Message({
   header,
   text,
   type,
   setMessage,
   toRedirect = "",
+  previus = "/",
 }: props) {
+  const navigate = useNavigate();
+  function onClick(): void {
+    console.log("EL CARAJO", previus);
+    navigate(toRedirect, previus);
+  }
   return (
     <>
       <div className={styles.filterMsg}></div>
@@ -38,10 +46,8 @@ export default function Message({
         </div>
         {toRedirect !== "" && (
           <div className={styles.button}>
-            <button className={styles.continue}>
-              <Link className={styles.continueText} to={toRedirect}>
-                Continuar
-              </Link>
+            <button className={styles.continue} onClick={onClick}>
+              <p className={styles.continueText}>Continuar</p>
             </button>
           </div>
         )}

@@ -1,10 +1,12 @@
 import { useState, type ReactNode, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ValidateInput, ValidateContainerAndHeader } from "@features";
 import { ValidateSession, SmallMessage, Message, type response } from "@shared";
 import styles from "./css/ValidateUser.module.css";
 export default function ValidateUser() {
-  const {t, i18n} = useTranslation("auth");
+  const { t, i18n } = useTranslation("auth");
+  const location = useLocation();
   const [popupMessage, setPopupMessage] = useState<null | ReactNode>(null);
   const [smallMessage, setSmallMessage] = useState<null | ReactNode>(null);
   const [positon, setPosition] = useState<
@@ -17,6 +19,8 @@ export default function ValidateUser() {
   const [newEmail, setNewEmail] = useState("");
   const [loading, setLoading] = useState<boolean>(false);
 
+  const from = location.state?.from || "/";
+
   useEffect(() => {
     const toAsync = async (): Promise<void> => {
       const res = await ValidateSession(localStorage.getItem("token"));
@@ -28,6 +32,7 @@ export default function ValidateUser() {
             type="error"
             setMessage={setPopupMessage}
             toRedirect={"/auth/login"}
+            previus={from}
           ></Message>,
         );
         return;
@@ -40,6 +45,7 @@ export default function ValidateUser() {
             type="error"
             setMessage={setPopupMessage}
             toRedirect={"/auth/login"}
+            previus={from}
           ></Message>,
         );
         return;
@@ -64,8 +70,11 @@ export default function ValidateUser() {
     );
     const res = (await response.json()) as response;
     setSmallMessage(
-        <SmallMessage type={res.success ? "success" : "error"} message={t(res.code)}></SmallMessage>,
-      );
+      <SmallMessage
+        type={res.success ? "success" : "error"}
+        message={t(res.code)}
+      ></SmallMessage>,
+    );
     setLoading(false);
   };
 
@@ -74,13 +83,13 @@ export default function ValidateUser() {
     setPosition("chaneEmail");
     setLoading(true);
     const formData = new FormData();
-    formData.append("email",newEmail);
-    formData.append("lang",String(i18n.language))
+    formData.append("email", newEmail);
+    formData.append("lang", String(i18n.language));
     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/user/changeEmail`,
       {
         method: "POST",
-        body:formData,
+        body: formData,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -95,9 +104,20 @@ export default function ValidateUser() {
       );
     } else {
       const res = (await response.json()) as response;
-      setSmallMessage(
-        <SmallMessage type={res.success ? "success" : "error"} message={t(res.code)}></SmallMessage>,
-      );
+      if (res.success) {
+        setPopupMessage(
+          <Message
+            header={"Cuenta validada"}
+            text={t(res.code)}
+            type="success"
+            setMessage={setPopupMessage}
+            toRedirect={from}
+          />,
+        );
+      } else
+        setSmallMessage(
+          <SmallMessage type="error" message={t(res.code)}></SmallMessage>,
+        );
     }
     setLoading(false);
   }
@@ -106,22 +126,28 @@ export default function ValidateUser() {
     setSmallMessage(null);
     setPosition("validateCode");
     setLoading(true);
-    
+
     const formData = new FormData();
-    formData.append("token",code)
+    formData.append("token", code);
     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/user/verify-email?token=${code}`,
       {
         method: "POST",
-        body:formData,
+        body: formData,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       },
     );
     const res = (await response.json()) as response;
-    setSmallMessage(
-      <SmallMessage type={res.success ? "success" : "error"} message={t(res.code)}></SmallMessage>,
+    setPopupMessage(
+      <Message
+        type={res.success ? "success" : "error"}
+        text={t(res.code)}
+        header={t("message_header_verified_account")}
+        setMessage={setPopupMessage}
+        toRedirect={from}
+      />,
     );
     setLoading(false);
   }
@@ -153,7 +179,9 @@ export default function ValidateUser() {
                   : setDisplayOption("resend");
               }}
             >
-              <p className={styles.generalInfo}>{t("page_subtitle_resend_code")}</p>
+              <p className={styles.generalInfo}>
+                {t("page_subtitle_resend_code")}
+              </p>
               <img
                 className={`${styles.iconOption} ${displayOption === "resend" && styles.iconInverted}`}
                 src="/icons/arrow_down.svg"
@@ -163,9 +191,7 @@ export default function ValidateUser() {
 
             {displayOption === "resend" && (
               <div className={styles.extra}>
-                <p>
-                  {t("page_paragraph_resend_code_info")}
-                </p>
+                <p>{t("page_paragraph_resend_code_info")}</p>
                 <button
                   className={styles.buttonInExtra}
                   onClick={() => {
@@ -195,7 +221,9 @@ export default function ValidateUser() {
                   : setDisplayOption("changeEmail");
               }}
             >
-              <p className={styles.generalInfo}>{t("page_subtitle_change_email")}</p>
+              <p className={styles.generalInfo}>
+                {t("page_subtitle_change_email")}
+              </p>
               <img
                 className={`${styles.iconOption} ${displayOption === "changeEmail" && styles.iconInverted}`}
                 src="/icons/arrow_down.svg"

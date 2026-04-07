@@ -12,12 +12,36 @@
   display: flex;
   justify-content: center;
 }
-.serach {
+.search {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   margin-bottom: 5px;
+}
+.addFanartButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  padding: 3px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.addFanartButton:hover {
+  background-color: rgb(232, 231, 231);
+}
+.addFanartSpan {
+  background-color: black;
+  color: white;
+  padding: 7px;
+  border-radius: 5px;
+  position: absolute;
+  transform: translateY(35px);
+  display: none;
+}
+.showSpan {
+  display: block;
 }
 .tags {
   width: max-content;

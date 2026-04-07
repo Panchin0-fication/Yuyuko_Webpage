@@ -1,11 +1,22 @@
 import { useEffect, useState, useRef, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 import Draggable from "react-draggable";
 import styles from "./css/PostFanArt.module.css";
 import { TagsInterface } from "@features";
-import { HeaderPages, Message, type tag, type tagWithId, type response, type fanArt, type withUrl } from "@shared";
+import { ValidateSession } from "@shared";
+import {
+  HeaderPages,
+  Message,
+  type tag,
+  type tagWithId,
+  type response,
+  type fanArt,
+  type withUrl,
+} from "@shared";
 export default function PostFanArt() {
-  const {t} = useTranslation("images");
+  const { t } = useTranslation("images");
+  const location = useLocation();
   const fileRef = useRef<any>([]);
   const nodeRef = useRef(null);
   //All tags fetched
@@ -18,26 +29,56 @@ export default function PostFanArt() {
 
   const [loading, setLoading] = useState(false);
 
-  const [inputs, setInputs] = useState<{clasification:"general" | "sensitive" | "explicit" | "questionable",originalLink:string} >({
+  const [inputs, setInputs] = useState<{
+    clasification: "general" | "sensitive" | "explicit" | "questionable";
+    originalLink: string;
+  }>({
     clasification: "general",
     originalLink: "",
   });
 
+  const from = location.state?.from || "/";
+
   useEffect(() => {
+    const validateSesion = async (): Promise<void> => {
+      console.log("VENATOR", from);
+      const res = await ValidateSession(localStorage.getItem("token"));
+      if (!localStorage.getItem("token") || !res.success) {
+        setMessage(
+          <Message
+            header={"Sin sesión"}
+            text="Debes tener sesión iniciada para publicar FanArts"
+            setMessage={setMessage}
+            toRedirect={"/auth/login"}
+            type="error"
+            previus={{ state: { from: location.pathname } }}
+          />,
+        );
+      }
+    };
+    validateSesion();
     const getTags = async () => {
       const dataFetch = await fetch(`${import.meta.env.VITE_API_URL}/`);
       const data = (await dataFetch.json()) as tagWithId[];
 
-      let tags:tag[] = [];
+      let tags: tag[] = [];
       for (const tag of data) {
-        tags.push({ name: tag.name, category: tag.category, status: tag.status });
+        tags.push({
+          name: tag.name,
+          category: tag.category,
+          status: tag.status,
+        });
       }
       setTags(tags);
     };
     getTags();
   }, []);
 
-  function handleMessage(text:string, header:string, type:"error" | "success") {
+  function handleMessage(
+    text: string,
+    header: string,
+    type: "error" | "success",
+  ) {
     setMessage(
       <Message
         header={header}
@@ -53,11 +94,19 @@ export default function PostFanArt() {
     let fanArtObject = {} as fanArt;
     //Errors
     if (!file) {
-      handleMessage(t("message_header_error_posting"), t("message_body_error_posting_no_file"), "error");
+      handleMessage(
+        t("message_header_error_posting"),
+        t("message_body_error_posting_no_file"),
+        "error",
+      );
       return;
     }
     if (inputs.originalLink === "") {
-      handleMessage(t("message_header_error_posting"), t("message_body_error_posting_no_link"), "error");
+      handleMessage(
+        t("message_header_error_posting"),
+        t("message_body_error_posting_no_link"),
+        "error",
+      );
       return;
     }
     //Checks if the link works
@@ -76,7 +125,7 @@ export default function PostFanArt() {
     //Upload new tags to the database
     const newTags = fanArtTags.filter((tag) => tag.status === "pending");
 
-    const uploadTags = async ():Promise<void> => {
+    const uploadTags = async (): Promise<void> => {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/newTags`, {
         method: "Post",
         headers: {
@@ -85,8 +134,12 @@ export default function PostFanArt() {
         body: JSON.stringify(newTags),
       });
       const res = (await response.json()) as response;
-      if(!res.success){
-        handleMessage(t("message_header_error_posting"),t("message_body_unexpected_error_new_tags"),"error");
+      if (!res.success) {
+        handleMessage(
+          t("message_header_error_posting"),
+          t("message_body_unexpected_error_new_tags"),
+          "error",
+        );
       }
     };
     if (newTags.length >= 1) {
@@ -95,7 +148,7 @@ export default function PostFanArt() {
 
     //Upload image to cloudinary
     const upload = async () => {
-      if(!fileRef.current)return
+      if (!fileRef.current) return;
       const formData = new FormData();
       formData.append("file", fileRef.current.files[0]);
       formData.append("upload_preset", "images");
@@ -113,7 +166,8 @@ export default function PostFanArt() {
     };
     await upload();
 
-    var filtered:{general: string[], artist: string[], character: string[]} = { general: [], artist: [], character: [] };
+    var filtered: { general: string[]; artist: string[]; character: string[] } =
+      { general: [], artist: [], character: [] };
 
     for (var tag of fanArtTags) {
       if (tag.category === "general") {
@@ -144,14 +198,13 @@ export default function PostFanArt() {
         },
       );
       const res = (await response.json()) as response;
-      if(res.success){
+      if (res.success) {
         handleMessage(
           t("message_header_success_posting"),
           t("message_body_success"),
           "success",
         );
       }
-      
     };
     await uploadFanArt();
     setLoading(false);
@@ -168,7 +221,7 @@ export default function PostFanArt() {
               <p>{t("body_select_file")}</p>
               <input
                 onChange={() => {
-                  if(!fileRef.current)return
+                  if (!fileRef.current) return;
                   setFile(
                     URL.createObjectURL(
                       fileRef.current.files[fileRef.current.files.length - 1],
@@ -213,9 +266,16 @@ export default function PostFanArt() {
               <p>{t("body_select_clasification")}</p>
               <select
                 value={inputs.clasification}
-                onChange={(e) =>{
-                  setInputs({ ...inputs, clasification: e.target.value as "general" | "sensitive" | "explicit" | "questionable" })}
-                }
+                onChange={(e) => {
+                  setInputs({
+                    ...inputs,
+                    clasification: e.target.value as
+                      | "general"
+                      | "sensitive"
+                      | "explicit"
+                      | "questionable",
+                  });
+                }}
                 className={`${styles.button} ${styles.buttonLoad}`}
               >
                 <option>General</option>

@@ -11,24 +11,23 @@
   z-index: 7;
 }
 .infoMessage {
-  transform: translateY(10vh);
   z-index: 10;
   justify-self: center;
   position: absolute;
   left: 0;
   right: 0;
+  top: 0;
+  bottom: 0;
   background-color: rgb(244, 244, 244);
   border: 3px solid rgb(206, 206, 206);
   border-radius: 15px;
-  padding: 25px;
+  padding: 10px 25px;
   width: 500px;
+  height: max-content;
   margin: auto;
   display: flex;
+  gap: 10px;
   flex-direction: column;
-}
-.infoMessage hr {
-  margin-bottom: 10px;
-  margin-top: 10px;
 }
 .infoMessage p {
   font-size: 18px;
@@ -64,6 +63,12 @@
 .infoMessage button:hover {
   background-color: rgb(54, 94, 255);
   color: white;
+  border: 2px solid rgb(244, 244, 244);
+}
+.childrenInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 .buttons {
   display: flex;

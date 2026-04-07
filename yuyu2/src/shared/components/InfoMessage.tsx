@@ -3,14 +3,12 @@ import { type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import styles from "./css/InfoMessage.module.css";
 type props = {
-  size: "full" | "small";
   header: string;
   onCancel: () => void;
   onContinue: () => void;
   children: ReactNode;
 };
 export default function InfoMessage({
-  size,
   header,
   onCancel,
   onContinue,
@@ -20,9 +18,7 @@ export default function InfoMessage({
   return (
     <>
       <div className={styles.background}></div>
-      <div
-        className={`${styles.infoMessage} ${size === "full" ? styles.fullSize : styles.smallSize}`}
-      >
+      <div className={`${styles.infoMessage}`}>
         <header>
           <h1>{header}</h1>
           <img src="/staticImgs/generalUse/Myon.png" alt="" />
