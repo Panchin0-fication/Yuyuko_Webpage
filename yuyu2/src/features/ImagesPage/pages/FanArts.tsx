@@ -79,9 +79,7 @@ export default function FanArts() {
 
     //SSAFSUEFNOGUN
     data.splice(8);
-
     setData(data);
-    console.log(data);
 
     let reduced: fanArtReducedQuality[] = [];
 

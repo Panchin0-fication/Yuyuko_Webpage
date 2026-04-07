@@ -1,9 +1,4 @@
-import {
-  useState,
-  useEffect,
-  useRef,
-  type ReactNode,
-} from "react";
+import { useState, useEffect, useRef, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { LogInput, LogHeader, LogContainer } from "@features";
 import { SmallMessage, Message, type response, type withToken } from "@shared";
@@ -15,7 +10,7 @@ export default function CreateAccount() {
     password: string;
     confirmPass?: string;
   }
-  const {t, i18n} = useTranslation("auth");
+  const { t, i18n } = useTranslation("auth");
   const [loading, setLoading] = useState<boolean>(false);
   const [smallMessage, setSmallMessage] = useState<null | ReactNode>();
   const [popupMessage, setPopupMessage] = useState<null | ReactNode>();
@@ -40,12 +35,19 @@ export default function CreateAccount() {
   const isDataRegistered = async (): Promise<void> => {
     if (inputFields.name !== "") {
       const formData = new FormData();
-      formData.append("email",inputFields.email !== "" ? String(inputFields.email) : "_")
-      formData.append("name",inputFields.name !== "" ? String(inputFields.name) : "_")
+      formData.append(
+        "email",
+        inputFields.email !== "" ? String(inputFields.email) : "_",
+      );
+      formData.append(
+        "name",
+        inputFields.name !== "" ? String(inputFields.name) : "_",
+      );
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/isDataRegistered`,{
+        `${import.meta.env.VITE_API_URL}/isDataRegistered`,
+        {
           method: "POST",
-          body:formData,
+          body: formData,
         },
       );
       const res = (await response.json()) as response;
@@ -97,32 +99,33 @@ export default function CreateAccount() {
     const createUser = async (): Promise<void> => {
       setLoading(true);
       const formData = new FormData();
-      formData.append("userName", inputFields.name)
-      formData.append("email", String(inputFields.email))
-      formData.append("password",inputFields.password)
-      formData.append("lang",i18n.language)
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/user`,
-        {
-          method: "POST",
-          body:formData
-        },
-      );
-      if(!response.ok){
+      formData.append("userName", inputFields.name);
+      formData.append("email", String(inputFields.email));
+      formData.append("password", inputFields.password);
+      formData.append("lang", i18n.language);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/user`, {
+        method: "POST",
+        body: formData,
+      });
+      if (!response.ok) {
         createMessage("error", t("invalid_email_string_error"));
         return;
       }
       const res = (await response.json()) as withToken;
 
-      if(res.token) localStorage.setItem("token", String(res.token))
+      if (res.token) localStorage.setItem("token", String(res.token));
 
       setPopupMessage(
         <Message
-          header={res.success ? t("account_creation_success") : t("account_creation_error")}
+          header={
+            res.success
+              ? t("account_creation_success")
+              : t("account_creation_error")
+          }
           text={t(res.code)}
           setMessage={setPopupMessage}
           type={res.success ? "success" : "error"}
-          toRedirect={res.success ? "/auth/validate" : ""} 
+          toRedirect={res.success ? "/auth/validate" : ""}
         />,
       );
       setLoading(false);
@@ -131,8 +134,9 @@ export default function CreateAccount() {
   }
   return (
     <>
-    <br /><br />
-      <LogContainer>   
+      <br />
+      <br />
+      <LogContainer>
         <LogHeader title={t("page_header_create_account")} />
         <LogInput
           label={t("input_username_label")}
@@ -174,7 +178,8 @@ export default function CreateAccount() {
         />
         {smallMessage}
         <div className={styles.buttonAndLoad}>
-          <button className={styles.createButton}
+          <button
+            className={styles.createButton}
             onClick={() => {
               if (!loading) {
                 createAccount();

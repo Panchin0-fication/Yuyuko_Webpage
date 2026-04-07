@@ -1,13 +1,20 @@
-import { useEffect, useState, useRef, type ReactNode } from "react";
+import {
+  useEffect,
+  useState,
+  startTransition,
+  useRef,
+  type ReactNode,
+} from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import Draggable from "react-draggable";
 import styles from "./css/PostFanArt.module.css";
 import { TagsInterface } from "@features";
-import { ValidateSession } from "@shared";
 import {
   HeaderPages,
   Message,
+  ValidateSession,
+  InfoMessage,
   type tag,
   type tagWithId,
   type response,
@@ -26,7 +33,6 @@ export default function PostFanArt() {
   const [file, setFile] = useState<string | null>(null);
   const [show, setShow] = useState(false);
   const [message, setMessage] = useState<null | ReactNode>(null);
-
   const [loading, setLoading] = useState(false);
 
   const [inputs, setInputs] = useState<{
@@ -37,17 +43,23 @@ export default function PostFanArt() {
     originalLink: "",
   });
 
-  const from = location.state?.from || "/";
+  const ALLOWED_DOMAINS = [
+    "twitter.com",
+    "x.com",
+    "pixiv.net",
+    "reddit.com",
+    "deviantart.com",
+    "instagram.com",
+  ];
 
   useEffect(() => {
     const validateSesion = async (): Promise<void> => {
-      console.log("VENATOR", from);
       const res = await ValidateSession(localStorage.getItem("token"));
       if (!localStorage.getItem("token") || !res.success) {
         setMessage(
           <Message
-            header={"Sin sesión"}
-            text="Debes tener sesión iniciada para publicar FanArts"
+            header={t("message_header_no_loged_in")}
+            text={t("message_body_no_loged_in")}
             setMessage={setMessage}
             toRedirect={"/auth/login"}
             type="error"
@@ -75,8 +87,8 @@ export default function PostFanArt() {
   }, []);
 
   function handleMessage(
-    text: string,
     header: string,
+    text: string,
     type: "error" | "success",
   ) {
     setMessage(
@@ -90,9 +102,8 @@ export default function PostFanArt() {
     );
   }
 
-  async function uploadFanart() {
-    let fanArtObject = {} as fanArt;
-    //Errors
+  function uploadValidations() {
+    //%% Handle errors %%
     if (!file) {
       handleMessage(
         t("message_header_error_posting"),
@@ -109,9 +120,10 @@ export default function PostFanArt() {
       );
       return;
     }
-    //Checks if the link works
+    //Checks if the link works and is valid
+    let url: URL;
     try {
-      new URL(inputs.originalLink);
+      url = new URL(inputs.originalLink);
     } catch {
       handleMessage(
         t("message_header_error_posting"),
@@ -120,6 +132,69 @@ export default function PostFanArt() {
       );
       return;
     }
+    const isDomainAllowed = ALLOWED_DOMAINS.some((domain) =>
+      url.hostname.endsWith(domain),
+    );
+    // Check and allow direct link to images
+    const isDirectImage = /\.(jpeg|jpg|png|webp|gif)(\?.*)?$/i.test(
+      url.pathname,
+    );
+    if (!isDomainAllowed && !isDirectImage) {
+      handleMessage(
+        t("message_header_error_posting"),
+        t("message_body_error_posting_unauthorized_domain"),
+        "error",
+      );
+      return;
+    }
+    // Tags validations
+    if (fanArtTags.length < 5) {
+      handleMessage(
+        t("message_header_error_posting"),
+        t("message_body_error_not_enough_tags"),
+        "error",
+      );
+      return;
+    }
+    if (
+      fanArtTags.filter((tag) => tag.name === "saigyouji_yuyuko").length !== 1
+    ) {
+      handleMessage(
+        t("message_header_error_posting"),
+        t("message_body_error_not_yuyuko_tag"),
+        "error",
+      );
+      return;
+    }
+    //%% Handle warnings %%
+    let continueUpload = true;
+    if (fanArtTags.filter((tag) => tag.category === "artist").length < 1) {
+      startTransition(() => {
+        continueUpload = false;
+        setMessage(
+          <InfoMessage
+            header={t("info_message_no_artist_header")}
+            onCancel={() => {
+              setMessage(null);
+            }}
+            onContinue={() => {
+              uploadFanart();
+              setMessage(null);
+            }}
+          >
+            <h2>{t("info_message_no_artist_h2")}</h2>
+            <p>{t("info_message_no_artist_p_one")}</p>
+            <p>{t("info_message_no_artist_p_two")}</p>
+          </InfoMessage>,
+        );
+      });
+    }
+    //If there were no warnings
+    if (continueUpload) uploadFanart();
+  }
+
+  async function uploadFanart(): Promise<void> {
+    let fanArtObject = {} as fanArt;
     setLoading(true);
 
     //Upload new tags to the database
@@ -307,7 +382,7 @@ export default function PostFanArt() {
           <div>
             {loading && <img src="staticImgs/generalUse/kfc-kfcyuyuko.gif" />}
           </div>
-          <button onClick={uploadFanart} className={styles.buttonUpload}>
+          <button onClick={uploadValidations} className={styles.buttonUpload}>
             {t("button_upload_fanart")}
           </button>
         </div>

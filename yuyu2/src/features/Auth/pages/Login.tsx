@@ -22,7 +22,6 @@ export default function Login() {
 
   const from = location.state?.from || "/";
   useEffect(() => {
-    console.log("AAA", from);
     const callBackend = async (): Promise<void> => {
       const res = await ValidateSession(localStorage.getItem("token"));
       if (res?.success) {
@@ -53,7 +52,6 @@ export default function Login() {
     });
     const res = (await response.json()) as withToken;
     setLoading(false);
-    console.log("RES", res);
     if (
       res.code === "LOGIN_SUCCESSFUL" ||
       res.code === "LOGIN_SUCCESSFUL_UNVERIFIED"

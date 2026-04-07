@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
-import { Link, type To, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styles from "./css/Message.module.css";
 type props = {
   header: String;
@@ -20,7 +20,6 @@ export default function Message({
 }: props) {
   const navigate = useNavigate();
   function onClick(): void {
-    console.log("EL CARAJO", previus);
     navigate(toRedirect, previus);
   }
   return (
