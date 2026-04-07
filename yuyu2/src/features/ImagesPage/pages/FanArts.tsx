@@ -146,28 +146,19 @@ export default function FanArts() {
     startTransition(() => {
       setMessage(
         <InfoMessage
-          header="Añadir un fanArt"
+          header={t("info_message_add_fan_art_header")}
           onCancel={() => onCancel()}
           onContinue={() => onContinue()}
         >
-          <span>
-            Serás rediccionado a una aparatado de la pagina en el que podras
-            subir un nuevo FanArt
-          </span>
+          <span>{t("info_message_add_fan_art_span")}</span>
 
-          <p>Para subir un fanart antes necesitas:</p>
+          <p>{t("info_message_add_fan_art_p_one")}</p>
           <ol>
-            <li>Iniciar sesión para publicar</li>
-            <li>Link original del FanArt y el nombre de los autores</li>
-            <li>
-              Imagen en la mayor calidad posible sin modificaciones posteriores
-              a su obtención
-            </li>
+            <li>{t("info_message_add_fan_art_li_one")}</li>
+            <li>{t("info_message_add_fan_art_li_two")}</li>
+            <li>{t("info_message_add_fan_art_li_three")}</li>
           </ol>
-          <p>
-            Despues de publicar el FanArt deberas de esparar a que los
-            administradores lo acepten para que todos los usuarios pudan verlo
-          </p>
+          <p>{t("info_message_add_fan_art_p_two")}</p>
         </InfoMessage>,
       );
     });
