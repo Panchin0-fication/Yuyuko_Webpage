@@ -16,7 +16,6 @@ import {
   ValidateSession,
   InfoMessage,
   type tag,
-  type tagWithId,
   type response,
   type fanArt,
   type withUrl,
@@ -27,8 +26,9 @@ export default function PostFanArt() {
   const fileRef = useRef<any>([]);
   const nodeRef = useRef(null);
   //All tags fetched
-  const [tags, setTags] = useState<tag[]>([]);
+
   //Tags in the added fan art
+
   const [fanArtTags, setfanArtTags] = useState<tag[]>([]);
   const [file, setFile] = useState<string | null>(null);
   const [show, setShow] = useState(false);
@@ -69,21 +69,6 @@ export default function PostFanArt() {
       }
     };
     validateSesion();
-    const getTags = async () => {
-      const dataFetch = await fetch(`${import.meta.env.VITE_API_URL}/`);
-      const data = (await dataFetch.json()) as tagWithId[];
-
-      let tags: tag[] = [];
-      for (const tag of data) {
-        tags.push({
-          name: tag.name,
-          category: tag.category,
-          status: tag.status,
-        });
-      }
-      setTags(tags);
-    };
-    getTags();
   }, []);
 
   function handleMessage(
@@ -374,7 +359,6 @@ export default function PostFanArt() {
           </div>
           <br />
           <TagsInterface
-            data={tags}
             fanArtTags={fanArtTags}
             setfanArtTags={setfanArtTags}
           />

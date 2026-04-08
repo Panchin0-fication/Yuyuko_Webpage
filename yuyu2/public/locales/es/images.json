@@ -45,7 +45,7 @@
   "fanart_preview_text": "Vista del fanart",
 
   "small_message_error_no_tag_name": "Ingresa nombre del tag",
-  "small_message_error_already_exists": "Ese tag ya existe",
+  "TAG_ALREADY_EXISTS": "Ese tag ya existe",
   "small_message_error_already_added": "Ya añadiste ese tag",
   "header_interface_tags_added_tags": "Tags Añadidos",
   "text_interface_tags_add_tags": "Añade tags...",
