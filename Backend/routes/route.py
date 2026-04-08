@@ -210,6 +210,23 @@ async def login(userName:Annotated[str, Form()], password:Annotated[str, Form()]
 def profile(user = Depends(get_current_user)):
     return user
 
+@router.get("/tags")
+async def show_accepted_tags(num: int, search: str | None = None):
+    number_of_tags = 20
+    if not search:
+        tags = list_serial(collection_name.find().skip((num-1)*number_of_tags).limit(number_of_tags + 1))
+    else:
+        tags = list_serial(collection_name.find({"name":{"$regex": search, "$options": "i"} }).skip((num-1)*number_of_tags).limit(number_of_tags + 1))
+    return tags
+    
+@router.get("/tags/check")
+async def does_tag_already_exists(newTag: str):
+    tag = collection_name.find_one({"name":newTag, "status":"accepted"})
+    if not tag:
+        return {"code":"TAG_DOES_NOT_EXISTS","success":True}
+    else:
+        return {"code":"TAG_ALREADY_EXISTS","success":False}
+
 @router.post("/newTags")
 async def post_new_tags(tags: List[Tags]):
     try:
