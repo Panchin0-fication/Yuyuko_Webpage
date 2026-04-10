@@ -4,7 +4,7 @@ import { ValidateContainerAndHeader, ValidateInput } from "@features";
 import { SmallMessage, Message, type response } from "@shared";
 import styles from "./css/ChangePassword.module.css";
 export default function ChangePassword() {
-  const {t, i18n} = useTranslation("auth")
+  const { t, i18n } = useTranslation("auth");
   const [email, setEmail] = useState<string>("");
   const [smallMessage, setSmallMessage] = useState<null | ReactNode>(null);
   const [message, setMessage] = useState<null | ReactNode>(null);
@@ -25,20 +25,27 @@ export default function ChangePassword() {
     }
     setLoading(true);
     const formData = new FormData();
-    formData.append("email",email);
-    formData.append("lang",i18n.language)
+    formData.append("email", email);
+    formData.append("lang", i18n.language);
     const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/user/reset_password/begin`,{
+      `${import.meta.env.VITE_API_URL}/user/reset_password/begin`,
+      {
         method: "POST",
-        body:formData
+        body: formData,
       },
     );
     const res = (await response.json()) as response;
-    console.log("QUWEE",res)
 
-    setSmallMessage(<SmallMessage message={t(res.code)} type={res.success ? "success":"error"} />)
-    if(res.success){setShowInputs(true);}
-    
+    setSmallMessage(
+      <SmallMessage
+        message={t(res.code)}
+        type={res.success ? "success" : "error"}
+      />,
+    );
+    if (res.success) {
+      setShowInputs(true);
+    }
+
     setLoading(false);
   }
 
@@ -49,10 +56,7 @@ export default function ChangePassword() {
       inputs.password === ""
     ) {
       setSmallMessage(
-        <SmallMessage
-          message={t("insufficient_input_data")}
-          type="error"
-        />,
+        <SmallMessage message={t("insufficient_input_data")} type="error" />,
       );
       return;
     }
@@ -63,12 +67,13 @@ export default function ChangePassword() {
       return;
     }
     const formData = new FormData();
-    formData.append("token",inputs.code);
-    formData.append("password",inputs.password);
+    formData.append("token", inputs.code);
+    formData.append("password", inputs.password);
     const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/user/reset_password/change`,{
+      `${import.meta.env.VITE_API_URL}/user/reset_password/change`,
+      {
         method: "POST",
-        body:formData
+        body: formData,
       },
     );
     const res = (await response.json()) as response;
@@ -132,7 +137,12 @@ export default function ChangePassword() {
                 }
               />
             </div>
-            <button className={styles.changePasswordButton} onClick={changePassword}>Cambiar contraseña</button>
+            <button
+              className={styles.changePasswordButton}
+              onClick={changePassword}
+            >
+              Cambiar contraseña
+            </button>
           </div>
         )}
       </ValidateContainerAndHeader>

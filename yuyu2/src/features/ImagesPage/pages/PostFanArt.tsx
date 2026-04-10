@@ -19,11 +19,19 @@ import {
   type response,
   type fanArt,
   type withUrl,
+  type previewImageDimensions,
 } from "@shared";
 export default function PostFanArt() {
   const { t } = useTranslation("images");
   const location = useLocation();
   const fileRef = useRef<any>([]);
+  const previewRef = useRef<any>(null);
+  const [previewImageDimensions, setPreviewImageDimensions] =
+    useState<previewImageDimensions>({
+      width: 0,
+      height: 0,
+      multiplier: 1.0,
+    });
   const nodeRef = useRef(null);
   //All tags fetched
 
@@ -36,7 +44,7 @@ export default function PostFanArt() {
   const [loading, setLoading] = useState(false);
 
   const [inputs, setInputs] = useState<{
-    clasification: "general" | "sensitive" | "explicit" | "questionable";
+    clasification: "general" | "sensitive" | "explicit";
     originalLink: string;
   }>({
     clasification: "general",
@@ -51,6 +59,8 @@ export default function PostFanArt() {
     "deviantart.com",
     "instagram.com",
   ];
+
+  const PREVIEW_MAX_DIMENSION = 300;
 
   useEffect(() => {
     const validateSesion = async (): Promise<void> => {
@@ -269,6 +279,51 @@ export default function PostFanArt() {
     await uploadFanArt();
     setLoading(false);
   }
+
+  function PreviewLoad() {
+    if (!previewRef.current) return;
+    if (previewImageDimensions.height === 0) {
+      //Original dimensions
+      const clientWidth = previewRef.current.clientWidth;
+      const clientHeight = previewRef.current.clientHeight;
+
+      // New dimensions
+      const preview_width =
+        clientWidth / clientHeight > 1
+          ? PREVIEW_MAX_DIMENSION
+          : PREVIEW_MAX_DIMENSION / (clientWidth / clientHeight);
+      const preview_height =
+        clientWidth / clientHeight > 1
+          ? PREVIEW_MAX_DIMENSION / (clientWidth / clientHeight)
+          : PREVIEW_MAX_DIMENSION;
+
+      previewRef.current.style.width = `${preview_width}px`;
+      previewRef.current.style.height = `${preview_height}px`;
+      setPreviewImageDimensions({
+        width: preview_width,
+        height: preview_height,
+        multiplier: 1,
+      });
+    } else {
+      previewRef.current.style.height = `${previewImageDimensions.height * previewImageDimensions.multiplier}px`;
+      previewRef.current.style.width = `${previewImageDimensions.width * previewImageDimensions.multiplier}px`;
+    }
+  }
+
+  function resizePreview(action: "+" | "-") {
+    if (!previewRef.current) return;
+    let newMultiplier = previewImageDimensions.multiplier;
+    newMultiplier =
+      action === "+" ? newMultiplier + 0.05 : newMultiplier - 0.05;
+
+    setPreviewImageDimensions({
+      ...previewImageDimensions,
+      multiplier: newMultiplier,
+    });
+
+    previewRef.current.style.height = `${previewImageDimensions.height * newMultiplier}px`;
+    previewRef.current.style.width = `${previewImageDimensions.width * newMultiplier}px`;
+  }
   return (
     <>
       <div className={`${styles.all} ${message && "filterMsg"}`}>
@@ -287,6 +342,11 @@ export default function PostFanArt() {
                       fileRef.current.files[fileRef.current.files.length - 1],
                     ),
                   );
+                  setPreviewImageDimensions({
+                    width: 0,
+                    height: 0,
+                    multiplier: 1.0,
+                  });
                   setShow(true);
                 }}
                 ref={fileRef}
@@ -323,7 +383,7 @@ export default function PostFanArt() {
             </div>
             <div className={styles.field}>
               <h3>{t("header_select_clasification")}</h3>
-              <p>{t("body_select_clasification")}</p>
+              <p>{t("select_clasification_p_one")}</p>
               <select
                 value={inputs.clasification}
                 onChange={(e) => {
@@ -332,15 +392,13 @@ export default function PostFanArt() {
                     clasification: e.target.value as
                       | "general"
                       | "sensitive"
-                      | "explicit"
-                      | "questionable",
+                      | "explicit",
                   });
                 }}
                 className={`${styles.button} ${styles.buttonLoad}`}
               >
                 <option>General</option>
                 <option>Sensitive</option>
-                <option>Cuestionable</option>
                 <option>Explicit</option>
               </select>
             </div>
@@ -378,8 +436,23 @@ export default function PostFanArt() {
                   <p>{t("fanart_preview_text")}</p>
                   <label onClick={() => setShow(false)}>X</label>
                 </header>
+                <div className={styles.resizeButtons}>
+                  <button onClick={() => resizePreview("+")}>
+                    <img src="/icons/add_box.svg" alt="" />
+                  </button>
+                  <button onClick={() => resizePreview("-")}>
+                    <img src="/icons/minus_box.svg" alt="" />
+                  </button>
+                </div>
                 <div className={styles.containerImg}>
-                  <img src={file} className={styles.draggableImg}></img>
+                  <img
+                    onLoad={() => {
+                      PreviewLoad();
+                    }}
+                    ref={previewRef}
+                    src={file}
+                    className={styles.draggableImg}
+                  ></img>
                 </div>
               </>
             )}

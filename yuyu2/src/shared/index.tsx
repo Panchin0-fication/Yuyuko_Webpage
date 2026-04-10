@@ -25,3 +25,4 @@ export type { tag } from "./types/tags.js";
 export type { tagWithId } from "./types/tags.js";
 
 export type { endingSprite } from "./types/common.js";
+export type { previewImageDimensions } from "./types/common.js";

@@ -38,7 +38,7 @@
   "body_select_file": "Get the image in best quality resolution posible",
   "button_select_file": "Upload",
   "header_select_clasification": "Clasification",
-  "body_select_clasification": "Depending on what is shown in the fanart",
+  "select_clasification_p_one": "Depending on what is shown in the fanart",
   "header_enter_link": "Ingresa link original",
   "body_enter_link": "The link where the fanart image comes from",
   "button_upload_fanart": "Post Fanart",

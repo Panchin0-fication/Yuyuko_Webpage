@@ -38,7 +38,7 @@
   "body_select_file": "Intenta conseguir la imagen en mayor calidad posible",
   "button_select_file": "Subir",
   "header_select_clasification": "Clasificación",
-  "body_select_clasification": "Dependiendo de la nudes",
+  "select_clasification_p_one": "Dependiendo lo que se muestre en la imagen",
   "header_enter_link": "Ingresa link original",
   "body_enter_link": "El link de donde sale la imagen del fanart",
   "button_upload_fanart": "Postear Fanart",

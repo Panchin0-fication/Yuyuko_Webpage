@@ -73,21 +73,17 @@
   right: 60vw;
   top: 30vh;
   background-color: white;
-  width: 200px;
-  overflow: hidden;
+  width: 300px;
   min-width: 200px;
-  max-width: 450px;
-  width: fit-content;
+  max-height: 80vh;
   cursor: move;
 }
 .dragHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
-
+  padding: 12px 12px 0px 16px;
   user-select: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 .dragHeader p {
   font-size: 20px;
@@ -98,16 +94,16 @@
   cursor: pointer;
 }
 .containerImg {
-  padding: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
   background: #ffffff;
   min-height: 200px;
+  overflow: scroll;
+  max-height: 60vh;
 }
+
 .draggableImg {
-  max-width: 200px;
-  max-height: 300px;
   object-fit: contain;
 }
 .originalLink {
@@ -115,4 +111,10 @@
 }
 .originalLink:focus {
   outline: none;
+}
+.resizeButtons {
+  padding-left: 12px;
+}
+.resizeButtons button {
+  width: max-content;
 }

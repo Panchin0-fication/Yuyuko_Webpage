@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, useRef, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { SmallMessage, type response, type tag, type tagWithId } from "@shared";
 import styles from "./css/TagsInterface.module.css";
@@ -20,16 +20,17 @@ export default function TagsInterface({ fanArtTags, setfanArtTags }: props) {
     "general" | "character" | "artist"
   >("general");
   const [smallMessage, setSmallMessage] = useState<ReactNode | null>(null);
+  const [errorTag, setErrorTag] = useState<string | null>(null);
 
   const NUMBER_OF_TAGS = 20;
 
   async function getTags(num: number) {
     setLoading(true);
+    setPage(1);
     const dataFetch = await fetch(
       `${import.meta.env.VITE_API_URL}/tags?num=${num}&search=${inputs.search}`,
     );
     const data = (await dataFetch.json()) as tagWithId[];
-
     let tags: tag[] = [];
     for (const tag of data) {
       tags.push({
@@ -38,7 +39,6 @@ export default function TagsInterface({ fanArtTags, setfanArtTags }: props) {
         status: tag.status,
       });
     }
-    console.log("LELO", tags);
     setTags(tags);
     setLoading(false);
   }
@@ -46,6 +46,23 @@ export default function TagsInterface({ fanArtTags, setfanArtTags }: props) {
   useEffect(() => {
     getTags(page);
   }, []);
+
+  //If the search tags inputs changes waits for 2 seconds without changes to serch tags in the backend
+  const timerRef = useRef<number | null>(null);
+  const isInitialMount = useRef(true);
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+    } else {
+      //Reset timer
+      if (timerRef.current !== null) {
+        window.clearTimeout(timerRef.current);
+      }
+      timerRef.current = window.setTimeout(() => {
+        getTags(1);
+      }, 2000);
+    }
+  }, [inputs.search]);
 
   function addTagFromSearch(item: tag): void {
     if (!fanArtTags.find((tag) => tag.name === item.name)) {
@@ -56,6 +73,11 @@ export default function TagsInterface({ fanArtTags, setfanArtTags }: props) {
           status: item.status,
         }),
       );
+    } else {
+      setErrorTag(item.name);
+      setTimeout(() => {
+        setErrorTag(null);
+      }, 1000);
     }
   }
 
@@ -116,7 +138,7 @@ export default function TagsInterface({ fanArtTags, setfanArtTags }: props) {
   }
 
   function arrow(direction: "foward" | "backward") {
-    if (!tagList || loading) return;
+    if (!tags || loading) return;
     if (direction === "foward") {
       if (tags.length >= NUMBER_OF_TAGS + 1) {
         getTags(page + 1);
@@ -129,24 +151,6 @@ export default function TagsInterface({ fanArtTags, setfanArtTags }: props) {
       }
     }
   }
-  const tagList = tags.reduce(
-    (acumulador: ReactNode[] = [], item: tag, index: number) => {
-      if (!acumulador) return;
-      if (item.name.includes(inputs.search) || inputs.search === "") {
-        acumulador.push(
-          <p
-            className={`${styles.label} ${styles.clickableLabel} ${item.category === "general" && styles.general} ${item.category === "character" && styles.character} ${item.category === "artist" && styles.artist}`}
-            key={index}
-            onClick={() => addTagFromSearch(item)}
-          >
-            {item.name}
-          </p>,
-        );
-      }
-      return acumulador;
-    },
-    [],
-  );
   return (
     tags && (
       <div className={`${styles.tagInterface}`}>
@@ -159,15 +163,19 @@ export default function TagsInterface({ fanArtTags, setfanArtTags }: props) {
             {fanArtTags.map((tag, id) => (
               <div
                 key={id}
-                className={`${styles.label} ${tag.category === "general" && styles.general} ${tag.category === "character" && styles.character} ${tag.category === "artist" && styles.artist}`}
+                className={` ${tag.category === "general" && styles.general} ${tag.category === "character" && styles.character} ${tag.category === "artist" && styles.artist}`}
               >
-                <p>{tag.name}</p>
-                <p
-                  className={styles.clickableLabel}
-                  onClick={() => removeTag(tag)}
+                <div
+                  className={`${tag.name === errorTag && styles.blinkAnimation} ${styles.label}`}
                 >
-                  X
-                </p>
+                  <p>{tag.name}</p>
+                  <p
+                    className={`${styles.clickableLabel}`}
+                    onClick={() => removeTag(tag)}
+                  >
+                    X
+                  </p>
+                </div>
               </div>
             ))}
             {fanArtTags.length === 0 && (
@@ -190,21 +198,33 @@ export default function TagsInterface({ fanArtTags, setfanArtTags }: props) {
               placeholder={"All"}
               onChange={(e) => {
                 setInputs({ addTag: inputs.addTag, search: e.target.value });
-                setPage(1);
               }}
             />
-            {tagList && (
+
+            {tags && (
               <>
                 <section className={styles.tagsContainer}>
-                  {tagList.slice(0, NUMBER_OF_TAGS)}
-                  {tagList.length === 0 && (
+                  {tags.slice(0, NUMBER_OF_TAGS).map((tag, index) => (
+                    <div
+                      className={` ${tag.name === errorTag && styles.blinkAnimation} ${tag.category === "general" && styles.general} ${tag.category === "character" && styles.character} ${tag.category === "artist" && styles.artist}`}
+                      key={index}
+                      onClick={() => addTagFromSearch(tag)}
+                    >
+                      <p
+                        className={`${tag.name === errorTag && styles.blinkAnimation} ${styles.label} ${styles.clickableLabel}`}
+                      >
+                        {tag.name}
+                      </p>
+                    </div>
+                  ))}
+                  {tags.length === 0 && (
                     <p className={styles.emptyTags}>
                       {t("text_interface_tags_no_tags_found")}
                     </p>
                   )}
                 </section>
 
-                {tagList.length >= 1 && (
+                {tags.length >= 1 && (
                   <div className={styles.pages}>
                     <img
                       className={page > 1 ? styles.arrowActive : ""}

@@ -57,6 +57,23 @@
 .clickableLabel {
   cursor: pointer;
 }
+@keyframes myAnimation {
+  0% {
+    background-color: #860707;
+  }
+  25% {
+    background-color: inherit;
+  }
+  50% {
+    background-color: #860707;
+  }
+  100% {
+    background-color: inherit;
+  }
+}
+.blinkAnimation {
+  animation: myAnimation 1s ease-in-out;
+}
 .general {
   background-color: rgb(48, 80, 145);
 }
