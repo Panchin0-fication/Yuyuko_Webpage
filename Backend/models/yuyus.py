@@ -14,6 +14,7 @@ class FanArts(BaseModel):
     show: bool
     originalLink: str
     status: str
+    uploader: dict
 
 class User(BaseModel):
     userName:str

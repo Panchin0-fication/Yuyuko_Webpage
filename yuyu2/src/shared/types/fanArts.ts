@@ -8,6 +8,7 @@ export interface fanArt {
   show: boolean;
   originalLink: string;
   status: "accepted" | "pending" | "takenDown" | "rejected";
+  uploader: { username: string; id: string };
 }
 export interface fanArtReducedQuality {
   src: string;

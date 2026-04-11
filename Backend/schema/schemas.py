@@ -19,7 +19,8 @@ def individual_serial_fanArts(fanArt) -> dict:
         "clasification": fanArt["clasification"],
         "show": fanArt["show"],
         "originalLink": fanArt["originalLink"],
-        "status": fanArt["status"]
+        "status": fanArt["status"],
+        "uploader": fanArt["uploader"]
     }
 
 def list_serial_fanArts(fanArts) -> list:

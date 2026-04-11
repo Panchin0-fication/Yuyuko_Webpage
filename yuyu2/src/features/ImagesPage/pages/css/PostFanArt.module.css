@@ -50,23 +50,33 @@
   place-items: center;
 }
 .buttonUpload {
+  display: flex;
+  align-items: center;
   background-color: rgb(232, 62, 169);
   color: white;
   font-size: 20px;
   padding: 10px 15px;
   border-radius: 12px;
-  margin-top: 20px;
   margin-left: 20px;
   font-size: 22px;
+}
+.buttonUpload:hover {
+  background-color: rgb(219, 46, 156);
+}
+.buttonAndLoad {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+.buttonAndLoad img {
+  height: 85px;
+  width: 85px;
 }
 .preview {
   display: flex;
   align-items: center;
   width: 30px;
   height: auto;
-}
-.buttonUpload:hover {
-  background-color: rgb(219, 46, 156);
 }
 .dragItem {
   position: absolute;

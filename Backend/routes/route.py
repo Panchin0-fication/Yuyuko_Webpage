@@ -265,14 +265,17 @@ async def upload_image(file: UploadFile = File(...)):
         return {"code":"UNEXPECTED_ERROR","success":False, "url":None}
 
 @router.post("/newFanArt")
-async def post_new_fanArt(fanArt: FanArts):
-    item = fanArt.model_dump()
+async def post_new_fanArt(fanArt: FanArts, user = Depends(get_current_user)):
     try:
-        newFanArt = collection_fanArts.insert_one(item)
+        item = fanArt.model_dump()
+        collection_fanArts.insert_one(item)
         return {"code":"CREATED_FANART","success":True}
+    
+    except user["type"] != "Success":
+        return {"code":"INVALID_TOKEN","success":False}
+    
     except Exception:
         return {"code":"UNEXPECTED_ERROR","success":False}
-    
 
 @router.get("/fanArt")
 async def get_fanArt():

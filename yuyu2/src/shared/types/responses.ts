@@ -1,16 +1,16 @@
 export interface response {
-    code:string;
-    success:boolean;
+  code: string;
+  success: boolean;
 }
 
 export interface withToken extends response {
-    token: string | null
+  token: string | null;
 }
 
-export interface withUserData extends response{
-    data:{userName:string, email:string, id:string, verified:boolean}
+export interface withUserData extends response {
+  user_data: { userName: string; email: string; id: string; verified: boolean };
 }
 
-export interface withUrl extends response{
-    url:string;
+export interface withUrl extends response {
+  url: string;
 }

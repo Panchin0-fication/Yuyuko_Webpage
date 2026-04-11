@@ -20,22 +20,22 @@ import {
   type fanArt,
   type withUrl,
   type previewImageDimensions,
+  type withUserData,
 } from "@shared";
 export default function PostFanArt() {
+  //Translations
   const { t } = useTranslation("images");
   const location = useLocation();
+  //File ref and image preview dimensions
   const fileRef = useRef<any>([]);
   const previewRef = useRef<any>(null);
+  const nodeRef = useRef(null);
   const [previewImageDimensions, setPreviewImageDimensions] =
     useState<previewImageDimensions>({
       width: 0,
       height: 0,
       multiplier: 1.0,
     });
-  const nodeRef = useRef(null);
-  //All tags fetched
-
-  //Tags in the added fan art
 
   const [fanArtTags, setfanArtTags] = useState<tag[]>([]);
   const [file, setFile] = useState<string | null>(null);
@@ -192,50 +192,77 @@ export default function PostFanArt() {
     let fanArtObject = {} as fanArt;
     setLoading(true);
 
+    //Get data of the uploader (user)
+    const responseUser = await fetch(
+      `${import.meta.env.VITE_API_URL}/profile`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      },
+    );
+    const resUser = (await responseUser.json()) as withUserData;
+    if (resUser.success) {
+      fanArtObject["uploader"] = {
+        username: resUser.user_data.userName,
+        id: resUser.user_data.id,
+      };
+    } else {
+      setMessage(
+        <Message
+          header={t("message_header_no_loged_in")}
+          text={t("message_body_no_loged_in")}
+          setMessage={setMessage}
+          toRedirect={"/auth/login"}
+          type="error"
+          previus={{ state: { from: location.pathname } }}
+        />,
+      );
+      return;
+    }
+
     //Upload new tags to the database
     const newTags = fanArtTags.filter((tag) => tag.status === "pending");
-
-    const uploadTags = async (): Promise<void> => {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/newTags`, {
-        method: "Post",
-        headers: {
-          "Content-Type": "application/json",
+    if (newTags.length >= 1) {
+      const responseNewTags = await fetch(
+        `${import.meta.env.VITE_API_URL}/newTags`,
+        {
+          method: "Post",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newTags),
         },
-        body: JSON.stringify(newTags),
-      });
-      const res = (await response.json()) as response;
-      if (!res.success) {
+      );
+      const resNewTags = (await responseNewTags.json()) as response;
+      if (!resNewTags.success) {
         handleMessage(
           t("message_header_error_posting"),
           t("message_body_unexpected_error_new_tags"),
           "error",
         );
       }
-    };
-    if (newTags.length >= 1) {
-      await uploadTags();
     }
 
     //Upload image to cloudinary
-    const upload = async () => {
-      if (!fileRef.current) return;
-      const formData = new FormData();
-      formData.append("file", fileRef.current.files[0]);
-      formData.append("upload_preset", "images");
+    if (!fileRef.current) return;
+    const formData = new FormData();
+    formData.append("file", fileRef.current.files[0]);
+    formData.append("upload_preset", "images");
 
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/upload-image`,
-        {
-          method: "POST",
-          body: formData,
-        },
-      );
+    const responseCloudinary = await fetch(
+      `${import.meta.env.VITE_API_URL}/upload-image`,
+      {
+        method: "POST",
+        body: formData,
+      },
+    );
 
-      const res = (await response.json()) as withUrl;
-      fanArtObject["src"] = res.url;
-    };
-    await upload();
+    const resCloudinary = (await responseCloudinary.json()) as withUrl;
+    fanArtObject["src"] = resCloudinary.url;
 
+    //Filters tags to put them in the FanArt object
     var filtered: { general: string[]; artist: string[]; character: string[] } =
       { general: [], artist: [], character: [] };
 
@@ -263,6 +290,7 @@ export default function PostFanArt() {
           method: "Post",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify(fanArtObject),
         },
@@ -421,12 +449,15 @@ export default function PostFanArt() {
             setfanArtTags={setfanArtTags}
           />
           <br />
-          <div>
-            {loading && <img src="staticImgs/generalUse/kfc-kfcyuyuko.gif" />}
+          <div className={styles.buttonAndLoad}>
+            <button onClick={uploadValidations} className={styles.buttonUpload}>
+              {t("button_upload_fanart")}
+            </button>
+            <img
+              style={{ display: loading ? "block" : "none" }}
+              src="/staticImgs/generalUse/kfc-kfcyuyuko.gif"
+            />
           </div>
-          <button onClick={uploadValidations} className={styles.buttonUpload}>
-            {t("button_upload_fanart")}
-          </button>
         </div>
         <Draggable nodeRef={nodeRef}>
           <div ref={nodeRef} className={styles.dragItem}>
