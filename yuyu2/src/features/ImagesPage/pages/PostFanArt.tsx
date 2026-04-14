@@ -5,7 +5,7 @@ import {
   useRef,
   type ReactNode,
 } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import Draggable from "react-draggable";
 import styles from "./css/PostFanArt.module.css";
@@ -61,6 +61,8 @@ export default function PostFanArt() {
   ];
 
   const PREVIEW_MAX_DIMENSION = 300;
+
+  const BOLD_CONFIG = <span className={styles.boldText}></span>;
 
   useEffect(() => {
     const validateSesion = async (): Promise<void> => {
@@ -192,17 +194,9 @@ export default function PostFanArt() {
     let fanArtObject = {} as fanArt;
     setLoading(true);
 
-    //Get data of the uploader (user)
-    const responseUser = await fetch(
-      `${import.meta.env.VITE_API_URL}/profile`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      },
-    );
-    const resUser = (await responseUser.json()) as withUserData;
+    const resUser = (await ValidateSession(
+      localStorage.getItem("token"),
+    )) as withUserData;
     if (resUser.success) {
       fanArtObject["uploader"] = {
         username: resUser.user_data.userName,
@@ -358,10 +352,13 @@ export default function PostFanArt() {
         <HeaderPages image={"/staticImgs/generalUse/postFanArt.jpg"} />
         <br />
         <div className={styles.content}>
+          {/*Divs of inputs for FanArt fields */}
           <div className={styles.inputsGrid}>
+            {/*File div */}
             <div className={styles.field}>
               <h3>{t("header_select_file")}</h3>
-              <p>{t("body_select_file")}</p>
+              <p>{t("body_select_file_p_one")}</p>
+              <p>{t("body_select_file_p_two")}</p>
               <input
                 onChange={() => {
                   if (!fileRef.current) return;
@@ -409,9 +406,34 @@ export default function PostFanArt() {
                 )}
               </div>
             </div>
+            {/*Clasification div */}
             <div className={styles.field}>
               <h3>{t("header_select_clasification")}</h3>
               <p>{t("select_clasification_p_one")}</p>
+              <Trans
+                t={t}
+                i18nKey={"select_clasification_p_two"}
+                components={{
+                  bold: BOLD_CONFIG,
+                  paragraph: <p></p>,
+                }}
+              />
+              <Trans
+                t={t}
+                i18nKey={"select_clasification_p_three"}
+                components={{
+                  bold: BOLD_CONFIG,
+                  paragraph: <p></p>,
+                }}
+              />
+              <Trans
+                t={t}
+                i18nKey={"select_clasification_p_four"}
+                components={{
+                  bold: BOLD_CONFIG,
+                  paragraph: <p></p>,
+                }}
+              />
               <select
                 value={inputs.clasification}
                 onChange={(e) => {
@@ -430,9 +452,12 @@ export default function PostFanArt() {
                 <option>Explicit</option>
               </select>
             </div>
+            {/*Original Link div */}
             <div className={styles.field}>
               <h3>{t("header_enter_link")}</h3>
-              <p>{t("body_enter_link")}</p>
+              <p>{t("body_enter_link_p_one")}</p>
+              <p>{t("body_enter_link_p_two")}</p>
+              <p>{t("body_enter_link_p_three")}</p>
               <input
                 className={styles.originalLink}
                 value={inputs.originalLink}

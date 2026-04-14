@@ -21,7 +21,7 @@ export default function ValidateInput({
   header = "input_label_verification_code",
   buttonLabel = "button_validate_account",
 }: props) {
-  const {t} = useTranslation("auth");
+  const { t } = useTranslation("auth");
   return (
     <section className={styles.validation}>
       <p className={styles.verificationCodeHeader}>{t(header)}</p>
@@ -42,12 +42,15 @@ export default function ValidateInput({
           {t(buttonLabel)}
         </button>
       </div>
-      {loading && position === "validateCode" && (
-        <img
-          className={styles.loadingImg}
-          src="/staticImgs/generalUse/kfc-kfcyuyuko.gif"
-        />
-      )}
+
+      <img
+        className={styles.loadingImg}
+        src="/staticImgs/generalUse/kfc-kfcyuyuko.gif"
+        style={{
+          display: loading && position === "validateCode" ? "block" : "none",
+        }}
+      />
+
       {position === "validateCode" && smallMessage}
     </section>
   );

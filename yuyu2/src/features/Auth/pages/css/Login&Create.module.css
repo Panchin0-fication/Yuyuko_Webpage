@@ -4,7 +4,8 @@
   gap: 20px;
   width: 350px;
   margin: auto;
-  transform: translateY(10vh);
+  padding-top: 10vh;
+  min-height: 100vh;
 }
 .createButton {
   background-color: black;

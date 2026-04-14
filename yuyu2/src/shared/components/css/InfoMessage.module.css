@@ -33,8 +33,7 @@
   font-size: 18px;
 }
 .infoMessage h2 {
-  font-family: 25px;
-  padding-left: 10px;
+  font-size: 25px;
 }
 .infoMessage span {
   font-size: 18px;
@@ -52,8 +51,11 @@
   height: 50px;
   width: 60px;
 }
-
 .infoMessage ol {
+  padding-left: 20px;
+  font-size: 18px;
+}
+.infoMessage ul {
   padding-left: 20px;
   font-size: 18px;
 }

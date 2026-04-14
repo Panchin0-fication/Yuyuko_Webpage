@@ -4,7 +4,7 @@
 }
 .all {
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
 }
 .field {
   background-color: white;
@@ -13,10 +13,16 @@
   border-radius: 10px;
   padding: 5px;
   width: max-content;
-  width: 400px;
+  width: 450px;
   display: flex;
   flex-direction: column;
+  gap: 3px;
   align-items: center;
+}
+.field p {
+  text-align: start;
+  align-self: flex-start;
+  font-size: 18px;
 }
 .inputsGrid {
   display: grid;
@@ -127,4 +133,8 @@
 }
 .resizeButtons button {
   width: max-content;
+}
+.boldText {
+  font-weight: 500;
+  white-space: nowrap;
 }

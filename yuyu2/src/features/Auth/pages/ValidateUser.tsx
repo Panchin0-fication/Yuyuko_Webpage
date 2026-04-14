@@ -37,7 +37,7 @@ export default function ValidateUser() {
         );
         return;
       }
-      if (res.data.verified === true) {
+      if (res.user_data.verified === true) {
         setPopupMessage(
           <Message
             header={t("message_header_already_validated")}
@@ -203,12 +203,14 @@ export default function ValidateUser() {
                   {t("page_button_resend_code")}
                   <img src="/icons/mail.svg" alt="" />
                 </button>
-                {loading && positon === "resend" && (
-                  <img
-                    className={styles.loadingImg}
-                    src="/staticImgs/generalUse/kfc-kfcyuyuko.gif"
-                  ></img>
-                )}
+                <img
+                  className={styles.loadingImg}
+                  src="/staticImgs/generalUse/kfc-kfcyuyuko.gif"
+                  style={{
+                    display: loading && positon === "resend" ? "block" : "none",
+                  }}
+                ></img>
+
                 {positon === "resend" && smallMessage}
               </div>
             )}
@@ -249,12 +251,16 @@ export default function ValidateUser() {
                   {t("page_button_change_email")}
                   <img src="/icons/mail.svg" alt="" />
                 </button>
-                {loading && positon === "chaneEmail" && (
-                  <img
-                    className={styles.loadingImg}
-                    src="/staticImgs/generalUse/kfc-kfcyuyuko.gif"
-                  />
-                )}
+
+                <img
+                  className={styles.loadingImg}
+                  src="/staticImgs/generalUse/kfc-kfcyuyuko.gif"
+                  style={{
+                    display:
+                      loading && positon === "chaneEmail" ? "block" : "none",
+                  }}
+                />
+
                 {positon === "chaneEmail" && smallMessage}
               </div>
             )}

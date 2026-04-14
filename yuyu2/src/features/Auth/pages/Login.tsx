@@ -106,9 +106,7 @@ export default function Login() {
             <p>{t("forgot_password")}</p>
           </Link>
           <button
-            className={
-              loading ? styles.createButtonInactive : styles.createButton
-            }
+            className={styles.createButton}
             onClick={() => {
               if (!loading) {
                 handleClick();

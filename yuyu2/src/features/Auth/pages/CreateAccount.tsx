@@ -133,9 +133,7 @@ export default function CreateAccount() {
     createUser();
   }
   return (
-    <>
-      <br />
-      <br />
+    <div className={styles.elements}>
       <LogContainer>
         <LogHeader title={t("page_header_create_account")} />
         <LogInput
@@ -188,16 +186,16 @@ export default function CreateAccount() {
           >
             {t("button_create_account")}
           </button>
-          {loading && (
-            <img
-              className={styles.loadingImage}
-              src="/staticImgs/generalUse/kfc-kfcyuyuko.gif"
-            />
-          )}
+
+          <img
+            className={styles.loadingImage}
+            src="/staticImgs/generalUse/kfc-kfcyuyuko.gif"
+            style={{ display: loading ? "block" : "none" }}
+          />
         </div>
 
         {popupMessage}
       </LogContainer>
-    </>
+    </div>
   );
 }

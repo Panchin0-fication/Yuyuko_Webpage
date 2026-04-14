@@ -1,0 +1,36 @@
+.userLogContainer {
+  margin-left: auto;
+  transform: translateX(-50px);
+}
+.userLog {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  cursor: pointer;
+  font-size: 28px;
+}
+.userLog img {
+  filter: invert(12%) sepia(69%) saturate(5443%) hue-rotate(319deg)
+    brightness(76%) contrast(95%);
+}
+.hoverInfo {
+  position: absolute;
+  display: flex;
+
+  flex-direction: column;
+  gap: 2px;
+  padding: 2px 2px;
+  background-color: rgb(80, 80, 80);
+  transform: translateY(-100px);
+  transition: visibility 0.2s ease-in-out;
+}
+.hoverInfo span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  padding: 4px 4px 0px 4px;
+  transition: background-color 0.2s;
+  cursor: pointer;
+  font-size: 22px;
+}

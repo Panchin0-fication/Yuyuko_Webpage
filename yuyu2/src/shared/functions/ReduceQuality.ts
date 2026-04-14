@@ -1,7 +1,7 @@
 export async function ReduceQuality(
-  imageSrc:string,
-  maxHeight:number,
-  maxWidth:number,
+  imageSrc: string,
+  maxHeight: number,
+  maxWidth: number,
   quality = 1,
 ) {
   return new Promise((resolve, reject) => {
@@ -18,7 +18,12 @@ export async function ReduceQuality(
 
       img.onerror = () => {
         clearTimeout(timeoutId);
-        reject(new Error("Error al cargar la imagen"));
+        resolve({
+          reduced: "/staticImgs/generalUse/200px-Th07Youmu.png",
+          width: 500,
+          height: 800,
+          changed: false,
+        });
       };
 
       img.onload = function () {
@@ -63,7 +68,7 @@ export async function ReduceQuality(
         canvas.height = newHeigth;
 
         const ctx = canvas.getContext("2d");
-        if(!ctx)return;
+        if (!ctx) return;
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = "high";
 

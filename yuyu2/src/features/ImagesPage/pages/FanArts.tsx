@@ -93,6 +93,7 @@ export default function FanArts() {
         800,
         800,
       )) as returnedReducedQuality;
+
       reduced.push({
         src: rer.reduced,
         height: rer.height,
@@ -100,6 +101,11 @@ export default function FanArts() {
         index: reduced.length,
         wasReduced: rer.changed,
       });
+      //If the src equals to the error image it continues to the next
+      //element without add tags
+      if (rer.reduced === "/staticImgs/generalUse/200px-Th07Youmu.png") {
+        continue;
+      }
 
       for (const tag of fanArt.tags) {
         if (!general.includes(tag)) {
@@ -120,8 +126,8 @@ export default function FanArts() {
       }
     }
     setTags({ general: general, artist: artist, caracters: caracters });
-    setReducedData(reduced);
 
+    setReducedData(reduced);
     setLoading(false);
   }
 
@@ -170,7 +176,7 @@ export default function FanArts() {
     reducedData && (
       <>
         {message}
-        <div>
+        <div className={styles.fanArtsPage}>
           <HeaderPages
             image="staticImgs/generalUse/__saigyouji_yuyuko_touhou_drawn_by_dounaga_nuko__sample-2fd9d01a7877ab582bb7da7d425263dd.jpg"
             isInPage={true}
@@ -269,30 +275,32 @@ export default function FanArts() {
                 </div>
               </div>
 
-              {loading && (
-                <div className={styles.loadingGif}>
-                  <img src="staticImgs/generalUse/kfc-kfcyuyuko.gif" />
-                </div>
-              )}
-              {!unique && !loading && (
+              {!unique && (
                 <div className={styles.fanArts}>
-                  {reducedData.map((fanArt) => (
-                    <button
-                      key={fanArt.src}
-                      onClick={() => {
-                        renderUnique(fanArt);
-                      }}
-                    >
-                      <img
-                        src={fanArt.src}
-                        style={{
-                          width: fanArt.width / 3,
-                          height: fanArt.height / 3,
+                  <div
+                    className={styles.loadingGif}
+                    style={{ display: loading ? "block" : "none" }}
+                  >
+                    <img src="/staticImgs/generalUse/kfc-kfcyuyuko.gif" />
+                  </div>
+                  {!loading &&
+                    reducedData.map((fanArt) => (
+                      <button
+                        key={fanArt.src}
+                        onClick={() => {
+                          renderUnique(fanArt);
                         }}
-                        alt=""
-                      />
-                    </button>
-                  ))}
+                      >
+                        <img
+                          src={fanArt.src}
+                          style={{
+                            width: fanArt.width / 3,
+                            height: fanArt.height / 3,
+                          }}
+                          alt=""
+                        />
+                      </button>
+                    ))}
                 </div>
               )}
               {data && unique && (

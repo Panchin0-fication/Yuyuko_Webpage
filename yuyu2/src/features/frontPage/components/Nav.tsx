@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import styles from "./css/Nav.module.css";
+import { UserLog } from "@shared";
+
 export default function Nav() {
   const { t } = useTranslation("home");
   return (
@@ -52,6 +54,7 @@ export default function Nav() {
             <p className={styles.textOption}>{t("nav_highlight")}</p>
           </Link>
         </button>
+        <UserLog />
       </nav>
       <div className={styles.borderLine}></div>
     </>
