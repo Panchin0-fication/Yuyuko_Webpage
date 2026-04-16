@@ -26,6 +26,7 @@ export { default as CreateAccount } from "./Auth/pages/CreateAccount.js";
 export { default as ValidateUser } from "./Auth/pages/ValidateUser.js";
 export { default as Login } from "./Auth/pages/Login.js";
 export { default as ChangePassword } from "./Auth/pages/ChangePassword.js";
+export { default as AccountConfig } from "./Auth/pages/AccountConfig.js";
 
 //Auth components
 export { default as LogInput } from "./Auth/components/LogInput.js";

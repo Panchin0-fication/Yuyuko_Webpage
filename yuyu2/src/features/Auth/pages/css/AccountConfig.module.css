@@ -1,0 +1,106 @@
+.accountConfig {
+  min-height: 100vh;
+}
+.configs {
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 10px;
+  border: 2px #f1f1f1 solid;
+  width: max-content;
+  padding: 20px;
+  margin: auto;
+  width: 450px;
+  transform: translateY(10vh);
+}
+.rotatedArrow {
+  transform: rotate(180deg);
+}
+.sectionConfig {
+  background-color: #f3f3f3;
+  border: 2px solid black;
+  padding: 5px;
+}
+.sectionConfig header {
+  display: flex;
+  cursor: pointer;
+}
+.sectionConfig header h2 {
+  font-size: 26px;
+  font-weight: 400;
+}
+.sectionConfig header img {
+  margin-left: auto;
+}
+.contentHideTags {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.searchInput {
+  display: flex;
+  gap: 6px;
+}
+.searchInput input:focus {
+  outline: none;
+  border: 2px solid rgb(232, 62, 169);
+}
+.searchInput img {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.tagsContainer {
+  background-color: white;
+  border: 2px solid black;
+}
+.noFountTags {
+  color: #656565;
+  padding: 3px;
+  display: flex;
+  gap: 5px;
+}
+.contentConfig {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+}
+.regularParagrahp {
+  font-size: 18px;
+}
+.languageContainer {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+.currentUser {
+  font-size: 20px;
+  padding-left: 5px;
+  font-weight: 400;
+}
+.username {
+  font-weight: 350;
+}
+.saveChanges {
+  background-color: rgb(232, 62, 169);
+  color: white;
+  width: max-content;
+  padding: 5px;
+  font-size: 20px;
+  border-radius: 5px;
+  margin: auto;
+}
+.saveChanges:hover {
+  background-color: rgb(175, 60, 133);
+}
+.showExplicitInput {
+  display: flex;
+  gap: 10px;
+}
+.showExplicitP {
+  font-size: 22px;
+}

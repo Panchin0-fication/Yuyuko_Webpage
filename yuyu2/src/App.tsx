@@ -12,6 +12,7 @@ import {
   ValidateUser,
   Login,
   ChangePassword,
+  AccountConfig,
 } from "@features";
 import "./i18n";
 import "./App.css";
@@ -32,6 +33,7 @@ function App() {
           <Route path="/auth/validate" element={<ValidateUser />} />
           <Route path="/auth/login" element={<Login />} />
           <Route path="/auth/changePassword" element={<ChangePassword />} />
+          <Route path="/auth/accountConfig" element={<AccountConfig />} />
         </Routes>
       </BrowserRouter>
     </div>

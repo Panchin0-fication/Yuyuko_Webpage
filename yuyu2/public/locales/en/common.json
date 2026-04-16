@@ -6,5 +6,19 @@
   "nav_highlight": "Highlights",
 
   "button_cancel": "Cancel",
-  "button_continue": "Continue"
+  "button_continue": "Continue",
+
+  "log_info_header": "Account",
+  "log_info_h2_one": "What is it for?",
+  "log_info_p_one": "Mainly for functionalities in the FanArts section.",
+  "log_info_li_one": "Save tags to hide",
+  "log_info_li_two": "View explicit FanArt",
+  "log_info_li_three": "Upload FanArt",
+  "log_info_h2_two": "Is it necessary?",
+  "log_info_p_two": "You will be able to access most sections and features of the webpage, so it is not necessary; the biggest restriction of not having a session is that you will not be able to upload FanArts.",
+  "log_info_p_three": "Press continue to create an account.",
+  "log_login_button": "Log in",
+  "log_config_button": "Configuration",
+  "log_info_button": "Information",
+  "log_not_loged_name": "Ghost"
 }

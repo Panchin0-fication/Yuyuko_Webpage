@@ -6,5 +6,19 @@
   "nav_highlight": "Destacado",
 
   "button_cancel": "Cancelar",
-  "button_continue": "Continuar"
+  "button_continue": "Continuar",
+
+  "log_info_header": "Cuenta",
+  "log_info_h2_one": "¿Para que sirve?",
+  "log_info_p_one": "Principalmente para funcionalidades en el apartado de FanArts.",
+  "log_info_li_one": "Guardar tags a ocultar",
+  "log_info_li_two": "Visualizar FanArts explicitos",
+  "log_info_li_three": "Subir FanArts",
+  "log_info_h2_two": "¿Es necesario?",
+  "log_info_p_two": "Podras acceder a la mayoría de apartados en la pagina web y sus funcionalidades por lo que no es necesario; La mayor restriccion al no tener session es que no podras subir FanArts.",
+  "log_info_p_three": "Presiona continuar para crear una cuenta.",
+  "log_login_button": "Ingresar",
+  "log_config_button": "Configuracion",
+  "log_info_button": "Información",
+  "log_not_loged_name": "Fantasma"
 }
