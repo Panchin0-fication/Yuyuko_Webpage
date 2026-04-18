@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException
 
-from models.yuyus import (Tags, FanArts)
+from models.yuyus import (Tags, FanArts, Preferences)
 from config.database import (collection_name, collection_fanArts,collection_users)
-from schema.schemas import (list_serial , list_serial_fanArts,list_serial_user,individual_serial_user,list_serial_userVer)
+from schema.schemas import (list_serial , list_serial_fanArts,list_serial_user,individual_serial_user)
 from functions.functions import (create_token,generate_verification_token,send_email,get_current_user)
 from bson import ObjectId
 from pydantic import EmailStr
@@ -33,6 +33,7 @@ async def get_tags():
 async def post_tag(tag: Tags):
     collection_name.insert_one(dict(tag))
 
+# User related endpoints
 @router.get("/user")
 async def get_users():
     users = list_serial_user(collection_users.find())
@@ -66,7 +67,12 @@ async def post_user(userName:Annotated[str, Form()],email:Annotated[EmailStr, Fo
             "role":"User",
             "email":email,
             "verified":False,
-            "verification_token":verification_code
+            "verification_token":verification_code,
+            "preferences":{
+                "language":lang,
+                "showExplicit":False,
+                "hideTags":[]
+            }
         }
         
         collection_users.insert_one(item)
@@ -124,7 +130,7 @@ def change_email(background_tasks: BackgroundTasks, email:Annotated[EmailStr, Fo
     except Exception:
         return {"code":"UNEXPECTED_ERROR","success":False}
     
-@router.post("/isDataRegistered")
+@router.post("/user/isDataRegistered")
 async def is_name_registerd(name:Annotated[str, Form()],email:Annotated[str, Form()]):
     user = collection_users.find_one({"email":email})
     if user:
@@ -204,6 +210,20 @@ async def login(userName:Annotated[str, Form()], password:Annotated[str, Form()]
         return {"code":"LOGIN_SUCCESSFUL","success":True,"token":token}
     else:
         return {"code":"LOGIN_SUCCESSFUL_UNVERIFIED","success":True,"token":token}
+
+#User preferences
+@router.post("/user/preferences")
+async def change_preferences( preferences:Preferences, user = Depends(get_current_user)):
+    try:
+        collection_users.update_one(
+                {"email": user["data"]["email"]},
+                {
+                    "$set": {"preferences":preferences},
+                }
+            )
+        return {"code":"PREFERENCES_CHANGED","success":True}
+    except Exception:
+        return {"code":"UNEXPECTED_ERROR","success":False}
 
 #Get user data from the token
 @router.get("/profile")

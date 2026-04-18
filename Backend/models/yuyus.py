@@ -1,9 +1,13 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
 class Tags(BaseModel):
     name: str
     category: str
     status:str
+
+class Uploader(BaseModel):
+    username:str
+    id:str
 
 class FanArts(BaseModel):
     src: str
@@ -14,12 +18,22 @@ class FanArts(BaseModel):
     show: bool
     originalLink: str
     status: str
-    uploader: dict
+    uploader: Uploader
+
+class SimpleTag(BaseModel):
+    name: str
+    category: str
+
+class Preferences(BaseModel):
+    language: str = "en"
+    showExplicit: bool = False
+    hideTags: list[SimpleTag] = Field(default_factory=list)
 
 class User(BaseModel):
     userName:str
     password:str
     role:str
-    email:EmailStr | None = None
+    email:EmailStr 
     verified:bool
-    verification_token:str | None = None
+    verification_token:str 
+    preferences: Preferences

@@ -1,9 +1,9 @@
 def individual_serial(tag) -> dict:
     return{
         "id": str(tag["_id"]),
-        "name": tag["name"],
-        "category": tag["category"],
-        "status":tag["status"]
+        "name": tag.get("name"),
+        "category": tag.get("category"),
+        "status":tag.get("status")
     }
 
 def list_serial(tags) -> list:
@@ -12,50 +12,40 @@ def list_serial(tags) -> list:
 def individual_serial_fanArts(fanArt) -> dict:
     return{
         "id": str(fanArt["_id"]),
-        "src": fanArt["src"],
-        "tags": fanArt["tags"],
-        "artists": fanArt["artists"],
-        "caracters": fanArt["caracters"],
-        "clasification": fanArt["clasification"],
-        "show": fanArt["show"],
-        "originalLink": fanArt["originalLink"],
-        "status": fanArt["status"],
-        "uploader": fanArt["uploader"]
+        "src": fanArt.get("src"),
+        "tags": fanArt.get("tags"),
+        "artists": fanArt.get("artists"),
+        "caracters": fanArt.get("caracters"),
+        "clasification": fanArt.get("clasification"),
+        "show": fanArt.get("show"),
+        "originalLink": fanArt.get("originalLink"),
+        "status": fanArt.get("status"),
+        "uploader": fanArt.get("uploader")
     }
 
 def list_serial_fanArts(fanArts) -> list:
     return[individual_serial_fanArts(fanArt) for fanArt in fanArts]
 
 def individual_serial_user(user) -> dict:
-    data = {
+    return{
         "id": str(user["_id"]),
-        "userName": user["userName"],
-        "password": user["password"],
-        "role": user["role"],
-        "email": user["email"],
-        "verified": user["verified"],
+        "userName": user.get("userName"),
+        "role": user.get("role"),
+        "email": user.get("email"),
+        "verified": user.get("verified"),
+    
+        "verification_token": user.get("verification_token"),
+        "reset_password_token": user.get("verification_token"),
+
+        "preferences":{
+            "language":user.get("preferences",{}).get("language"),
+            "showExplicit":user.get("preferences",{}).get("showExplicit"),
+            "hideTags":[{
+                "name": tag.get("name"),
+                "category": tag.get("category"),
+            } for tag in user.get("preferences",{}).get("hideTags",[])]
+        } if user.get("preferences") else None
     }
-
-    if "verification_token" in user:
-        data["verification_token"] = user["verification_token"]
-
-    if "reset_password_token" in user:
-        data["reset_password_token"] = user["reset_password_token"]
-        
-    return data
 
 def list_serial_user(users) -> list:
     return[individual_serial_user(user) for user in users]
-
-def individual_serial_userVer(user) -> dict:
-    return{
-        "id": str(user["_id"]),
-        "userName": user["userName"],
-        "password": user["password"],
-        "role": user["role"],
-        "email": user["email"],
-        "verified": user["verified"],
-    }
-
-def list_serial_userVer(users) -> list:
-    return[individual_serial_userVer(user) for user in users]

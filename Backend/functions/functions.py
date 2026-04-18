@@ -7,7 +7,7 @@ from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends
 
 from config.database import (collection_name, collection_fanArts,collection_users)
-from schema.schemas import (list_serial , list_serial_fanArts,list_serial_user,individual_serial_user,list_serial_userVer)
+from schema.schemas import (list_serial , list_serial_fanArts,list_serial_user,individual_serial_user)
 from my_secrets.handle_secrets import(settings)
 
 
@@ -47,9 +47,8 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
         username = payload.get("userName")
     
         user = list_serial_user(collection_users.find({"userName": username}))
-  
-        data = {"userName":user[0]["userName"], "email":user[0]["email"], "id":user[0]["id"], "verified":user[0]["verified"]}
-        return {"code":"TOKEN_VERIFICATION_SUCCESFUL","success":True,"user_data":data}
+
+        return {"code":"TOKEN_VERIFICATION_SUCCESFUL","success":True,"user_data":user[0]}
     
     except ExpiredSignatureError:
         return {"code":"TOKEN_EXPIRED","success":False,"user_data":None}
