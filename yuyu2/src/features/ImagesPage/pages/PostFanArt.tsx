@@ -1,10 +1,4 @@
-import {
-  useEffect,
-  useState,
-  startTransition,
-  useRef,
-  type ReactNode,
-} from "react";
+import { useState, startTransition, useRef, type ReactNode } from "react";
 import { useTranslation, Trans } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import Draggable from "react-draggable";
@@ -13,8 +7,9 @@ import { TagsInterface } from "@features";
 import {
   HeaderPages,
   Message,
-  ValidateSession,
+  Profile,
   InfoMessage,
+  ValidateSesion,
   type tag,
   type response,
   type fanArt,
@@ -63,25 +58,6 @@ export default function PostFanArt() {
   const PREVIEW_MAX_DIMENSION = 300;
 
   const BOLD_CONFIG = <span className={styles.boldText}></span>;
-
-  useEffect(() => {
-    const validateSesion = async (): Promise<void> => {
-      const res = await ValidateSession(localStorage.getItem("token"));
-      if (!localStorage.getItem("token") || !res.success) {
-        setMessage(
-          <Message
-            header={t("message_header_no_loged_in")}
-            text={t("message_body_no_loged_in")}
-            setMessage={setMessage}
-            toRedirect={"/auth/login"}
-            type="error"
-            previus={{ state: { from: location.pathname } }}
-          />,
-        );
-      }
-    };
-    validateSesion();
-  }, []);
 
   function handleMessage(
     header: string,
@@ -194,7 +170,7 @@ export default function PostFanArt() {
     let fanArtObject = {} as fanArt;
     setLoading(true);
 
-    const resUser = (await ValidateSession(
+    const resUser = (await Profile(
       localStorage.getItem("token"),
     )) as withUserData;
     if (resUser.success) {
@@ -348,6 +324,7 @@ export default function PostFanArt() {
   }
   return (
     <>
+      <ValidateSesion />
       <div className={`${styles.all} ${message && "filterMsg"}`}>
         <HeaderPages image={"/staticImgs/generalUse/postFanArt.jpg"} />
         <br />

@@ -1,0 +1,38 @@
+.blinkAnimation {
+  animation: myAnimation 1s ease-in-out;
+}
+@keyframes myAnimation {
+  0% {
+    background-color: #860707;
+  }
+  25% {
+    background-color: inherit;
+  }
+  50% {
+    background-color: #860707;
+  }
+  100% {
+    background-color: inherit;
+  }
+}
+
+.general {
+  background-color: rgb(48, 80, 145);
+}
+.character {
+  background-color: #c72d2d;
+}
+.artist {
+  background-color: #b144ca;
+}
+.label {
+  color: white;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  width: max-content;
+  gap: 5px;
+}
+.clickableLabel {
+  cursor: pointer;
+}

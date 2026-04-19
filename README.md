@@ -42,7 +42,7 @@ The frontend is a single-page application (SPA) focused on delivering a rich, dy
 A list of upcoming improvements and features aimed at optimizing performance, security, and user engagement:
 
 - [ ] **Fix critical issues:** Fix possible data leaks and critical vulnerabilities in the overall code.
-- [ ] **Replace hardcoded text:** Replace all the hardcoded Spanish text in the frontend with dictionaries to display text in the language of user using react-i18next.
+- [x] **Replace hardcoded text:** Replace all the hardcoded Spanish text in the frontend with dictionaries to display text in the language of user using react-i18next.
 - [x] **Messages code in backend:** Instead of a hardcode message in the backend use messages codes to show the messages in the proper language selected.
 - [x] **Migrate to TypeScript:** Convert all existing `.jsx` files to `.tsx` to enforce type safety across the entire frontend codebase.
 - [ ] **Role-Based Access Control:** Implement user roles and authentication gates in the necessary parts of the platform to restrict/allow features based on user account status.

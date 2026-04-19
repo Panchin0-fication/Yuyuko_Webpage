@@ -9,14 +9,20 @@ export { default as BlockMessage } from "./components/BlockMessage.js";
 export { default as SmallMessage } from "./components/SmallMessage.js";
 export { default as InfoMessage } from "./components/InfoMessage.js";
 export { default as UserLog } from "./components/UserLog.js";
+export { default as ValidateSesion } from "./components/ValidateSesion.js";
+export { default as TagsSearch } from "./components/TagsSearch.js";
+export { default as TagLabel } from "./components/TagLabel.js";
 
-export { ValidateSession } from "./functions/validateSesion.js";
+export { Profile } from "./functions/Profile.js";
 export { ReduceQuality } from "./functions/ReduceQuality.js";
 
 export type { response } from "./types/responses.js";
 export type { withToken } from "./types/responses.js";
 export type { withUserData } from "./types/responses.js";
 export type { withUrl } from "./types/responses.js";
+export type { userData } from "./types/responses.js";
+export type { preferences } from "./types/responses.js";
+export type { simpleTag } from "./types/responses.js";
 
 export type { fanArt } from "./types/fanArts.js";
 export type { fanArtReducedQuality } from "./types/fanArts.js";

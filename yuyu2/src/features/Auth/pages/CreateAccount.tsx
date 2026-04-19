@@ -44,7 +44,7 @@ export default function CreateAccount() {
         inputFields.name !== "" ? String(inputFields.name) : "_",
       );
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/isDataRegistered`,
+        `${import.meta.env.VITE_API_URL}/user/isDataRegistered`,
         {
           method: "POST",
           body: formData,

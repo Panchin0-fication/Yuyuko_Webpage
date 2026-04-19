@@ -2,7 +2,7 @@ import { useState, type ReactNode, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ValidateInput, ValidateContainerAndHeader } from "@features";
-import { ValidateSession, SmallMessage, Message, type response } from "@shared";
+import { Profile, SmallMessage, Message, type response } from "@shared";
 import styles from "./css/ValidateUser.module.css";
 export default function ValidateUser() {
   const { t, i18n } = useTranslation("auth");
@@ -23,7 +23,7 @@ export default function ValidateUser() {
 
   useEffect(() => {
     const toAsync = async (): Promise<void> => {
-      const res = await ValidateSession(localStorage.getItem("token"));
+      const res = await Profile(localStorage.getItem("token"));
       if (res.code === "TOKEN_EXPIRED") {
         setPopupMessage(
           <Message

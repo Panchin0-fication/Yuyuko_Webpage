@@ -20,5 +20,10 @@
   "log_login_button": "Log in",
   "log_config_button": "Configuration",
   "log_info_button": "Information",
-  "log_not_loged_name": "Ghost"
+  "log_not_loged_name": "Ghost",
+
+  "message_header_no_loged_in": "Not logged in",
+  "message_body_no_loged_in": "You must logged in to upload access this page",
+
+  "search_tags_not_found": "No tags were found..."
 }

@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "./css/BlockMessage.module.css";
 type props = {
   type: "error" | "success" | "info";

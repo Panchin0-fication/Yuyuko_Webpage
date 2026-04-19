@@ -1,31 +1,113 @@
-import { useState, useRef } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import styles from "./css/AccountConfig.module.css";
 import { LogHeader } from "@features";
-import { type tag } from "@shared";
+import {
+  ValidateSesion,
+  TagsSearch,
+  Message,
+  TagLabel,
+  type tag,
+  type userData,
+  type preferences,
+  type response,
+  type simpleTag,
+} from "@shared";
 import { useTranslation } from "react-i18next";
 import Select, { type StylesConfig } from "react-select";
-type tagInHide = {
-  name: string;
-  category: "general" | "character" | "artist" | "copyright";
-};
 
 export default function AccountConfig() {
   const { t } = useTranslation("auth");
+  const [userData, setUserData] = useState<userData | null>(null);
+  const [originalPref, setOriginalPref] = useState<preferences | null>(null);
   const [showConfigs, setShowConfigs] = useState({
     language: false,
     hideTags: false,
     showExplicit: false,
   });
-  const [hideTags, setHideTags] = useState<tagInHide[]>([]);
-  const [fountTags, setFountTags] = useState<tag[]>([]);
-  const [searchTags, setSearchTags] = useState("");
+  const [errorTag, setErrorTag] = useState<string | null>(null);
+  const [language, setLanguage] = useState<string | undefined>("en");
+  const [hideTags, setHideTags] = useState<tag[]>([]);
+  const [auxTag, setAuxTag] = useState<null | simpleTag[]>(null);
   const [loading, setLoading] = useState(false);
   const [explicitBox, setExplicitBox] = useState(false);
+  const [message, setMessage] = useState<ReactNode | null>(null);
+
+  //Sets the original preferences
+  useEffect(() => {
+    if (!userData) return;
+    setOriginalPref(userData.preferences);
+    setLanguage(userData.preferences.language);
+    setAuxTag(userData.preferences.hideTags);
+    //Map it
+    var mapedTags: tag[] = userData.preferences.hideTags.map((tag: any) => ({
+      ...tag,
+      status: "accepted",
+    }));
+    setHideTags(mapedTags);
+    setExplicitBox(userData.preferences.showExplicit ?? false);
+  }, [userData]);
+
+  useEffect(() => {
+    var simpleTags = hideTags;
+    simpleTags.map((tag: any) => {
+      delete tag["status"];
+    });
+    setAuxTag(simpleTags);
+  }, [hideTags]);
+  function removeTag(tag: tag): void {
+    setHideTags(hideTags.filter((current) => current.name !== tag.name));
+  }
+
+  async function changePreferences(): Promise<void> {
+    setLoading(true);
+    var newPreferences = {} as preferences;
+    var tagSimple: any = hideTags;
+    tagSimple.map((tag: any) => {
+      delete tag["status"];
+    });
+
+    newPreferences["hideTags"] = tagSimple;
+    newPreferences["language"] = language as string;
+    newPreferences["showExplicit"] = explicitBox;
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/user/preferences`,
+      {
+        method: "Post",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(newPreferences),
+      },
+    );
+    const res = (await response.json()) as response;
+    if (res.success) {
+      setMessage(
+        <Message
+          header={
+            res.success
+              ? t("message_changes_preferences")
+              : t("UNEXPECTED_ERROR")
+          }
+          text={t(res.code)}
+          type="error"
+          setMessage={setMessage}
+          toRedirect=""
+        />,
+      );
+    }
+    setLoading(false);
+  }
 
   interface MyOption {
     label: string;
     value: string;
   }
+
+  const options = [
+    { value: "es", label: "Español" },
+    { value: "en", label: "English" },
+  ];
 
   const customStyles: StylesConfig<MyOption, false> = {
     control: (provided) => ({
@@ -47,67 +129,75 @@ export default function AccountConfig() {
     }),
   };
   return (
-    <div className={styles.accountConfig}>
-      <div className={styles.configs}>
-        <LogHeader title={t("configuration_header")}></LogHeader>
-        <p className={styles.currentUser}>
-          {t("current_user_label")}
-          <span className={styles.username}>Usuario</span>
-        </p>
-        {/*Language*/}
-        <section className={styles.sectionConfig}>
-          <header
-            onClick={() =>
-              setShowConfigs({
-                ...showConfigs,
-                language: !showConfigs.language,
-              })
-            }
-          >
-            <h2>{t("languaje_header")}</h2>
-            <img
-              src="/icons/arrow_down.svg"
-              alt=""
-              className={showConfigs.language ? styles.rotatedArrow : ""}
-            />
-          </header>
+    <>
+      <ValidateSesion setUserData={setUserData} />
+      {message}
+      <div className={styles.accountConfig}>
+        <br />
+        <br />
+        <br />
+        <div className={styles.configs}>
+          <LogHeader title={t("configuration_header")}></LogHeader>
+          <p className={styles.currentUser}>
+            {t("current_user_label")}
+            <span className={styles.username}>{userData?.userName}</span>
+          </p>
+          {/*Language*/}
+          <section className={styles.sectionConfig}>
+            <header
+              onClick={() =>
+                setShowConfigs({
+                  ...showConfigs,
+                  language: !showConfigs.language,
+                })
+              }
+            >
+              <h2>{t("languaje_header")}</h2>
+              <img
+                src="/icons/arrow_down.svg"
+                alt=""
+                className={showConfigs.language ? styles.rotatedArrow : ""}
+              />
+            </header>
 
-          {showConfigs.language && (
             <div
               className={`${styles.contentConfig} ${styles.languageContainer}`}
+              style={{
+                display: showConfigs.language ? "flex" : "none",
+              }}
             >
               <p className={styles.regularParagrahp}>{t("current_language")}</p>
               <Select
                 styles={customStyles}
-                options={[
-                  { value: "es", label: "Español" },
-                  { value: "en", label: "English" },
-                ]}
+                value={options.find((opt) => opt.value === language) || null}
+                options={options}
+                onChange={(value) => setLanguage(value?.value)}
               ></Select>
             </div>
-          )}
-        </section>
-        {/*Hide tags*/}
-        <section className={`${styles.sectionConfig}`}>
-          <header
-            onClick={() =>
-              setShowConfigs({
-                ...showConfigs,
-                hideTags: !showConfigs.hideTags,
-              })
-            }
-          >
-            <h2>{t("hide_tags_header")}</h2>
-            <img
-              src="/icons/arrow_down.svg"
-              className={showConfigs.hideTags ? styles.rotatedArrow : ""}
-              alt=""
-            />
-          </header>
+          </section>
+          {/*Hide tags*/}
+          <section className={`${styles.sectionConfig}`}>
+            <header
+              onClick={() =>
+                setShowConfigs({
+                  ...showConfigs,
+                  hideTags: !showConfigs.hideTags,
+                })
+              }
+            >
+              <h2>{t("hide_tags_header")}</h2>
+              <img
+                src="/icons/arrow_down.svg"
+                className={showConfigs.hideTags ? styles.rotatedArrow : ""}
+                alt=""
+              />
+            </header>
 
-          {showConfigs.hideTags && (
             <div
               className={`${styles.contentConfig} ${styles.contentHideTags}`}
+              style={{
+                display: showConfigs.hideTags ? "flex" : "none",
+              }}
             >
               <p className={styles.regularParagrahp}>
                 {t("hide_tags_current")}
@@ -118,59 +208,56 @@ export default function AccountConfig() {
                     {t("hide_tags_current_empty")}
                   </p>
                 )}
+                {hideTags.map((tag, id) => (
+                  <TagLabel
+                    key={tag.name || id}
+                    tag={tag}
+                    errorTag={errorTag}
+                    removeTag={removeTag}
+                  />
+                ))}
               </div>
-              <p className={styles.regularParagrahp}>{t("hide_tags_search")}</p>
-              <div className={styles.searchInput}>
-                <input
-                  type="text"
-                  value={searchTags}
-                  onChange={(e) => {
-                    setSearchTags(e.target.value);
-                  }}
-                />
-                <img
-                  src="/icons/autorenew.svg"
-                  style={{ visibility: loading ? "visible" : "hidden" }}
-                />
-              </div>
-
-              <div className={styles.tagsContainer}>
-                {fountTags.length === 0 && (
-                  <p className={styles.noFountTags}>
-                    {t("hide_tags_search_empty")}
-                  </p>
-                )}
-              </div>
+              <h2 className={styles.searchTagLabel}>{t("hide_tags_search")}</h2>
+              <TagsSearch
+                numberTags={10}
+                addedTags={hideTags}
+                setAddedTags={setHideTags}
+                errorTag={errorTag}
+                setErrorTag={setErrorTag}
+              />
             </div>
-          )}
-        </section>
-        {/*Show explicit*/}
-        <section className={styles.sectionConfig}>
-          <header
-            onClick={() =>
-              setShowConfigs({
-                ...showConfigs,
-                showExplicit: !showConfigs.showExplicit,
-              })
-            }
-          >
-            <h2>{t("show_explicit_header")}</h2>
-            <img
-              src="/icons/arrow_down.svg"
-              alt=""
-              className={showConfigs.showExplicit ? styles.rotatedArrow : ""}
-            />
-          </header>
+          </section>
+          {/*Show explicit*/}
+          <section className={styles.sectionConfig}>
+            <header
+              onClick={() =>
+                setShowConfigs({
+                  ...showConfigs,
+                  showExplicit: !showConfigs.showExplicit,
+                })
+              }
+            >
+              <h2>{t("show_explicit_header")}</h2>
+              <img
+                src="/icons/arrow_down.svg"
+                alt=""
+                className={showConfigs.showExplicit ? styles.rotatedArrow : ""}
+              />
+            </header>
 
-          {showConfigs.showExplicit && (
-            <div className={`${styles.contentConfig}`}>
+            <div
+              className={`${styles.contentConfig}`}
+              style={{
+                display: showConfigs.showExplicit ? "block" : "none",
+              }}
+            >
               <div className={styles.showExplicitInput}>
                 <p className={styles.showExplicitP}>
                   {t("show_explicit_label")}
                 </p>
                 <input
                   checked={explicitBox}
-                  onClick={() => setExplicitBox(!explicitBox)}
+                  onChange={() => setExplicitBox(!explicitBox)}
                   type="checkbox"
                 />
               </div>
@@ -180,12 +267,24 @@ export default function AccountConfig() {
                   : t("show_explicit_info_no")}
               </p>
             </div>
-          )}
-        </section>
-        <button className={styles.saveChanges}>
-          {t("show_explicit_button")}
-        </button>
+          </section>
+          <button
+            className={styles.saveChanges}
+            onClick={() => {
+              if (
+                (originalPref?.hideTags !== auxTag ||
+                  originalPref?.language !== language ||
+                  originalPref?.showExplicit !== explicitBox) &&
+                !loading
+              ) {
+                changePreferences();
+              }
+            }}
+          >
+            {t("show_explicit_button")}
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

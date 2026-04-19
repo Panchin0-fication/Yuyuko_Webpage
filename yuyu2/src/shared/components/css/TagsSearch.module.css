@@ -1,0 +1,62 @@
+.blinkAnimation {
+  animation: myAnimation 1s ease-in-out;
+}
+@keyframes myAnimation {
+  0% {
+    background-color: #860707;
+  }
+  25% {
+    background-color: inherit;
+  }
+  50% {
+    background-color: #860707;
+  }
+  100% {
+    background-color: inherit;
+  }
+}
+.emptyTags {
+  filter: opacity(70%);
+  font-size: 24px;
+}
+.pages {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  place-items: center;
+}
+.arrowActive {
+  filter: invert(42%) sepia(66%) saturate(1584%) hue-rotate(206deg)
+    brightness(99%) contrast(95%);
+  cursor: pointer;
+}
+.tagsContainer {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0px 15px;
+  overflow: scroll;
+}
+.input {
+  display: flex;
+  border: 3px solid black;
+  font-size: 22px;
+  padding: 5px;
+}
+.input:focus {
+  outline: none;
+}
+.inputField {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+.inputField img {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

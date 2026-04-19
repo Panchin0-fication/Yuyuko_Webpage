@@ -20,5 +20,10 @@
   "log_login_button": "Ingresar",
   "log_config_button": "Configuracion",
   "log_info_button": "Información",
-  "log_not_loged_name": "Fantasma"
+  "log_not_loged_name": "Fantasma",
+
+  "message_header_no_loged_in": "Sin sesión",
+  "message_body_no_loged_in": "Debes tener sesión iniciada para entrar a esta pagina",
+
+  "search_tags_not_found": "No se encontraron tags..."
 }

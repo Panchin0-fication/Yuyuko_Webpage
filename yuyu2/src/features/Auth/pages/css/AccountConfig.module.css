@@ -1,5 +1,6 @@
 .accountConfig {
   min-height: 100vh;
+  height: 100%;
 }
 .configs {
   display: flex;
@@ -12,7 +13,6 @@
   padding: 20px;
   margin: auto;
   width: 450px;
-  transform: translateY(10vh);
 }
 .rotatedArrow {
   transform: rotate(180deg);
@@ -26,7 +26,7 @@
   display: flex;
   cursor: pointer;
 }
-.sectionConfig header h2 {
+.sectionConfig h2 {
   font-size: 26px;
   font-weight: 400;
 }
@@ -46,17 +46,16 @@
   outline: none;
   border: 2px solid rgb(232, 62, 169);
 }
-.searchInput img {
-  animation: spin 1s linear infinite;
-}
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+.searchTagLabel {
+  margin: auto;
 }
 .tagsContainer {
   background-color: white;
   border: 2px solid black;
+  display: flex;
+  gap: 5px;
+  padding: 10px;
+  flex-wrap: wrap;
 }
 .noFountTags {
   color: #656565;
@@ -84,6 +83,7 @@
 }
 .username {
   font-weight: 350;
+  padding-left: 5px;
 }
 .saveChanges {
   background-color: rgb(232, 62, 169);

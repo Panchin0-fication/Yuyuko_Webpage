@@ -5,7 +5,7 @@ import { LogInput, LogHeader, LogContainer } from "@features";
 import {
   SmallMessage,
   Message,
-  ValidateSession,
+  Profile,
   BlockMessage,
   type withToken,
 } from "@shared";
@@ -23,7 +23,7 @@ export default function Login() {
   const from = location.state?.from || "/";
   useEffect(() => {
     const callBackend = async (): Promise<void> => {
-      const res = await ValidateSession(localStorage.getItem("token"));
+      const res = await Profile(localStorage.getItem("token"));
       if (res?.success) {
         setBlockMessage(
           <BlockMessage type="success" message={t("block_message_login")} />,

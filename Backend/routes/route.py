@@ -92,13 +92,13 @@ def resend_code(background_tasks: BackgroundTasks, lang:str, user = Depends(get_
             token = generate_verification_token()
 
             collection_users.update_one(
-                {"email": user["data"]["email"]},
+                {"email": user["user_data"]["email"]},
                 {
                     "$set": {"verification_token":token},
                 }
             )
 
-            background_tasks.add_task(send_email, user["data"]["email"], token, message=translations.get(lang, translations[settings_internalization.default_locale])["body_two"], subject=translations.get(lang, translations[settings_internalization.default_locale])["subject_one"])
+            background_tasks.add_task(send_email, user["user_data"]["email"], token, message=translations.get(lang, translations[settings_internalization.default_locale])["body_two"], subject=translations.get(lang, translations[settings_internalization.default_locale])["subject_one"])
 
             return {"code":"VERIFICATION_CODE_SENT","success":True}
         except Exception:
@@ -112,7 +112,7 @@ def change_email(background_tasks: BackgroundTasks, email:Annotated[EmailStr, Fo
         token = generate_verification_token()
 
         collection_users.update_one(
-            {"email": user["data"]["email"]},
+            {"email": user["user_data"]["email"]},
             {
                 "$set": {"verification_token":token,"email":email},
             }
@@ -215,10 +215,11 @@ async def login(userName:Annotated[str, Form()], password:Annotated[str, Form()]
 @router.post("/user/preferences")
 async def change_preferences( preferences:Preferences, user = Depends(get_current_user)):
     try:
+        item = preferences.model_dump()
         collection_users.update_one(
-                {"email": user["data"]["email"]},
+                {"email": user["user_data"]["email"]},
                 {
-                    "$set": {"preferences":preferences},
+                    "$set": {"preferences":item},
                 }
             )
         return {"code":"PREFERENCES_CHANGED","success":True}
@@ -231,12 +232,11 @@ def profile(user = Depends(get_current_user)):
     return user
 
 @router.get("/tags")
-async def show_accepted_tags(num: int, search: str | None = None):
-    number_of_tags = 20
+async def show_accepted_tags(num: int, numberTags:int, search: str | None = None):
     if not search:
-        tags = list_serial(collection_name.find().skip((num-1)*number_of_tags).limit(number_of_tags + 1))
+        tags = list_serial(collection_name.find().skip((num-1)*numberTags).limit(numberTags + 1))
     else:
-        tags = list_serial(collection_name.find({"name":{"$regex": search, "$options": "i"} }).skip((num-1)*number_of_tags).limit(number_of_tags + 1))
+        tags = list_serial(collection_name.find({"name":{"$regex": search, "$options": "i"} }).skip((num-1)*numberTags).limit(numberTags + 1))
     return tags
     
 @router.get("/tags/check")

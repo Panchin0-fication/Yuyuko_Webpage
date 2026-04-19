@@ -40,49 +40,7 @@
   padding: 0px 15px;
   overflow: scroll;
 }
-.pages {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  place-items: center;
-}
 
-.label {
-  color: white;
-  padding: 5px;
-  display: flex;
-  align-items: center;
-  width: max-content;
-  gap: 5px;
-}
-.clickableLabel {
-  cursor: pointer;
-}
-@keyframes myAnimation {
-  0% {
-    background-color: #860707;
-  }
-  25% {
-    background-color: inherit;
-  }
-  50% {
-    background-color: #860707;
-  }
-  100% {
-    background-color: inherit;
-  }
-}
-.blinkAnimation {
-  animation: myAnimation 1s ease-in-out;
-}
-.general {
-  background-color: rgb(48, 80, 145);
-}
-.character {
-  background-color: #c72d2d;
-}
-.artist {
-  background-color: #b144ca;
-}
 .buttons {
   margin-top: 30px;
   margin-bottom: 30px;
@@ -107,12 +65,6 @@
   filter: invert(91%) sepia(0%) saturate(7464%) hue-rotate(96deg)
     brightness(112%) contrast(108%);
 }
-.arrowActive {
-  filter: invert(42%) sepia(66%) saturate(1584%) hue-rotate(206deg)
-    brightness(99%) contrast(95%);
-  cursor: pointer;
-}
-
 .input {
   display: flex;
   margin: auto;

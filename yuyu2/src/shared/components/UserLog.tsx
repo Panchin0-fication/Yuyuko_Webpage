@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ValidateSession, InfoMessage, type withUserData } from "@shared";
+import { Profile, InfoMessage, type withUserData } from "@shared";
 import { useEffect, useState } from "react";
 import styles from "./css/UserLog.module.css";
 
@@ -14,7 +14,7 @@ export default function UserLog() {
 
   useEffect(() => {
     const getUsername = async () => {
-      const res = (await ValidateSession(
+      const res = (await Profile(
         localStorage.getItem("token"),
       )) as withUserData;
 
