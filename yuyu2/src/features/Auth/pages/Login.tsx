@@ -8,11 +8,12 @@ import {
   Profile,
   BlockMessage,
   type withToken,
+  type withUserData,
 } from "@shared";
 import styles from "./css/Login&Create.module.css";
 
 export default function Login() {
-  const { t } = useTranslation("auth");
+  const { t, i18n } = useTranslation("auth");
   const location = useLocation();
   const [inputs, setInputs] = useState({ name: "", password: "" });
   const [loading, setLoading] = useState<boolean>(false);
@@ -23,7 +24,9 @@ export default function Login() {
   const from = location.state?.from || "/";
   useEffect(() => {
     const callBackend = async (): Promise<void> => {
-      const res = await Profile(localStorage.getItem("token"));
+      const res = (await Profile(
+        localStorage.getItem("token"),
+      )) as withUserData;
       if (res?.success) {
         setBlockMessage(
           <BlockMessage type="success" message={t("block_message_login")} />,
@@ -51,6 +54,7 @@ export default function Login() {
       body: formData,
     });
     const res = (await response.json()) as withToken;
+
     setLoading(false);
     if (
       res.code === "LOGIN_SUCCESSFUL" ||
@@ -74,6 +78,10 @@ export default function Login() {
         />,
       );
       localStorage.setItem("token", String(res.token));
+      const langResponse = (await Profile(
+        localStorage.getItem("token"),
+      )) as withUserData;
+      i18n.changeLanguage(langResponse.user_data.preferences.language);
     } else {
       setSmallMessage(<SmallMessage type="error" message={t(res.code)} />);
     }

@@ -1,3 +1,4 @@
+import { type fanArt } from "@shared";
 export interface response {
   code: string;
   success: boolean;
@@ -35,4 +36,8 @@ export interface withUserData extends response {
 
 export interface withUrl extends response {
   url: string;
+}
+
+export interface withFanArt extends response {
+  fanArts: fanArt[];
 }

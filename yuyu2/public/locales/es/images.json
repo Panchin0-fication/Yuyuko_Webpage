@@ -6,6 +6,7 @@
   "fanarts_page_info": "Apartado para explorar y subir fanArts de Yuyuko. Tag implementados para ayudar con la busqueda y clasificación",
   "fanarts_page_header": "FanArts",
 
+  "UNEXPECTED_ERROR": "Error inesperado",
   "tag_header_general": "Generales",
   "tag_header_characters": "Personajes",
   "tag_header_artist": "Artistas",
@@ -17,6 +18,7 @@
   "info_message_add_fan_art_li_two": "Imagen en la mayor calidad posible sin modificaciones posteriores",
   "info_message_add_fan_art_li_three": "Link original del FanArt y el nombre de usuario de los autores",
   "info_message_add_fan_art_p_two": "Despues de publicar el FanArt debes de esperar a que los administradores lo acepten para que todos los usuarios pudan verlo",
+  "show_original": "Mostar calidad original",
 
   "message_header_no_loged_in": "Sin sesión",
   "message_body_no_loged_in": "Debes tener sesión iniciada para publicar FanArts",

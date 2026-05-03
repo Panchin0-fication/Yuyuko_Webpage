@@ -5,9 +5,11 @@ import {
   HeaderPages,
   ReduceQuality,
   InfoMessage,
+  Message,
   type fanArt,
   type fanArtReducedQuality,
   type returnedReducedQuality,
+  type withFanArt,
 } from "@shared";
 import styles from "./css/FanArts.module.css";
 export default function FanArts() {
@@ -69,10 +71,37 @@ export default function FanArts() {
       .map((tag) => `tags=${encodeURIComponent(tag)}`)
       .join("&");
 
+    function errorResonse(): boolean {
+      setMessage(
+        <Message
+          header={t("UNEXPECTED_ERROR")}
+          text={t("UNEXPECTED_ERROR")}
+          type="error"
+          setMessage={setMessage}
+          toRedirect=""
+        />,
+      );
+      setLoading(false);
+      return true;
+    }
+
     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/fanArts/tags/${page}?${queryString}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      },
     );
-    let data = (await response.json()) as fanArt[];
+
+    if (!response.ok) if (errorResonse()) return;
+    const res = (await response.json()) as withFanArt;
+    console.log("SIBSUI", res);
+    if (!res.success) if (errorResonse()) return;
+
+    let data = res.fanArts;
 
     page <= 1 ? setLeftArrow(false) : setLeftArrow(true);
     data.length === 9 ? setRightArrow(true) : setRightArrow(false);
@@ -312,7 +341,7 @@ export default function FanArts() {
                           setShowOriginal(true);
                         }}
                       >
-                        <p>Mostar calidad original</p>
+                        <p>{t("show_original")}</p>
                       </button>
                     </div>
                   )}

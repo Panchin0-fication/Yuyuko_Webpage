@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException
 from models.yuyus import (Tags, FanArts, Preferences)
 from config.database import (collection_name, collection_fanArts,collection_users)
 from schema.schemas import (list_serial , list_serial_fanArts,list_serial_user,individual_serial_user)
-from functions.functions import (create_token,generate_verification_token,send_email,get_current_user)
+from functions.functions import (create_token,generate_verification_token,send_email,get_current_user,get_optional_user,set_search_tags)
 from bson import ObjectId
 from pydantic import EmailStr
 from typing import List
@@ -12,7 +12,7 @@ from fastapi import Depends, UploadFile, File, BackgroundTasks, Query, Form
 from config.cloudinary import(cloudinary)
 from config.i18n import(settings_internalization) 
 import os, json
-from typing import Annotated
+from typing import Annotated, Optional
 #import bcrypt
 
 translations = {}
@@ -205,7 +205,7 @@ async def login(userName:Annotated[str, Form()], password:Annotated[str, Form()]
     if not foundPassword:
         return {"code":"INCORRECT_PASSWORD","success":False,"token":None}
 
-    token = create_token({"userName":foundUser["userName"],"id":str(foundUser["_id"]),"email":foundUser["email"],"verified":foundUser["verified"]})
+    token = create_token({"userName":foundUser["userName"],"id":str(foundUser["_id"]),"email":foundUser["email"],"verified":foundUser["verified"],"preferences":{"language":foundUser["preferences"]["language"]}})
     if foundUser["verified"]:
         return {"code":"LOGIN_SUCCESSFUL","success":True,"token":token}
     else:
@@ -312,33 +312,30 @@ async def get_fanArtsNum(num:int):
     return fanArts
 
 @router.get("/fanArts/tags/{num}")
-async def get_fanArtsByTags(num:int,tags: List[str] = Query(...)):
-    if(tags[0] == ""):
-        fanArts = list_serial_fanArts(collection_fanArts.find().skip((num-1)*8).limit(9))
-        return fanArts
+async def get_fanArtsByTags(num:int,tags: List[str] = Query(...),user: Optional[str] =  Depends(get_optional_user)):
+    try:
+        search = {"clasification": {"$nin":["Explicit"]}}
+        if user["success"]:
+            userPreferences = user["user_data"]["preferences"]
+            
+            #If user does not wants explicit
+            if userPreferences["showExplicit"]:
+                del search["clasification"] 
+            #Eliminate all tags to hide
+            if len(userPreferences["hideTags"]) >=1:
+                set_search_tags(search,userPreferences["hideTags"],"$nin")
+        if(tags[0] == ""):
+            fanArts = list_serial_fanArts(collection_fanArts.find(search).skip((num-1)*8).limit(9))
+            return {"code":"FANARTS_COLLECTED","success":True, "fanArts":fanArts}
+
+        tagList = list_serial(collection_name.find({"name":{"$in":tags}}))
+        set_search_tags(search,tagList,"$all")
+        print("Preferences",search)
+      
+        fanArts = list_serial_fanArts(collection_fanArts.find(search).skip((num-1)*8).limit(9))
+        return {"code":"FANARTS_COLLECTED","success":True, "fanArts":fanArts}
     
-
-    general = []
-    caracter = []
-    artist = []
-    tagList = list_serial(collection_name.find({"name":{"$in":tags}}))
-
-    for tag in tagList:
-        if(tag["category"] == "general"):
-            general.append(tag["name"] )
-        elif(tag["category"] == "character"):
-            caracter.append(tag["name"])
-        elif(tag["category"] == "artist"):
-            artist.append(tag["name"])
-
-    search = {}
-
-    if(len(general)>=1):
-        search["tags"] = {"$all":general}
-    if(len(caracter)>=1):
-        search["caracters"] = {"$all":caracter}
-    if(len(artist)>=1):
-        search["artists"] = {"$all":artist}
+    except Exception as e:
+        print("error",e)
+        return {"code":"UNEXPECTED_ERROR","success":False, "fanArts":None}
     
-    fanArts = list_serial_fanArts(collection_fanArts.find(search).skip((num-1)*8).limit(9))
-    return fanArts

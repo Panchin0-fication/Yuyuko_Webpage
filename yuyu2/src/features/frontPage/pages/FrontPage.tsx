@@ -1,5 +1,4 @@
 import { Nav, YuyuInfo, InfoWebpage, Footer } from "@features";
-import { BlockMessage } from "@shared";
 import styles from "./css/FrontPage.module.css";
 export default function FrontPage() {
   return (

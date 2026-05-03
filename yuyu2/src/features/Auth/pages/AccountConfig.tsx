@@ -6,17 +6,19 @@ import {
   TagsSearch,
   Message,
   TagLabel,
+  Profile,
   type tag,
   type userData,
   type preferences,
   type response,
   type simpleTag,
+  type withUserData,
 } from "@shared";
 import { useTranslation } from "react-i18next";
 import Select, { type StylesConfig } from "react-select";
 
 export default function AccountConfig() {
-  const { t } = useTranslation("auth");
+  const { t, i18n } = useTranslation("auth");
   const [userData, setUserData] = useState<userData | null>(null);
   const [originalPref, setOriginalPref] = useState<preferences | null>(null);
   const [showConfigs, setShowConfigs] = useState({
@@ -95,6 +97,10 @@ export default function AccountConfig() {
           toRedirect=""
         />,
       );
+      const userResponse = (await Profile(
+        localStorage.getItem("token"),
+      )) as withUserData;
+      i18n.changeLanguage(userResponse.user_data.preferences.language);
     }
     setLoading(false);
   }

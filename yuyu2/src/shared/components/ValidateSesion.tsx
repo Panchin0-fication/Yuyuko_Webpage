@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { Profile, Message, type userData } from "@shared";
+import { Profile, Message, type userData, type withUserData } from "@shared";
 
 //To check if the user is logged in and forbid the entry to a page
 type props = {
@@ -12,7 +12,9 @@ export default function ValidateSesion({ setUserData = null }: props) {
   const [message, setMessage] = useState<null | ReactNode>(null);
   useEffect(() => {
     const validation = async () => {
-      const res = await Profile(localStorage.getItem("token"));
+      const res = (await Profile(
+        localStorage.getItem("token"),
+      )) as withUserData;
       if (!res.success) {
         setMessage(
           <Message

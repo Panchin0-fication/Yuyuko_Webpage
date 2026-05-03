@@ -9,6 +9,7 @@ from fastapi import Depends
 from config.database import (collection_name, collection_fanArts,collection_users)
 from schema.schemas import (list_serial , list_serial_fanArts,list_serial_user,individual_serial_user)
 from my_secrets.handle_secrets import(settings)
+from typing import Optional
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
@@ -40,6 +41,15 @@ def send_email(to,token, message, subject):
         smtp.login(EMAIL, EMAIL_PASSWORD)
         smtp.send_message(msg)
 
+def get_optional_user(token: Optional[str] = Depends(oauth2_scheme)):
+    if not token:
+        return None
+    try: 
+        user = get_current_user(token)
+        return user
+    except Exception:
+        return None
+    
 def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -55,3 +65,24 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
     
     except Exception:
         return {"code":"UNEXPECTED_ERROR","success":False,"user_data":None}
+    
+def set_search_tags(search,tag_list, mode = "$all"):
+    general = []
+    caracter = []
+    artist = []
+    print("DEPURATION",tag_list)
+    for tag in tag_list:
+        if(tag["category"] == "general"):
+            general.append(tag["name"] )
+        elif(tag["category"] == "character"):
+            caracter.append(tag["name"])
+        elif(tag["category"] == "artist"):
+            artist.append(tag["name"])
+    
+    if(len(general)>=1):
+        search["tags"] = {f"{mode}":general}
+    if(len(caracter)>=1):
+        search["caracters"] = {f"{mode}":caracter}
+    if(len(artist)>=1):
+        search["artists"] = {f"{mode}":artist}
+    return search

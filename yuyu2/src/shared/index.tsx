@@ -21,6 +21,7 @@ export type { withToken } from "./types/responses.js";
 export type { withUserData } from "./types/responses.js";
 export type { withUrl } from "./types/responses.js";
 export type { userData } from "./types/responses.js";
+export type { withFanArt } from "./types/responses.js";
 export type { preferences } from "./types/responses.js";
 export type { simpleTag } from "./types/responses.js";
 

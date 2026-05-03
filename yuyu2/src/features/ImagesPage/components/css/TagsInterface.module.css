@@ -96,3 +96,12 @@
   filter: opacity(70%);
   font-size: 24px;
 }
+.general {
+  background-color: rgb(48, 80, 145);
+}
+.character {
+  background-color: #c72d2d;
+}
+.artist {
+  background-color: #b144ca;
+}
