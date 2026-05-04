@@ -209,6 +209,7 @@ export default function FanArts() {
           <HeaderPages
             image="staticImgs/generalUse/__saigyouji_yuyuko_touhou_drawn_by_dounaga_nuko__sample-2fd9d01a7877ab582bb7da7d425263dd.jpg"
             isInPage={true}
+            header={t("header_fanarts")}
           />
           <div className={styles.container}>
             <div className={styles.content}>
@@ -251,7 +252,7 @@ export default function FanArts() {
                   <h3>{t("tag_header_general")}</h3>
                   {tags &&
                     tags.general.map((tag) => (
-                      <button
+                      <p
                         key={tag}
                         className={`${styles.generalTags} ${styles.tags}`}
                         onClick={() => {
@@ -259,12 +260,12 @@ export default function FanArts() {
                         }}
                       >
                         {tag}
-                      </button>
+                      </p>
                     ))}
                   <h3>{t("tag_header_characters")}</h3>
                   {tags &&
                     tags.caracters.map((tag) => (
-                      <button
+                      <p
                         key={tag}
                         className={`${styles.caractersTags} ${styles.tags}`}
                         onClick={() => {
@@ -272,25 +273,29 @@ export default function FanArts() {
                         }}
                       >
                         {tag}
-                      </button>
+                      </p>
                     ))}
-                  <h3>{t("tag_header_artist")}</h3>
+                  {tags && tags.artist.length >= 1 && (
+                    <h3>{t("tag_header_artist")}</h3>
+                  )}
                   {tags &&
                     tags.artist.map((tag) => (
-                      <button
-                        key={tag}
-                        className={`${styles.artistsTags} ${styles.tags}`}
-                        onClick={() => {
-                          addTag(tag);
-                        }}
-                      >
-                        {tag}
-                      </button>
+                      <>
+                        <p
+                          key={tag}
+                          className={`${styles.artistsTags} ${styles.tags}`}
+                          onClick={() => {
+                            addTag(tag);
+                          }}
+                        >
+                          {tag}
+                        </p>
+                      </>
                     ))}
                   {tags && unique && (
                     <>
                       <h3>{t("tag_header_link")}</h3>
-                      <button
+                      <p
                         onClick={() => {
                           if (data)
                             window.open(data[unique.index].originalLink);
@@ -298,7 +303,7 @@ export default function FanArts() {
                         className={`${styles.tags} ${styles.link}`}
                       >
                         {data && data[unique.index].originalLink}
-                      </button>
+                      </p>
                     </>
                   )}
                 </div>

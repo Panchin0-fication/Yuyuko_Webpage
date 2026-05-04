@@ -1,10 +1,15 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { HeaderPages, ContentTable, TextContainer, type endingSprite } from "@shared";
+import {
+  HeaderPages,
+  ContentTable,
+  TextContainer,
+  type endingSprite,
+} from "@shared";
 import { TitleSprites, ImageSpoiler } from "@features";
 import styles from "./css/Sprites.module.css";
 export default function Sprites() {
-  const {t} = useTranslation("images");
+  const { t } = useTranslation("images");
   const [endings, setEndings] = useState<endingSprite[]>([
     { hidden: true, id: "ending1" },
     { hidden: true, id: "ending2" },
@@ -26,6 +31,7 @@ export default function Sprites() {
         <HeaderPages
           image="staticImgs/generalUse/mllieuuslnwa1.gif"
           isInPage={true}
+          header={t("header_sprites")}
         ></HeaderPages>
         <a href="#inicio" className="flecha-inicio">
           <img className={styles.arrow} src="/icons/arrow_warm_up.svg" alt="" />
@@ -37,7 +43,9 @@ export default function Sprites() {
           <ContentTable className={styles.container}>
             <h3>{t("header_content_table")}</h3>
             <a href="#gameplay">{t("option_content_table_gameplay")}</a>
-            <a href="#seleccion">{t("option_content_table_character_selection")}</a>
+            <a href="#seleccion">
+              {t("option_content_table_character_selection")}
+            </a>
             <a href="#dialogos">{t("option_content_table_dialogues")}</a>
             <a href="#finales">{t("option_content_table_endings")}</a>
             <a href="#fondos">{t("option_content_table_backgrounds")}</a>
@@ -45,9 +53,7 @@ export default function Sprites() {
           </ContentTable>
           <TextContainer>
             <h1>{t("header_section_general_informarion")}</h1>
-            <p>
-              {t("body_section_general_informarion")}
-            </p>
+            <p>{t("body_section_general_informarion")}</p>
           </TextContainer>
         </div>
         <TitleSprites

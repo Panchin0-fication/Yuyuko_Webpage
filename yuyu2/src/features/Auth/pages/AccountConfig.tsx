@@ -97,10 +97,7 @@ export default function AccountConfig() {
           toRedirect=""
         />,
       );
-      const userResponse = (await Profile(
-        localStorage.getItem("token"),
-      )) as withUserData;
-      i18n.changeLanguage(userResponse.user_data.preferences.language);
+      i18n.changeLanguage(language);
     }
     setLoading(false);
   }

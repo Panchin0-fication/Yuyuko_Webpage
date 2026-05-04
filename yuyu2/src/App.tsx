@@ -22,12 +22,12 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<FrontPage />}></Route>
-          <Route path="/oficial" element={<Oficial></Oficial>}></Route>
-          <Route path="/fanon" element={<Fanon></Fanon>}></Route>
-          <Route path="/images" element={<FrontImages></FrontImages>}></Route>
-          <Route path="/sprites" element={<Sprites></Sprites>}></Route>
-          <Route path="/mangas" element={<Mangas></Mangas>}></Route>
-          <Route path="/fanArts" element={<FanArts></FanArts>}></Route>
+          <Route path="/oficial" element={<Oficial />}></Route>
+          <Route path="/fanon" element={<Fanon />}></Route>
+          <Route path="/images" element={<FrontImages />}></Route>
+          <Route path="/sprites" element={<Sprites />}></Route>
+          <Route path="/mangas" element={<Mangas />}></Route>
+          <Route path="/fanArts" element={<FanArts />}></Route>
           <Route path="/fanArts/Post" element={<PostFanArt />} />
           <Route path="/auth/create" element={<CreateAccount />} />
           <Route path="/auth/validate" element={<ValidateUser />} />

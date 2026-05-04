@@ -326,7 +326,10 @@ export default function PostFanArt() {
     <>
       <ValidateSesion />
       <div className={`${styles.all} ${message && "filterMsg"}`}>
-        <HeaderPages image={"/staticImgs/generalUse/postFanArt.jpg"} />
+        <HeaderPages
+          image={"/staticImgs/generalUse/postFanArt.jpg"}
+          header={t("header_post_fanart")}
+        />
         <br />
         <div className={styles.content}>
           {/*Divs of inputs for FanArt fields */}

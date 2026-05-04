@@ -1,4 +1,5 @@
 {
+  "header_front": "Images Section",
   "sprites_page_info": "A complete collection of all Yuyuko sprites from official games, including bullet hell and fighting games. Includes gameplay sprites, character sprites from dialogue scenes, and more.",
   "sprites_page_header": "Sprites",
   "mangas_page_info": "A collection of official manga panels featuring Yuyuko, primarily from 'Silent Sinner in Blue' and 'Foul Detective Satori'. A reader is available for more comfortable viewing.",
@@ -6,6 +7,7 @@
   "fanarts_page_info": "Section for exploring and uploading Yuyuko fan art. Tags implemented to help with searching and categorizing.",
   "fanarts_page_header": "FanArts",
 
+  "header_fanarts": "Fan Arts",
   "UNEXPECTED_ERROR": "Unexpected error",
   "tag_header_general": "General",
   "tag_header_characters": "Characters",
@@ -20,6 +22,7 @@
   "info_message_add_fan_art_p_two": "After posting your FanArt, you must wait for the administrators to approve it so that all users can see it.",
   "show_original": "Show original quality",
 
+  "header_post_fanart": "Post Fan Arts",
   "message_header_no_loged_in": "Not logged in",
   "message_body_no_loged_in": "You must logged in to upload FanArts",
   "message_header_error_posting": "Upload error",
@@ -65,6 +68,7 @@
   "header_interface_tags_button_category_character": "Character",
   "header_interface_tags_button_add_new_tag": "Add",
 
+  "header_sprites": "Sprites",
   "header_content_table": "Content",
   "option_content_table_gameplay": "1-Gameplay",
   "option_content_table_character_selection": "2-Character selection",

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import {
   HeaderPages,
   NavSecondary,
@@ -7,9 +8,13 @@ import {
 } from "@shared";
 import styles from "./Oficial.module.css";
 export default function Oficial() {
+  const { t } = useTranslation("wikis");
   return (
     <div className="container">
-      <HeaderPages image="/staticImgs/generalUse/touhou-saigyouji-yuyuko.gif" />
+      <HeaderPages
+        image="/staticImgs/generalUse/touhou-saigyouji-yuyuko.gif"
+        header={t("header_official")}
+      />
 
       <div className={styles.content}>
         <NavSecondary actualPage="oficial" />
