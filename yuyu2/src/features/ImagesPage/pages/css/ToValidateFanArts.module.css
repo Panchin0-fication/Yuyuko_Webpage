@@ -1,0 +1,36 @@
+.toValidateFanArts {
+  min-height: 100vh;
+}
+.arrows {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+  padding-top: 20px;
+}
+.fanArts {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  padding-top: 20px;
+}
+.tagsContainer {
+  background-color: rgb(255, 250, 250);
+  padding: 10px;
+  margin: 15px;
+  margin-top: 45px;
+}
+.headerTags {
+  font-weight: 400;
+  padding-bottom: 10px;
+}
+.unverifiedTags {
+  display: flex;
+  gap: 10px;
+}
+.active {
+  filter: invert(42%) sepia(66%) saturate(1584%) hue-rotate(206deg)
+    brightness(99%) contrast(95%);
+  cursor: pointer;
+}

@@ -6,7 +6,6 @@
   "mangas_page_header": "Mangas",
   "fanarts_page_info": "Section for exploring and uploading Yuyuko fan art. Tags implemented to help with searching and categorizing.",
   "fanarts_page_header": "FanArts",
-
   "header_fanarts": "Fan Arts",
   "UNEXPECTED_ERROR": "Unexpected error",
   "tag_header_general": "General",
@@ -21,7 +20,6 @@
   "info_message_add_fan_art_li_three": "Original link to the FanArt and the user name of the authors",
   "info_message_add_fan_art_p_two": "After posting your FanArt, you must wait for the administrators to approve it so that all users can see it.",
   "show_original": "Show original quality",
-
   "header_post_fanart": "Post Fan Arts",
   "message_header_no_loged_in": "Not logged in",
   "message_body_no_loged_in": "You must logged in to upload FanArts",
@@ -54,7 +52,6 @@
   "body_enter_link_p_three": "You can also enter a direct link to an image if the FanArt is not on a permitted page.",
   "button_upload_fanart": "Post Fanart",
   "fanart_preview_text": "preview of the fanart",
-
   "small_message_error_no_tag_name": "Enter name tag",
   "TAG_ALREADY_EXISTS": "Already existing tag",
   "small_message_error_already_added": "Tag already added",
@@ -67,7 +64,6 @@
   "header_interface_tags_button_category_artist": "Artist",
   "header_interface_tags_button_category_character": "Character",
   "header_interface_tags_button_add_new_tag": "Add",
-
   "header_sprites": "Sprites",
   "header_content_table": "Content",
   "option_content_table_gameplay": "1-Gameplay",
@@ -84,5 +80,11 @@
   "header_endings_info": "Endings",
   "header_backgrounds_info": "Backgrounds",
   "header_others_info": "Others",
-  "spoiler_label": "Spoiler"
+  "spoiler_label": "Spoiler",
+  "message_header_unautorized": "Not allowed",
+  "message_text_unautorizes": "You don't have autorization to access this page",
+  "header_to_validate": "Fan Arts to Validate",
+  "unverified_tags_label": "Unverified tags",
+  "verified_tags_label": "Verified tags",
+  "no_unverified_tags": "No tags to verify..."
 }

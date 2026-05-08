@@ -205,7 +205,7 @@ async def login(userName:Annotated[str, Form()], password:Annotated[str, Form()]
     if not foundPassword:
         return {"code":"INCORRECT_PASSWORD","success":False,"token":None}
 
-    token = create_token({"userName":foundUser["userName"],"id":str(foundUser["_id"]),"email":foundUser["email"],"verified":foundUser["verified"],"preferences":{"language":foundUser["preferences"]["language"]}})
+    token = create_token({"userName":foundUser["userName"],"id":str(foundUser["_id"]),"role":foundUser["role"],"email":foundUser["email"],"verified":foundUser["verified"],"preferences":{"language":foundUser["preferences"]["language"]}})
     if foundUser["verified"]:
         return {"code":"LOGIN_SUCCESSFUL","success":True,"token":token}
     else:
@@ -329,6 +329,7 @@ async def get_fanArtsByTags(num:int,tags: List[str] = Query(...),user: Optional[
             return {"code":"FANARTS_COLLECTED","success":True, "fanArts":fanArts}
 
         tagList = list_serial(collection_name.find({"name":{"$in":tags}}))
+        print("CIMO",tagList, tags)
         set_search_tags(search,tagList,"$all")
         print("Preferences",search)
       
@@ -339,3 +340,17 @@ async def get_fanArtsByTags(num:int,tags: List[str] = Query(...),user: Optional[
         print("error",e)
         return {"code":"UNEXPECTED_ERROR","success":False, "fanArts":None}
     
+@router.get("/admin/fanArt/{num}")
+async def get_to_validate_fanarts(num:int, user = Depends(get_current_user)):
+    if(user):
+        fanArts = list_serial_fanArts(collection_fanArts.find({"status":"pending"}).skip((num-1)*5).limit(6))
+        return fanArts
+    
+@router.get("/admin/unverified_tags")
+async def get_unverified_tags(tags: List[str] = Query(...), user = Depends(get_current_user)):
+    if(user["user_data"]["role"] == "Admin"):
+        unver_tags = list_serial(collection_name.find({"name":{"$in":tags}, "status":"pending"}))
+        ver_tags = list_serial(collection_name.find({"name":{"$in":tags}, "status":"accepted"}))
+        return {"unverified_tags":unver_tags,"verified_tags":ver_tags}
+    else:
+        return {"unverified_tags":None,"verified_tags":None}

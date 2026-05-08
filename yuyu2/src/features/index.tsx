@@ -15,6 +15,8 @@ export { default as Sprites } from "./ImagesPage/pages/Sprites.js";
 export { default as Mangas } from "./ImagesPage/pages/Mangas.js";
 export { default as FanArts } from "./ImagesPage/pages/FanArts.js";
 export { default as PostFanArt } from "./ImagesPage/pages/PostFanArt.js";
+export { default as ToValidateFanArts } from "./ImagesPage/pages/ToValidateFanArts.js";
+export { default as ValidateFanArts } from "./ImagesPage/pages/ValidateFanArts.js";
 
 //Images components
 export { default as TitleSprites } from "./ImagesPage/components/TitleSprites.js";
