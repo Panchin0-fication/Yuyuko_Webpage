@@ -1,4 +1,5 @@
 import { type ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import styles from "./css/Message.module.css";
 type props = {
@@ -22,6 +23,7 @@ export default function Message({
   function onClick(): void {
     navigate(toRedirect, previus);
   }
+  const { t } = useTranslation("common");
   return (
     <>
       <div className={styles.filterMsg}></div>
@@ -46,7 +48,7 @@ export default function Message({
         {toRedirect !== "" && (
           <div className={styles.button}>
             <button className={styles.continue} onClick={onClick}>
-              <p className={styles.continueText}>Continuar</p>
+              <p className={styles.continueText}>{t("button_continue")}</p>
             </button>
           </div>
         )}

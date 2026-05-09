@@ -3,7 +3,7 @@ import { useTranslation, Trans } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import Draggable from "react-draggable";
 import styles from "./css/PostFanArt.module.css";
-import { TagsInterface } from "@features";
+import { TagsInterface, FieldsFanArt } from "@features";
 import {
   HeaderPages,
   Message,
@@ -333,121 +333,16 @@ export default function PostFanArt() {
         <br />
         <div className={styles.content}>
           {/*Divs of inputs for FanArt fields */}
-          <div className={styles.inputsGrid}>
-            {/*File div */}
-            <div className={styles.field}>
-              <h3>{t("header_select_file")}</h3>
-              <p>{t("body_select_file_p_one")}</p>
-              <p>{t("body_select_file_p_two")}</p>
-              <input
-                onChange={() => {
-                  if (!fileRef.current) return;
-                  setFile(
-                    URL.createObjectURL(
-                      fileRef.current.files[fileRef.current.files.length - 1],
-                    ),
-                  );
-                  setPreviewImageDimensions({
-                    width: 0,
-                    height: 0,
-                    multiplier: 1.0,
-                  });
-                  setShow(true);
-                }}
-                ref={fileRef}
-                className={styles.inputFile}
-                type="file"
-                accept=".png, .jpg, .jpeg"
-              />
-              <div className={`${styles.uploadFanArtButtons}`}>
-                <button
-                  className={`${styles.button} ${styles.buttonLoad}`}
-                  onClick={async () => {
-                    await fileRef.current.click();
-                  }}
-                >
-                  <p>{t("button_select_file")}</p>
-                </button>
-                {file && (
-                  <button onClick={() => setShow(!show)}>
-                    {show && (
-                      <img
-                        className={` ${styles.preview}`}
-                        src="/icons/minus_box.svg"
-                      />
-                    )}
-                    {!show && (
-                      <img
-                        className={`${styles.preview}`}
-                        src="/icons/add_box.svg"
-                      />
-                    )}
-                  </button>
-                )}
-              </div>
-            </div>
-            {/*Clasification div */}
-            <div className={styles.field}>
-              <h3>{t("header_select_clasification")}</h3>
-              <p>{t("select_clasification_p_one")}</p>
-              <Trans
-                t={t}
-                i18nKey={"select_clasification_p_two"}
-                components={{
-                  bold: BOLD_CONFIG,
-                  paragraph: <p></p>,
-                }}
-              />
-              <Trans
-                t={t}
-                i18nKey={"select_clasification_p_three"}
-                components={{
-                  bold: BOLD_CONFIG,
-                  paragraph: <p></p>,
-                }}
-              />
-              <Trans
-                t={t}
-                i18nKey={"select_clasification_p_four"}
-                components={{
-                  bold: BOLD_CONFIG,
-                  paragraph: <p></p>,
-                }}
-              />
-              <select
-                value={inputs.clasification}
-                onChange={(e) => {
-                  setInputs({
-                    ...inputs,
-                    clasification: e.target.value as
-                      | "general"
-                      | "sensitive"
-                      | "explicit",
-                  });
-                }}
-                className={`${styles.button} ${styles.buttonLoad}`}
-              >
-                <option>General</option>
-                <option>Sensitive</option>
-                <option>Explicit</option>
-              </select>
-            </div>
-            {/*Original Link div */}
-            <div className={styles.field}>
-              <h3>{t("header_enter_link")}</h3>
-              <p>{t("body_enter_link_p_one")}</p>
-              <p>{t("body_enter_link_p_two")}</p>
-              <p>{t("body_enter_link_p_three")}</p>
-              <input
-                className={styles.originalLink}
-                value={inputs.originalLink}
-                onChange={(e) =>
-                  setInputs({ ...inputs, originalLink: e.target.value })
-                }
-                type="url"
-              />
-            </div>
-          </div>
+          <FieldsFanArt
+            fileRef={fileRef}
+            file={file}
+            setFile={setFile}
+            setPreviewImageDimensions={setPreviewImageDimensions}
+            show={show}
+            setShow={setShow}
+            inputs={inputs}
+            setInputs={setInputs}
+          />
           <br />
           <TagsInterface
             fanArtTags={fanArtTags}

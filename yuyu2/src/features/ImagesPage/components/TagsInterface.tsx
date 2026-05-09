@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import {
   SmallMessage,
@@ -136,10 +136,6 @@ export default function TagsInterface({
       );
     }
   }
-
-  useEffect(() => {
-    console.log("LOS CAMBIOS", changesRecords);
-  }, [changesRecords]);
 
   //Validation function
   function acceptTag(tag: tag) {

@@ -22,6 +22,7 @@ export { default as ValidateFanArts } from "./ImagesPage/pages/ValidateFanArts.j
 export { default as TitleSprites } from "./ImagesPage/components/TitleSprites.js";
 export { default as ImageSpoiler } from "./ImagesPage/components/ImageSpoiler.js";
 export { default as TagsInterface } from "./ImagesPage/components/TagsInterface.js";
+export { default as FieldsFanArt } from "./ImagesPage/components/FieldsFanArt.js";
 
 //Auth pages
 export { default as CreateAccount } from "./Auth/pages/CreateAccount.js";

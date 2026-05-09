@@ -6,55 +6,6 @@
   width: 100vw;
   min-height: 100vh;
 }
-.field {
-  background-color: white;
-  background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239f9aa6' fill-opacity='0.55' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
-  border: black 3px solid;
-  border-radius: 10px;
-  padding: 5px;
-  width: max-content;
-  width: 450px;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  align-items: center;
-}
-.field p {
-  text-align: start;
-  align-self: flex-start;
-  font-size: 18px;
-}
-.inputsGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  place-items: center;
-}
-.inputFile {
-  display: none;
-}
-.button {
-  border-radius: 0px;
-  width: max-content;
-  padding: 5px 10px;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-}
-.buttonLoad {
-  background-color: rgb(255, 255, 255);
-  border: black 3px solid;
-}
-.button:hover {
-  background-color: rgb(208, 217, 226);
-}
-.uploadFanArtButtons {
-  margin-top: 10px;
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  align-items: center;
-  place-items: center;
-}
 .buttonUpload {
   display: flex;
   align-items: center;
@@ -77,12 +28,6 @@
 .buttonAndLoad img {
   height: 85px;
   width: 85px;
-}
-.preview {
-  display: flex;
-  align-items: center;
-  width: 30px;
-  height: auto;
 }
 .dragItem {
   position: absolute;
@@ -122,19 +67,9 @@
 .draggableImg {
   object-fit: contain;
 }
-.originalLink {
-  border: 3px solid black;
-}
-.originalLink:focus {
-  outline: none;
-}
 .resizeButtons {
   padding-left: 12px;
 }
 .resizeButtons button {
   width: max-content;
-}
-.boldText {
-  font-weight: 500;
-  white-space: nowrap;
 }
