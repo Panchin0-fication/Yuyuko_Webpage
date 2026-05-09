@@ -67,7 +67,7 @@ export default function ToValidateFanArts() {
 
       var reduced: fanArtReducedQuality[] = [];
       var allTags: string[] = [];
-      for (const fanArt of data) {
+      for (const fanArt of data.slice(0, 5)) {
         let rer = (await ReduceQuality(
           fanArt.src,
           800,
@@ -118,6 +118,7 @@ export default function ToValidateFanArts() {
 
       const dataTags = (await responseUnVer.json()) as thisResponse;
       if (dataTags.unverified_tags && dataTags.verified_tags) {
+        console.log("LELELE", dataTags);
         setUnverTags(dataTags.unverified_tags);
         setVerTags(dataTags.verified_tags);
       }
@@ -128,10 +129,23 @@ export default function ToValidateFanArts() {
   }, [page]);
 
   function sendToValidate(reduced: fanArtReducedQuality) {
+    const fanArtPendigTags = unverTags.filter(
+      (tag) =>
+        fanArts[reduced.index].artists.includes(tag.name) ||
+        fanArts[reduced.index].caracters.includes(tag.name) ||
+        fanArts[reduced.index].tags.includes(tag.name),
+    );
+    const fanArtVerifiedTags = verTags.filter(
+      (tag) =>
+        fanArts[reduced.index].artists.includes(tag.name) ||
+        fanArts[reduced.index].caracters.includes(tag.name) ||
+        fanArts[reduced.index].tags.includes(tag.name),
+    );
     const toPass = {
       reduced: reduced,
       fanArt: fanArts[reduced.index],
-      pending: unverTags,
+      pending: fanArtPendigTags,
+      verified: fanArtVerifiedTags,
     };
     navigate("/fanArts/validatePost", { state: toPass });
   }

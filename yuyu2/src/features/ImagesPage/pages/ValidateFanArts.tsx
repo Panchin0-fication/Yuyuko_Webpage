@@ -6,39 +6,25 @@ import {
   type fanArtReducedQuality,
   type fanArt,
   type tag,
+  type change,
 } from "@shared";
 import styles from "./css/ValidateFanArts.module.css";
 export default function ValidateFanArts() {
-  const [fanArtTags, setFanArtTags] = useState<tag[]>([]);
   const location = useLocation();
+  //Verified tags
+  const [fanArtTags, setFanArtTags] = useState<tag[]>([]);
+  //Unverified tags
+  const [unVerTags, setUnVerTags] = useState<tag[]>([]);
+  //Recornds of changes
+
+  const [changesRecords, setChangesRecords] = useState<change[]>([]);
+
   const reducedData: fanArtReducedQuality = location.state.reduced;
   const fanArt: fanArt = location.state.fanArt;
-  const pendingTags: string[] = location.state.pending;
 
   useEffect(() => {
-    var actualTags: tag[] = [];
-    actualTags = actualTags.concat(
-      fanArt.artists.map((tag) => ({
-        name: tag,
-        category: "artist",
-        status: pendingTags.includes(tag) ? "pending" : "accepted",
-      })),
-    );
-    actualTags = actualTags.concat(
-      fanArt.tags.map((tag) => ({
-        name: tag,
-        category: "general",
-        status: pendingTags.includes(tag) ? "pending" : "accepted",
-      })),
-    );
-    actualTags = actualTags.concat(
-      fanArt.caracters.map((tag) => ({
-        name: tag,
-        category: "character",
-        status: pendingTags.includes(tag) ? "pending" : "accepted",
-      })),
-    );
-    setFanArtTags(actualTags);
+    setUnVerTags(location.state.pending);
+    setFanArtTags(location.state.verified);
   }, []);
 
   return (
@@ -48,7 +34,14 @@ export default function ValidateFanArts() {
         header="Validar imagen"
       />
       <br />
-      <TagsInterface fanArtTags={fanArtTags} setfanArtTags={setFanArtTags} />
+      <TagsInterface
+        fanArtTags={fanArtTags}
+        setfanArtTags={setFanArtTags}
+        unVerTags={unVerTags}
+        setUnVerTags={setUnVerTags}
+        changesRecords={changesRecords}
+        setChangesRecords={setChangesRecords}
+      />
     </div>
   );
 }

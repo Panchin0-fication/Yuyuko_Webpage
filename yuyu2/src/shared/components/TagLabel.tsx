@@ -6,12 +6,20 @@ type props = {
   errorTag: string | null;
   addTagFromSearch?: ((tag: tag) => void) | undefined;
   removeTag?: ((tag: tag) => void) | undefined;
+  //For the fan art validation process
+  validation?: boolean;
+  verifiedTag?: ((tag: tag) => void) | undefined;
+  changeShowEdit?: ((tag: tag) => void) | undefined;
 };
 export default function TagLabel({
   tag,
   errorTag,
   addTagFromSearch,
   removeTag,
+
+  validation = false,
+  verifiedTag,
+  changeShowEdit,
 }: props) {
   return (
     <div
@@ -26,13 +34,36 @@ export default function TagLabel({
         >
           {tag.name}
         </p>
+        {validation && verifiedTag && changeShowEdit && (
+          <>
+            <div className={styles.iconContainer}>
+              <img
+                onClick={() => changeShowEdit(tag)}
+                className={`${styles.clickableLabel} ${styles.icon}`}
+                src="/icons/edit.svg"
+                alt=""
+              />
+            </div>
+
+            <div className={styles.iconContainer}>
+              <img
+                onClick={() => verifiedTag(tag)}
+                className={`${styles.clickableLabel} ${styles.icon}`}
+                src="/icons/check.svg"
+                alt=""
+              />
+            </div>
+          </>
+        )}
         {removeTag && (
-          <p
-            className={`${styles.clickableLabel}`}
-            onClick={() => removeTag(tag)}
-          >
-            X
-          </p>
+          <div className={styles.iconContainer}>
+            <img
+              className={`${styles.clickableLabel} ${styles.icon}`}
+              onClick={() => removeTag(tag)}
+              src="/icons/close.svg"
+              alt=""
+            />
+          </div>
         )}
       </div>
     </div>

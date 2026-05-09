@@ -29,16 +29,8 @@ export default function TagsSearch({
     const dataFetch = await fetch(
       `${import.meta.env.VITE_API_URL}/tags?num=${num}&numberTags=${numberTags}&search=${search}`,
     );
-    const data = (await dataFetch.json()) as tagWithId[];
-    let tags: tag[] = [];
-    for (const tag of data) {
-      tags.push({
-        name: tag.name,
-        category: tag.category,
-        status: tag.status,
-      });
-    }
-    setTags(tags);
+    const data = (await dataFetch.json()) as tag[];
+    setTags(data);
     setLoading(false);
   }
 

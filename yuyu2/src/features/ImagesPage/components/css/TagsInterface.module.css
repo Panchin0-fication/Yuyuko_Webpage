@@ -105,3 +105,24 @@
 .artist {
   background-color: #b144ca;
 }
+.changeContainer {
+  background-color: white;
+  padding: 6px;
+  position: absolute;
+  transform: translateY(35px);
+  justify-self: center;
+  margin: auto;
+  border: 2px solid black;
+}
+.changeActions {
+  display: flex;
+  align-items: center;
+}
+.iconContainer {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.iconContainer:hover {
+  background-color: #e8e8e8;
+}

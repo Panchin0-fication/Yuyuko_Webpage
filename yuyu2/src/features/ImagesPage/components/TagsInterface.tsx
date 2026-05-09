@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import {
   SmallMessage,
@@ -6,14 +6,27 @@ import {
   TagsSearch,
   type response,
   type tag,
+  type change,
 } from "@shared";
 import styles from "./css/TagsInterface.module.css";
 
 type props = {
   fanArtTags: tag[];
   setfanArtTags: React.Dispatch<React.SetStateAction<tag[]>>;
+  //For the fan art validation process
+  unVerTags?: tag[];
+  setUnVerTags?: React.Dispatch<React.SetStateAction<tag[]>>;
+  changesRecords?: change[];
+  setChangesRecords?: React.Dispatch<React.SetStateAction<change[]>>;
 };
-export default function TagsInterface({ fanArtTags, setfanArtTags }: props) {
+export default function TagsInterface({
+  fanArtTags,
+  setfanArtTags,
+  unVerTags,
+  setUnVerTags,
+  changesRecords,
+  setChangesRecords,
+}: props) {
   const { t } = useTranslation("images");
   const [inputs, setInputs] = useState<{ search: string; addTag: string }>({
     search: "",
@@ -24,6 +37,10 @@ export default function TagsInterface({ fanArtTags, setfanArtTags }: props) {
   >("general");
   const [smallMessage, setSmallMessage] = useState<ReactNode | null>(null);
   const [errorTag, setErrorTag] = useState<string | null>(null);
+
+  //For validating
+  const [showEdit, setShowEdit] = useState("");
+  const [nameChange, setNameChange] = useState("");
 
   async function addTagFromNew(): Promise<void> {
     const added: string = inputs.addTag.trim().replace(" ", "_");
@@ -68,17 +85,98 @@ export default function TagsInterface({ fanArtTags, setfanArtTags }: props) {
       }, 2000);
       return;
     }
-    setfanArtTags(
-      fanArtTags.concat({
-        name: added,
-        category: addButtonState,
-        status: "pending",
-      } as tag),
-    );
+    //If this condition is true it means it was added by an admin
+    if (unVerTags) {
+      setfanArtTags(
+        fanArtTags.concat({
+          name: added,
+          category: addButtonState,
+          status: "accepted",
+        } as tag),
+      );
+    } else {
+      setfanArtTags(
+        fanArtTags.concat({
+          name: added,
+          category: addButtonState,
+          status: "pending",
+        } as tag),
+      );
+    }
   }
 
   function removeTag(tag: tag) {
     setfanArtTags(fanArtTags.filter((current) => current.name !== tag.name));
+    if (
+      tag.status === "validating" &&
+      setUnVerTags &&
+      unVerTags &&
+      setChangesRecords &&
+      changesRecords
+    ) {
+      setUnVerTags(unVerTags.concat({ ...tag, status: "pending" }));
+      setChangesRecords(
+        changesRecords.filter((current) => current.actual !== tag.name),
+      );
+    }
+    if (
+      tag.status === "pending" &&
+      setUnVerTags &&
+      unVerTags &&
+      setChangesRecords &&
+      changesRecords
+    ) {
+      setUnVerTags(unVerTags.filter((current) => current.name !== tag.name));
+      setChangesRecords(
+        changesRecords.concat({
+          type: "eliminated",
+          previous: tag.name,
+          actual: "Eliminated",
+        }),
+      );
+    }
+  }
+
+  useEffect(() => {
+    console.log("LOS CAMBIOS", changesRecords);
+  }, [changesRecords]);
+
+  //Validation function
+  function acceptTag(tag: tag) {
+    if (setUnVerTags && unVerTags && setChangesRecords && changesRecords) {
+      setUnVerTags(unVerTags.filter((current) => current.name !== tag.name));
+      setChangesRecords(
+        changesRecords.concat({
+          type: "validated",
+          previous: tag.name,
+          actual: tag.name,
+        }),
+      );
+      setfanArtTags(fanArtTags.concat({ ...tag, status: "validating" }));
+    }
+  }
+
+  function changeShowEdit(tag: tag) {
+    showEdit === tag.name ? setShowEdit("") : setShowEdit(tag.name);
+  }
+
+  function changeTagName(tag: tag) {
+    if (unVerTags && setUnVerTags && changesRecords && setChangesRecords) {
+      const newName = nameChange.trim().replace(" ", "_");
+      setUnVerTags((prevTags) =>
+        prevTags.map((t) =>
+          t.name === tag.name ? { ...t, name: newName } : t,
+        ),
+      );
+      setChangesRecords(
+        changesRecords.concat({
+          type: "name",
+          previous: tag.name,
+          actual: newName,
+        }),
+      );
+      setNameChange("");
+    }
   }
 
   return (
@@ -103,6 +201,53 @@ export default function TagsInterface({ fanArtTags, setfanArtTags }: props) {
             </p>
           )}
         </section>
+        {unVerTags && setUnVerTags && (
+          <>
+            <header className={styles.ttt}>
+              <br />
+              <h3>{t("text_interface_tags_unverified_tags")}</h3>
+            </header>
+            <section className={styles.tagsContainer}>
+              {unVerTags.map((tag, id) => (
+                <>
+                  <TagLabel
+                    key={tag.name || id}
+                    tag={tag}
+                    errorTag={errorTag}
+                    removeTag={removeTag}
+                    validation={true}
+                    verifiedTag={acceptTag}
+                    changeShowEdit={changeShowEdit}
+                  />
+                  {showEdit === tag.name && (
+                    <div className={styles.changeContainer}>
+                      <p>
+                        {t("rename_objetive")} {tag.name}
+                      </p>
+                      <div className={styles.changeActions}>
+                        <input
+                          type="text"
+                          value={nameChange}
+                          onChange={(e) => setNameChange(e.target.value)}
+                        />
+                        <div className={styles.iconContainer}>
+                          <img
+                            src="/icons/check.svg"
+                            onClick={() => changeTagName(tag)}
+                            alt=""
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </>
+              ))}
+              {unVerTags.length === 0 && (
+                <p className={styles.emptyTags}>{t("no_tags_to_validate")}</p>
+              )}
+            </section>
+          </>
+        )}
       </div>
       <div className={`${styles.searchTags} ${styles.interfaceSection}`}>
         <header>

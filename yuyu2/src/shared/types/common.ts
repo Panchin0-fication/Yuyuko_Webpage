@@ -7,3 +7,8 @@ export interface previewImageDimensions {
   height: number;
   multiplier: number;
 }
+export interface change {
+  type: "name" | "validated" | "eliminated";
+  previous: string;
+  actual: string;
+}

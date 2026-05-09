@@ -1,6 +1,5 @@
 def individual_serial(tag) -> dict:
     return{
-        "id": str(tag["_id"]),
         "name": tag.get("name"),
         "category": tag.get("category"),
         "status":tag.get("status")
