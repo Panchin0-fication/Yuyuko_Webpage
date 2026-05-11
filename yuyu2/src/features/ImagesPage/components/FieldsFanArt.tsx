@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useTranslation, Trans } from "react-i18next";
 import styles from "./css/FieldsFanArt.module.css";
 import {
@@ -34,6 +35,12 @@ export default function FieldsFanArt({
   fanArt,
 }: props) {
   const { t } = useTranslation("images");
+  const [editLink, setEditLink] = useState(true);
+  useEffect(() => {
+    if (mode === "verify") {
+      setEditLink(false);
+    }
+  }, []);
   const BOLD_CONFIG = <span className={styles.boldText}></span>;
 
   return (
@@ -126,7 +133,7 @@ export default function FieldsFanArt({
       {/*Clasification div */}
       <div className={styles.field}>
         <h3>{t("header_select_clasification")}</h3>
-        <p>{t("select_clasification_p_one")}</p>
+        {mode === "upload" && <p>{t("select_clasification_p_one")}</p>}
         <Trans
           t={t}
           i18nKey={"select_clasification_p_two"}
@@ -151,6 +158,9 @@ export default function FieldsFanArt({
             paragraph: <p></p>,
           }}
         />
+        {mode === "verify" && (
+          <p>The default option was the clasification given by the user</p>
+        )}
         <select
           value={inputs.clasification}
           onChange={(e) => {
@@ -175,14 +185,26 @@ export default function FieldsFanArt({
         <p>{t("body_enter_link_p_one")}</p>
         <p>{t("body_enter_link_p_two")}</p>
         <p>{t("body_enter_link_p_three")}</p>
-        <input
-          className={styles.originalLink}
-          value={inputs.originalLink}
-          onChange={(e) =>
-            setInputs({ ...inputs, originalLink: e.target.value })
-          }
-          type="url"
-        />
+        <div className={styles.linkInput}>
+          <input
+            className={styles.originalLink}
+            value={inputs.originalLink}
+            onChange={(e) =>
+              setInputs({ ...inputs, originalLink: e.target.value })
+            }
+            type="url"
+            disabled={!editLink}
+          />
+          <div
+            className={`${styles.editLinkButton} ${editLink ? styles.enableEdit : ""}`}
+          >
+            <img
+              onClick={() => setEditLink(!editLink)}
+              src="/icons/edit.svg"
+              alt=""
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -64,7 +64,26 @@
 }
 .originalLink {
   border: 3px solid black;
+  width: 350px;
 }
 .originalLink:focus {
   outline: none;
+}
+.linkInput {
+  display: flex;
+  gap: 5px;
+}
+.editLinkButton {
+  display: flex;
+  align-items: center;
+  border: 2px solid black;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.enableEdit {
+  background-color: black;
+}
+.enableEdit img {
+  filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg)
+    brightness(102%) contrast(102%);
 }

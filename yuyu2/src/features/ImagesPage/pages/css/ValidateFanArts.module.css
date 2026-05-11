@@ -1,3 +1,6 @@
 .validateFanArts {
-    min-height: 100vh;
+  min-height: 100vh;
+  margin: auto;
+  padding-left: 10px;
+  padding-right: 10px;
 }

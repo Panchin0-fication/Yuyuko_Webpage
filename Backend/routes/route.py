@@ -234,9 +234,9 @@ def profile(user = Depends(get_current_user)):
 @router.get("/tags")
 async def show_accepted_tags(num: int, numberTags:int, search: str | None = None):
     if not search:
-        tags = list_serial(collection_name.find().skip((num-1)*numberTags).limit(numberTags + 1))
+        tags = list_serial(collection_name.find({"status":"accepted"}).skip((num-1)*numberTags).limit(numberTags + 1))
     else:
-        tags = list_serial(collection_name.find({"name":{"$regex": search, "$options": "i"} }).skip((num-1)*numberTags).limit(numberTags + 1))
+        tags = list_serial(collection_name.find({"status":"accepted","name":{"$regex": search, "$options": "i"} }).skip((num-1)*numberTags).limit(numberTags + 1))
     return tags
     
 @router.get("/tags/check")

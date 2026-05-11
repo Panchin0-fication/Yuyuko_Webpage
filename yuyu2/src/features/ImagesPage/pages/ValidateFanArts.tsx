@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { TagsInterface, FieldsFanArt, PreviewImage } from "@features";
 import {
   HeaderPages,
@@ -11,6 +12,7 @@ import {
 } from "@shared";
 import styles from "./css/ValidateFanArts.module.css";
 export default function ValidateFanArts() {
+  const { t } = useTranslation("images");
   const location = useLocation();
   const fanArt: fanArt = location.state.fanArt;
 
@@ -48,7 +50,7 @@ export default function ValidateFanArts() {
     <div className={styles.validateFanArts}>
       <HeaderPages
         image="/staticImgs/generalUse/__saigyouji_yuyuko_touhou_drawn_by_y75zei__sample-9f89b813ebba2f314ea98108f9069cda.png"
-        header="Validar imagen"
+        header={t("header_validate_fanart")}
       />
       <br />
       <FieldsFanArt
@@ -77,6 +79,7 @@ export default function ValidateFanArts() {
         dimensions={dimensions}
         fanArt={fanArt}
       />
+      <br />
       <TagsInterface
         fanArtTags={fanArtTags}
         setfanArtTags={setFanArtTags}

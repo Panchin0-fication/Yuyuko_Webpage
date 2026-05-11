@@ -205,7 +205,7 @@ export default function TagsInterface({
             </header>
             <section className={styles.tagsContainer}>
               {unVerTags.map((tag, id) => (
-                <>
+                <div className={styles.editableTag}>
                   <TagLabel
                     key={tag.name || id}
                     tag={tag}
@@ -236,7 +236,7 @@ export default function TagsInterface({
                       </div>
                     </div>
                   )}
-                </>
+                </div>
               ))}
               {unVerTags.length === 0 && (
                 <p className={styles.emptyTags}>{t("no_tags_to_validate")}</p>
@@ -298,9 +298,9 @@ export default function TagsInterface({
             />
             <button className={styles.buttonNewTag} onClick={addTagFromNew}>
               {t("header_interface_tags_button_add_new_tag")}{" "}
-              {addButtonState === "general" && "general"}{" "}
-              {addButtonState === "artist" && "artista"}{" "}
-              {addButtonState === "character" && "personaje"}
+              {addButtonState === "general" && t("button_add_tag_general")}
+              {addButtonState === "artist" && t("button_add_tag_artist")}
+              {addButtonState === "character" && t("button_add_tag_character")}
             </button>
             {smallMessage}
           </div>

@@ -8,29 +8,36 @@
   border-radius: 5px;
   height: 350px;
 }
+
 .focusAdded {
   grid-template-columns: 90% 5% 5%;
 }
+
 .focusSearch {
   grid-template-columns: 5% 90% 5%;
 }
+
 .focuNewTag {
   grid-template-columns: 5% 5% 90%;
 }
+
 .interfaceSection {
   display: flex;
   flex-direction: column;
   width: 100%;
   align-items: center;
-  overflow: hidden;
+  overflow: scroll;
 }
+
 .actualTags {
   border-right: black 3px solid;
 }
+
 .searchTags {
   border-right: black 3px solid;
   width: 100%;
 }
+
 .tagsContainer {
   margin-top: 30px;
   margin-bottom: 30px;
@@ -38,7 +45,6 @@
   flex-wrap: wrap;
   gap: 10px;
   padding: 0px 15px;
-  overflow: scroll;
 }
 
 .buttons {
@@ -48,6 +54,7 @@
   gap: 25px;
   align-items: center;
 }
+
 .buttons button {
   display: flex;
   align-items: center;
@@ -57,14 +64,16 @@
   color: white;
   font-size: 16px;
 }
+
 .inactiveButton {
   cursor: no-drop;
   opacity: 70%;
 }
+
 .buttons button img {
-  filter: invert(91%) sepia(0%) saturate(7464%) hue-rotate(96deg)
-    brightness(112%) contrast(108%);
+  filter: invert(91%) sepia(0%) saturate(7464%) hue-rotate(96deg) brightness(112%) contrast(108%);
 }
+
 .input {
   display: flex;
   margin: auto;
@@ -72,9 +81,11 @@
   font-size: 22px;
   padding: 5px;
 }
+
 .input:focus {
   outline: none;
 }
+
 .buttonNewTag {
   background-color: black;
   color: white;
@@ -83,47 +94,63 @@
   width: max-content;
   font-size: 18px;
 }
+
 .buttonNewTag:hover {
   background-color: rgb(62, 62, 62);
 }
+
 .sectionNewTag {
   display: flex;
   flex-direction: column;
   gap: 10px;
   align-items: center;
 }
+
 .emptyTags {
   filter: opacity(70%);
   font-size: 24px;
 }
+
 .general {
   background-color: rgb(48, 80, 145);
 }
+
 .character {
   background-color: #c72d2d;
 }
+
 .artist {
   background-color: #b144ca;
 }
+
 .changeContainer {
   background-color: white;
   padding: 6px;
   position: absolute;
-  transform: translateY(35px);
+  transform: translateY(5px);
   justify-self: center;
+  top: 100%;
+  left: 0;
   margin: auto;
   border: 2px solid black;
   z-index: 10;
 }
+
 .changeActions {
   display: flex;
   align-items: center;
 }
+
 .iconContainer {
   display: flex;
   align-items: center;
   cursor: pointer;
 }
+
+.editableTag {
+  position: relative;
+}
+
 .iconContainer:hover {
   background-color: #e8e8e8;
 }
