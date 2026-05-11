@@ -12,3 +12,7 @@ export interface change {
   previous: string;
   actual: string;
 }
+export type fieldsFanArtsInput = {
+  clasification: "general" | "sensitive" | "explicit";
+  originalLink: string;
+};

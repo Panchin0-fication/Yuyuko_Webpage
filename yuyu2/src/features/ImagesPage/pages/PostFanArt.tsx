@@ -3,7 +3,7 @@ import { useTranslation, Trans } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import Draggable from "react-draggable";
 import styles from "./css/PostFanArt.module.css";
-import { TagsInterface, FieldsFanArt } from "@features";
+import { TagsInterface, FieldsFanArt, PreviewImage } from "@features";
 import {
   HeaderPages,
   Message,
@@ -308,12 +308,7 @@ export default function PostFanArt() {
     }
   }
 
-  function resizePreview(action: "+" | "-") {
-    if (!previewRef.current) return;
-    let newMultiplier = previewImageDimensions.multiplier;
-    newMultiplier =
-      action === "+" ? newMultiplier + 0.05 : newMultiplier - 0.05;
-
+  function resizePreview(newMultiplier: number) {
     setPreviewImageDimensions({
       ...previewImageDimensions,
       multiplier: newMultiplier,
@@ -321,6 +316,15 @@ export default function PostFanArt() {
 
     previewRef.current.style.height = `${previewImageDimensions.height * newMultiplier}px`;
     previewRef.current.style.width = `${previewImageDimensions.width * newMultiplier}px`;
+  }
+
+  function increase() {
+    if (!previewRef.current) return;
+    resizePreview(previewImageDimensions.multiplier + 0.05);
+  }
+  function decrease() {
+    if (!previewRef.current) return;
+    resizePreview(previewImageDimensions.multiplier - 0.05);
   }
   return (
     <>
@@ -359,36 +363,15 @@ export default function PostFanArt() {
             />
           </div>
         </div>
-        <Draggable nodeRef={nodeRef}>
-          <div ref={nodeRef} className={styles.dragItem}>
-            {file && show && (
-              <>
-                <header className={styles.dragHeader}>
-                  <p>{t("fanart_preview_text")}</p>
-                  <label onClick={() => setShow(false)}>X</label>
-                </header>
-                <div className={styles.resizeButtons}>
-                  <button onClick={() => resizePreview("+")}>
-                    <img src="/icons/add_box.svg" alt="" />
-                  </button>
-                  <button onClick={() => resizePreview("-")}>
-                    <img src="/icons/minus_box.svg" alt="" />
-                  </button>
-                </div>
-                <div className={styles.containerImg}>
-                  <img
-                    onLoad={() => {
-                      PreviewLoad();
-                    }}
-                    ref={previewRef}
-                    src={file}
-                    className={styles.draggableImg}
-                  ></img>
-                </div>
-              </>
-            )}
-          </div>
-        </Draggable>
+        <PreviewImage
+          closeFunc={() => setShow(false)}
+          increaseFunc={increase}
+          decreaseFunc={decrease}
+          show={show}
+          file={file}
+          previewRef={previewRef}
+          PreviewLoad={PreviewLoad}
+        />
       </div>
       {message}
     </>

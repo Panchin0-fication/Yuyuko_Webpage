@@ -37,6 +37,10 @@
   place-items: center;
 }
 
+.mySpace {
+  height: 10px;
+}
+
 .button {
   border-radius: 0px;
   width: max-content;

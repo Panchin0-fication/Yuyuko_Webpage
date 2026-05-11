@@ -113,6 +113,7 @@
   justify-self: center;
   margin: auto;
   border: 2px solid black;
+  z-index: 10;
 }
 .changeActions {
   display: flex;
