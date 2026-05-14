@@ -225,7 +225,7 @@ export default function FanArts() {
                     <span
                       className={`${styles.addFanartSpan} ${addFanartHover && styles.showSpan}`}
                     >
-                      Añadir fanArt
+                      {t("add_tag_span")}
                     </span>
                   </div>
 

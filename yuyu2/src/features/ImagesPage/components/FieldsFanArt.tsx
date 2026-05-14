@@ -158,9 +158,7 @@ export default function FieldsFanArt({
             paragraph: <p></p>,
           }}
         />
-        {mode === "verify" && (
-          <p>The default option was the clasification given by the user</p>
-        )}
+        {mode === "verify" && <p>{t("select_clasification_p_five")}</p>}
         <select
           value={inputs.clasification}
           onChange={(e) => {
@@ -195,15 +193,17 @@ export default function FieldsFanArt({
             type="url"
             disabled={!editLink}
           />
-          <div
-            className={`${styles.editLinkButton} ${editLink ? styles.enableEdit : ""}`}
-          >
-            <img
-              onClick={() => setEditLink(!editLink)}
-              src="/icons/edit.svg"
-              alt=""
-            />
-          </div>
+          {mode === "verify" && (
+            <div
+              className={`${styles.editLinkButton} ${editLink ? styles.enableEdit : ""}`}
+            >
+              <img
+                onClick={() => setEditLink(!editLink)}
+                src="/icons/edit.svg"
+                alt=""
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

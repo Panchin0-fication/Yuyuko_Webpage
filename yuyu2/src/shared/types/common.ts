@@ -8,9 +8,23 @@ export interface previewImageDimensions {
   multiplier: number;
 }
 export interface change {
-  type: "name" | "validated" | "eliminated";
+  type:
+    | "name"
+    | "validated"
+    | "eliminated"
+    | "added"
+    | "newAdded"
+    | "newEliminated";
   previous: string;
   actual: string;
+  category: "general" | "character" | "artist" | "copyright";
+  status:
+    | "accepted"
+    | "pending"
+    | "takenDown"
+    | "rejected"
+    | "validating"
+    | "adminAdded";
 }
 export type fieldsFanArtsInput = {
   clasification: "general" | "sensitive" | "explicit";

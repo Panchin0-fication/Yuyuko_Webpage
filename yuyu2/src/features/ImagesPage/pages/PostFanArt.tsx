@@ -1,7 +1,6 @@
 import { useState, startTransition, useRef, type ReactNode } from "react";
-import { useTranslation, Trans } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
-import Draggable from "react-draggable";
 import styles from "./css/PostFanArt.module.css";
 import { TagsInterface, FieldsFanArt, PreviewImage } from "@features";
 import {
@@ -24,7 +23,6 @@ export default function PostFanArt() {
   //File ref and image preview dimensions
   const fileRef = useRef<any>([]);
   const previewRef = useRef<any>(null);
-  const nodeRef = useRef(null);
   const [previewImageDimensions, setPreviewImageDimensions] =
     useState<previewImageDimensions>({
       width: 0,
@@ -56,8 +54,6 @@ export default function PostFanArt() {
   ];
 
   const PREVIEW_MAX_DIMENSION = 300;
-
-  const BOLD_CONFIG = <span className={styles.boldText}></span>;
 
   function handleMessage(
     header: string,

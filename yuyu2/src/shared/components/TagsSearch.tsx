@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { type tagWithId, type tag, TagLabel } from "@shared";
+import { type tagWithId, type tag, TagLabel, type change } from "@shared";
 import { useTranslation } from "react-i18next";
 import styles from "./css/TagsSearch.module.css";
 
@@ -10,6 +10,9 @@ type props = {
   extraStyles?: string;
   errorTag: string | null;
   setErrorTag: React.Dispatch<React.SetStateAction<string | null>>;
+  //For fan art validation
+  changesRecords?: change[];
+  setChangesRecords?: React.Dispatch<React.SetStateAction<change[]>>;
 };
 export default function TagsSearch({
   numberTags = 25,
@@ -18,6 +21,8 @@ export default function TagsSearch({
   extraStyles,
   errorTag,
   setErrorTag,
+  changesRecords,
+  setChangesRecords,
 }: props) {
   const { t } = useTranslation("common");
   const [loading, setLoading] = useState(false);
@@ -55,6 +60,31 @@ export default function TagsSearch({
           status: item.status,
         }),
       );
+      if (changesRecords && setChangesRecords) {
+        if (
+          changesRecords.find(
+            (record) =>
+              record.type === "eliminated" && record.previous === item.name,
+          )
+        ) {
+          setChangesRecords(
+            changesRecords.filter(
+              (record) =>
+                record.previous !== item.name || record.type !== "eliminated",
+            ),
+          );
+        } else {
+          setChangesRecords(
+            changesRecords.concat({
+              type: "added",
+              previous: "None",
+              actual: item.name,
+              category: item.category,
+              status: item.status,
+            }),
+          );
+        }
+      }
     } else {
       setErrorTag(item.name);
       setTimeout(() => {

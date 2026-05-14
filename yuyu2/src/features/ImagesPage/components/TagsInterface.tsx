@@ -4,6 +4,7 @@ import {
   SmallMessage,
   TagLabel,
   TagsSearch,
+  Message,
   type response,
   type tag,
   type change,
@@ -28,6 +29,7 @@ export default function TagsInterface({
   setChangesRecords,
 }: props) {
   const { t } = useTranslation("images");
+  const [message, setMessage] = useState<null | ReactNode>(null);
   const [inputs, setInputs] = useState<{ search: string; addTag: string }>({
     search: "",
     addTag: "",
@@ -86,15 +88,40 @@ export default function TagsInterface({
       return;
     }
     //If this condition is true it means it was added by an admin
-    if (unVerTags) {
+    if (setChangesRecords && changesRecords) {
+      if (
+        changesRecords.find(
+          (record) =>
+            record.type === "newEliminated" && record.previous === added,
+        )
+      ) {
+        console.log("SCOOBY DOO");
+        setChangesRecords(
+          changesRecords.filter(
+            (record) =>
+              record.previous !== added || record.type !== "newEliminated",
+          ),
+        );
+      } else {
+        setChangesRecords(
+          changesRecords.concat({
+            type: "newAdded",
+            previous: "None",
+            actual: added,
+            category: addButtonState,
+            status: "validating",
+          }),
+        );
+      }
       setfanArtTags(
         fanArtTags.concat({
           name: added,
           category: addButtonState,
-          status: "accepted",
+          status: "adminAdded",
         } as tag),
       );
     } else {
+      //Added by user
       setfanArtTags(
         fanArtTags.concat({
           name: added,
@@ -106,34 +133,61 @@ export default function TagsInterface({
   }
 
   function removeTag(tag: tag) {
+    //Removes tag
     setfanArtTags(fanArtTags.filter((current) => current.name !== tag.name));
-    if (
-      tag.status === "validating" &&
-      setUnVerTags &&
-      unVerTags &&
-      setChangesRecords &&
-      changesRecords
-    ) {
-      setUnVerTags(unVerTags.concat({ ...tag, status: "pending" }));
-      setChangesRecords(
-        changesRecords.filter((current) => current.actual !== tag.name),
-      );
-    }
-    if (
-      tag.status === "pending" &&
-      setUnVerTags &&
-      unVerTags &&
-      setChangesRecords &&
-      changesRecords
-    ) {
-      setUnVerTags(unVerTags.filter((current) => current.name !== tag.name));
-      setChangesRecords(
-        changesRecords.concat({
-          type: "eliminated",
-          previous: tag.name,
-          actual: "Eliminated",
-        }),
-      );
+    //(Validation) if was validated but later rejected
+    if (setUnVerTags && unVerTags && setChangesRecords && changesRecords) {
+      if (tag.status === "validating") {
+        //Pass to pendings and adds records
+        setUnVerTags(unVerTags.concat({ ...tag, status: "pending" }));
+        setChangesRecords(
+          changesRecords.filter((current) => current.actual !== tag.name),
+        );
+      } else if (
+        changesRecords.find(
+          (record) => record.type === "newAdded" && record.actual === tag.name,
+        )
+      ) {
+        setChangesRecords(
+          changesRecords.filter(
+            (record) =>
+              record.type !== "newAdded" || record.actual !== tag.name,
+          ),
+        );
+      } else if (tag.status === "pending") {
+        setUnVerTags(unVerTags.filter((current) => current.name !== tag.name));
+        setChangesRecords(
+          changesRecords.concat({
+            type: "newEliminated",
+            previous: tag.name,
+            actual: "Eliminated",
+            category: tag.category,
+            status: "rejected",
+          }),
+        );
+      } else if (tag.status === "accepted") {
+        if (
+          changesRecords.find(
+            (record) => record.type === "added" && record.actual === tag.name,
+          )
+        ) {
+          setChangesRecords(
+            changesRecords.filter(
+              (record) => record.type !== "added" || record.actual !== tag.name,
+            ),
+          );
+        } else {
+          setChangesRecords(
+            changesRecords.concat({
+              type: "eliminated",
+              previous: tag.name,
+              actual: "Eliminated",
+              category: tag.category,
+              status: "rejected",
+            }),
+          );
+        }
+      }
     }
   }
 
@@ -146,6 +200,8 @@ export default function TagsInterface({
           type: "validated",
           previous: tag.name,
           actual: tag.name,
+          category: tag.category,
+          status: tag.status,
         }),
       );
       setfanArtTags(fanArtTags.concat({ ...tag, status: "validating" }));
@@ -156,7 +212,24 @@ export default function TagsInterface({
     showEdit === tag.name ? setShowEdit("") : setShowEdit(tag.name);
   }
 
-  function changeTagName(tag: tag) {
+  async function changeTagName(tag: tag) {
+    //Checks if a tag whith that name alrady exist /tags/check
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/tags/check?newTag=${nameChange.trim().replace(" ", "_")}`,
+    );
+    const res = (await response.json()) as response;
+    if (!res.success) {
+      setMessage(
+        <Message
+          header={"Error"}
+          text={t("TAG_ALREADY_EXISTS")}
+          type="error"
+          setMessage={setMessage}
+          toRedirect=""
+        />,
+      );
+      return;
+    }
     if (unVerTags && setUnVerTags && changesRecords && setChangesRecords) {
       const newName = nameChange.trim().replace(" ", "_");
       setUnVerTags((prevTags) =>
@@ -169,6 +242,8 @@ export default function TagsInterface({
           type: "name",
           previous: tag.name,
           actual: newName,
+          category: tag.category,
+          status: tag.status,
         }),
       );
       setNameChange("");
@@ -176,136 +251,142 @@ export default function TagsInterface({
   }
 
   return (
-    <div className={`${styles.tagInterface}`}>
-      <div className={`${styles.actualTags} ${styles.interfaceSection}`}>
-        <header className={styles.ttt}>
-          <br />
-          <h3>{t("header_interface_tags_added_tags")}</h3>
-        </header>
-        <section className={styles.tagsContainer}>
-          {fanArtTags.map((tag, id) => (
-            <TagLabel
-              key={tag.name || id}
-              tag={tag}
-              errorTag={errorTag}
-              removeTag={removeTag}
-            />
-          ))}
-          {fanArtTags.length === 0 && (
-            <p className={styles.emptyTags}>
-              {t("text_interface_tags_add_tags")}
-            </p>
-          )}
-        </section>
-        {unVerTags && setUnVerTags && (
-          <>
-            <header className={styles.ttt}>
-              <br />
-              <h3>{t("text_interface_tags_unverified_tags")}</h3>
-            </header>
-            <section className={styles.tagsContainer}>
-              {unVerTags.map((tag, id) => (
-                <div className={styles.editableTag}>
-                  <TagLabel
-                    key={tag.name || id}
-                    tag={tag}
-                    errorTag={errorTag}
-                    removeTag={removeTag}
-                    validation={true}
-                    verifiedTag={acceptTag}
-                    changeShowEdit={changeShowEdit}
-                  />
-                  {showEdit === tag.name && (
-                    <div className={styles.changeContainer}>
-                      <p>
-                        {t("rename_objetive")} {tag.name}
-                      </p>
-                      <div className={styles.changeActions}>
-                        <input
-                          type="text"
-                          value={nameChange}
-                          onChange={(e) => setNameChange(e.target.value)}
-                        />
-                        <div className={styles.iconContainer}>
-                          <img
-                            src="/icons/check.svg"
-                            onClick={() => changeTagName(tag)}
-                            alt=""
+    <>
+      {message}
+      <div className={`${styles.tagInterface}`}>
+        <div className={`${styles.actualTags} ${styles.interfaceSection}`}>
+          <header className={styles.ttt}>
+            <br />
+            <h3>{t("header_interface_tags_added_tags")}</h3>
+          </header>
+          <section className={styles.tagsContainer}>
+            {fanArtTags.map((tag, id) => (
+              <TagLabel
+                key={tag.name || id}
+                tag={tag}
+                errorTag={errorTag}
+                removeTag={removeTag}
+              />
+            ))}
+            {fanArtTags.length === 0 && (
+              <p className={styles.emptyTags}>
+                {t("text_interface_tags_add_tags")}
+              </p>
+            )}
+          </section>
+          {unVerTags && setUnVerTags && (
+            <>
+              <header className={styles.ttt}>
+                <br />
+                <h3>{t("text_interface_tags_unverified_tags")}</h3>
+              </header>
+              <section className={styles.tagsContainer}>
+                {unVerTags.map((tag, id) => (
+                  <div className={styles.editableTag}>
+                    <TagLabel
+                      key={tag.name || id}
+                      tag={tag}
+                      errorTag={errorTag}
+                      removeTag={removeTag}
+                      validation={true}
+                      verifiedTag={acceptTag}
+                      changeShowEdit={changeShowEdit}
+                    />
+                    {showEdit === tag.name && (
+                      <div className={styles.changeContainer}>
+                        <p>
+                          {t("rename_objetive")} {tag.name}
+                        </p>
+                        <div className={styles.changeActions}>
+                          <input
+                            type="text"
+                            value={nameChange}
+                            onChange={(e) => setNameChange(e.target.value)}
                           />
+                          <div className={styles.iconContainer}>
+                            <img
+                              src="/icons/check.svg"
+                              onClick={() => changeTagName(tag)}
+                              alt=""
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-              {unVerTags.length === 0 && (
-                <p className={styles.emptyTags}>{t("no_tags_to_validate")}</p>
-              )}
-            </section>
-          </>
-        )}
+                    )}
+                  </div>
+                ))}
+                {unVerTags.length === 0 && (
+                  <p className={styles.emptyTags}>{t("no_tags_to_validate")}</p>
+                )}
+              </section>
+            </>
+          )}
+        </div>
+        <div className={`${styles.searchTags} ${styles.interfaceSection}`}>
+          <header>
+            <br />
+            <h3>{t("header_interface_tags_search_tags")}</h3>
+          </header>
+          <TagsSearch
+            setAddedTags={setfanArtTags}
+            addedTags={fanArtTags}
+            errorTag={errorTag}
+            setErrorTag={setErrorTag}
+            numberTags={20}
+            changesRecords={changesRecords}
+            setChangesRecords={setChangesRecords}
+          />
+        </div>
+        <div className={`${styles.addTags} ${styles.interfaceSection}`}>
+          <header>
+            <br />
+            <h3>{t("header_interface_tags_add_new_tags")}</h3>
+          </header>
+          <section>
+            <div className={styles.buttons}>
+              <button
+                className={`${styles.general} ${addButtonState === "general" && styles.inactiveButton}`}
+                onClick={() => setAddButtonState("general")}
+              >
+                <p>{t("header_interface_tags_button_category_general")}</p>
+                <img src="/icons/photo.svg" alt="" />
+              </button>
+              <button
+                className={`${styles.artist} ${addButtonState === "artist" && styles.inactiveButton}`}
+                onClick={() => setAddButtonState("artist")}
+              >
+                <p>{t("header_interface_tags_button_category_artist")}</p>
+                <img src="/icons/brush.svg" alt="" />
+              </button>
+              <button
+                className={`${styles.character} ${addButtonState === "character" && styles.inactiveButton}`}
+                onClick={() => setAddButtonState("character")}
+              >
+                <p>{t("header_interface_tags_button_category_character")}</p>
+                <img src="/icons/person_book.svg" alt="" />
+              </button>
+            </div>
+            <div className={styles.sectionNewTag}>
+              <input
+                type="text"
+                className={styles.input}
+                value={inputs.addTag}
+                onChange={(e) =>
+                  setInputs({ addTag: e.target.value, search: inputs.search })
+                }
+              />
+              <button className={styles.buttonNewTag} onClick={addTagFromNew}>
+                {t("header_interface_tags_button_add_new_tag")}{" "}
+                {addButtonState === "general" && t("button_add_tag_general")}
+                {addButtonState === "artist" && t("button_add_tag_artist")}
+                {addButtonState === "character" &&
+                  t("button_add_tag_character")}
+              </button>
+              {smallMessage}
+            </div>
+          </section>
+        </div>
       </div>
-      <div className={`${styles.searchTags} ${styles.interfaceSection}`}>
-        <header>
-          <br />
-          <h3>{t("header_interface_tags_search_tags")}</h3>
-        </header>
-        <TagsSearch
-          setAddedTags={setfanArtTags}
-          addedTags={fanArtTags}
-          errorTag={errorTag}
-          setErrorTag={setErrorTag}
-          numberTags={20}
-        />
-      </div>
-      <div className={`${styles.addTags} ${styles.interfaceSection}`}>
-        <header>
-          <br />
-          <h3>{t("header_interface_tags_add_new_tags")}</h3>
-        </header>
-        <section>
-          <div className={styles.buttons}>
-            <button
-              className={`${styles.general} ${addButtonState === "general" && styles.inactiveButton}`}
-              onClick={() => setAddButtonState("general")}
-            >
-              <p>{t("header_interface_tags_button_category_general")}</p>
-              <img src="/icons/photo.svg" alt="" />
-            </button>
-            <button
-              className={`${styles.artist} ${addButtonState === "artist" && styles.inactiveButton}`}
-              onClick={() => setAddButtonState("artist")}
-            >
-              <p>{t("header_interface_tags_button_category_artist")}</p>
-              <img src="/icons/brush.svg" alt="" />
-            </button>
-            <button
-              className={`${styles.character} ${addButtonState === "character" && styles.inactiveButton}`}
-              onClick={() => setAddButtonState("character")}
-            >
-              <p>{t("header_interface_tags_button_category_character")}</p>
-              <img src="/icons/person_book.svg" alt="" />
-            </button>
-          </div>
-          <div className={styles.sectionNewTag}>
-            <input
-              type="text"
-              className={styles.input}
-              value={inputs.addTag}
-              onChange={(e) =>
-                setInputs({ addTag: e.target.value, search: inputs.search })
-              }
-            />
-            <button className={styles.buttonNewTag} onClick={addTagFromNew}>
-              {t("header_interface_tags_button_add_new_tag")}{" "}
-              {addButtonState === "general" && t("button_add_tag_general")}
-              {addButtonState === "artist" && t("button_add_tag_artist")}
-              {addButtonState === "character" && t("button_add_tag_character")}
-            </button>
-            {smallMessage}
-          </div>
-        </section>
-      </div>
-    </div>
+    </>
   );
 }

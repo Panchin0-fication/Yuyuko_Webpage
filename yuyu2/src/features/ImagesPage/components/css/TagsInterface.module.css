@@ -71,7 +71,8 @@
 }
 
 .buttons button img {
-  filter: invert(91%) sepia(0%) saturate(7464%) hue-rotate(96deg) brightness(112%) contrast(108%);
+  filter: invert(91%) sepia(0%) saturate(7464%) hue-rotate(96deg)
+    brightness(112%) contrast(108%);
 }
 
 .input {
@@ -133,7 +134,7 @@
   left: 0;
   margin: auto;
   border: 2px solid black;
-  z-index: 10;
+  z-index: 5;
 }
 
 .changeActions {

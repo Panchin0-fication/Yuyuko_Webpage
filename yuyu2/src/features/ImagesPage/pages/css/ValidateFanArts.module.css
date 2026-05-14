@@ -4,3 +4,43 @@
   padding-left: 10px;
   padding-right: 10px;
 }
+.buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  padding-top: 15px;
+  padding-bottom: 10px;
+}
+.validateButton {
+  background-color: rgb(232, 62, 169);
+  transition: background-color 0.3s;
+}
+.validateButton:hover {
+  background-color: rgb(205, 21, 137);
+}
+.rejectButton {
+  background-color: rgb(220, 42, 42);
+}
+.rejectButton:hover {
+  background-color: rgb(131, 10, 10);
+}
+.actionButton {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: white;
+  padding: 9px;
+  border-radius: 10px;
+}
+
+.actionButton p {
+  font-size: 24px;
+}
+.tagContainer {
+  display: flex;
+  gap: 10px;
+}
+.actionButton img {
+  filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg)
+    brightness(102%) contrast(102%);
+}
